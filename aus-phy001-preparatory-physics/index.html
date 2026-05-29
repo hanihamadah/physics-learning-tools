@@ -1,0 +1,2307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PHY001 — Preparatory Physics</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+/* ─── CSS VARIABLES ──────────────────────────────────────────── */
+:root {
+  --bg:          #f4f2ee;
+  --surface:     #fffefb;
+  --surface2:    #f0ede7;
+  --border:      #e2ddd4;
+  --text:        #2c2a27;
+  --text-muted:  #7a7670;
+  --accent:      #2f5f8f;
+  --accent-soft: #e8f0f8;
+  --green:       #2d6a4f;
+  --green-bg:    #d8f3dc;
+  --red:         #9b2335;
+  --red-bg:      #fce4e7;
+  --yellow:      #7a5c00;
+  --yellow-bg:   #fff3cd;
+  --teacher:     #4a1f7c;
+  --teacher-bg:  #f0eaf9;
+  --teacher-border: #c9b8e8;
+  --radius:      10px;
+  --radius-lg:   16px;
+  --shadow:      0 1px 3px rgba(0,0,0,0.07), 0 4px 12px rgba(0,0,0,0.04);
+  --shadow-card: 0 2px 8px rgba(0,0,0,0.06), 0 0 0 1px var(--border);
+}
+
+/* ─── RESET & BASE ──────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--text);
+  background: var(--bg);
+  min-height: 100vh;
+}
+
+h1, h2, h3, h4 {
+  font-family: 'DM Serif Display', serif;
+  font-weight: 400;
+  line-height: 1.25;
+}
+
+code, .mono {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.88em;
+  background: var(--surface2);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+/* ─── TEACHER MODE ──────────────────────────────────────────── */
+body.teacher-mode .teacher-only    { display: block !important; }
+body.teacher-mode .student-only    { display: block !important; }
+body.teacher-mode .answer-reveal   { display: block !important; }
+body.teacher-mode .hint-block      { display: block !important; }
+body.teacher-mode .answer-hidden   { display: none !important; }
+
+body:not(.teacher-mode) .teacher-only   { display: none !important; }
+body:not(.teacher-mode) .answer-reveal  { display: none !important; }
+
+/* ─── TOP BAR ────────────────────────────────────────────────── */
+#topbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.topbar-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.1rem;
+  color: var(--accent);
+  letter-spacing: 0.01em;
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Mode toggle */
+.mode-toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 4px 4px 4px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.2s;
+}
+
+.mode-toggle .pill {
+  background: var(--accent);
+  color: white;
+  padding: 4px 14px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  transition: background 0.2s;
+}
+
+body.teacher-mode .mode-toggle .pill {
+  background: var(--teacher);
+}
+
+body.teacher-mode .mode-toggle {
+  border-color: var(--teacher-border);
+  background: var(--teacher-bg);
+  color: var(--teacher);
+}
+
+/* ─── LAYOUT ─────────────────────────────────────────────────── */
+#layout {
+  display: flex;
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+/* Sidebar nav */
+#sidenav {
+  width: 200px;
+  flex-shrink: 0;
+  padding: 24px 0 24px 0;
+  position: sticky;
+  top: 53px;
+  height: calc(100vh - 53px);
+  overflow-y: auto;
+}
+
+#sidenav ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+#sidenav a {
+  display: block;
+  padding: 7px 14px;
+  border-radius: 8px;
+  text-decoration: none;
+  color: var(--text-muted);
+  font-size: 13.5px;
+  font-weight: 500;
+  transition: all 0.15s;
+  border-left: 2px solid transparent;
+}
+
+#sidenav a:hover {
+  background: var(--surface2);
+  color: var(--text);
+  border-left-color: var(--border);
+}
+
+#sidenav a.active {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-left-color: var(--accent);
+}
+
+#sidenav .nav-section {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding: 14px 14px 6px;
+  opacity: 0.7;
+}
+
+/* Main content */
+#main {
+  flex: 1;
+  min-width: 0;
+  padding: 28px 0 60px 28px;
+}
+
+/* ─── CARDS ──────────────────────────────────────────────────── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.card-header {
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.15s;
+  gap: 10px;
+}
+
+.card-header:hover { background: var(--surface2); }
+
+.card-header h2 {
+  font-size: 1.05rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.card-header h3 {
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.card-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.icon-blue  { background: var(--accent-soft);   color: var(--accent); }
+.icon-green { background: var(--green-bg);       color: var(--green); }
+.icon-yellow{ background: var(--yellow-bg);      color: var(--yellow); }
+.icon-red   { background: var(--red-bg);         color: var(--red); }
+.icon-purple{ background: var(--teacher-bg);     color: var(--teacher); }
+
+.chevron {
+  font-size: 12px;
+  color: var(--text-muted);
+  transition: transform 0.2s;
+  margin-left: auto;
+}
+
+.card.open > .card-header .chevron,
+.subcard.open > .subcard-header .chevron {
+  transform: rotate(180deg);
+}
+
+.card-body {
+  display: none;
+  padding: 0 20px 20px;
+  border-top: 1px solid var(--border);
+}
+
+.card.open > .card-body { display: block; }
+
+/* Sub-cards */
+.subcard {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-top: 14px;
+  overflow: hidden;
+}
+
+.subcard-header {
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  user-select: none;
+  gap: 8px;
+}
+
+.subcard-header:hover { background: var(--surface2); }
+
+.subcard-body {
+  display: none;
+  padding: 14px 16px 16px;
+  border-top: 1px solid var(--border);
+}
+
+.subcard.open > .subcard-body { display: block; }
+
+/* ─── TEACHER CALLOUT ────────────────────────────────────────── */
+.teacher-only {
+  background: var(--teacher-bg);
+  border: 1px dashed var(--teacher-border);
+  border-radius: var(--radius);
+  padding: 12px 16px;
+  margin-top: 12px;
+  font-size: 13.5px;
+}
+
+.teacher-only::before {
+  content: "👩‍🏫 Teacher Note";
+  display: block;
+  font-weight: 600;
+  color: var(--teacher);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+/* ─── CONCEPT SUMMARY ────────────────────────────────────────── */
+.concept-box {
+  background: var(--accent-soft);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  padding: 14px 16px;
+  margin: 12px 0;
+  font-size: 14.5px;
+}
+
+.concept-box strong {
+  display: block;
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+
+/* ─── FORMULA BOX ────────────────────────────────────────────── */
+.formula-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.formula-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  text-align: center;
+}
+
+.formula-card .formula-eq {
+  font-family: 'DM Mono', monospace;
+  font-size: 1.1em;
+  color: var(--accent);
+  margin: 4px 0;
+}
+
+.formula-card .formula-label {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* ─── HINT BLOCK ─────────────────────────────────────────────── */
+.hint-block {
+  background: var(--yellow-bg);
+  border: 1px solid #e5c84e;
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  font-size: 13.5px;
+  margin-top: 10px;
+}
+
+.hint-block::before {
+  content: "💡 Hint";
+  display: block;
+  font-weight: 600;
+  color: var(--yellow);
+  font-size: 12px;
+  letter-spacing: 0.03em;
+  margin-bottom: 4px;
+}
+
+/* ─── QUESTION ITEMS ─────────────────────────────────────────── */
+.q-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  margin-top: 12px;
+}
+
+.q-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 6px;
+}
+
+.q-text {
+  font-size: 14.5px;
+  margin-bottom: 12px;
+}
+
+/* MCQ options */
+.mcq-options {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.mcq-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 13px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  background: var(--surface);
+  transition: all 0.15s;
+  user-select: none;
+}
+
+.mcq-option:hover { background: var(--accent-soft); border-color: var(--accent); }
+
+.mcq-option .opt-letter {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+  flex-shrink: 0;
+  transition: all 0.15s;
+}
+
+.mcq-option.selected { border-color: var(--accent); background: var(--accent-soft); }
+.mcq-option.selected .opt-letter { background: var(--accent); color: white; border-color: var(--accent); }
+
+.mcq-option.correct { border-color: var(--green); background: var(--green-bg); pointer-events: none; }
+.mcq-option.correct .opt-letter { background: var(--green); color: white; border-color: var(--green); }
+
+.mcq-option.wrong { border-color: var(--red); background: var(--red-bg); pointer-events: none; }
+.mcq-option.wrong .opt-letter { background: var(--red); color: white; border-color: var(--red); }
+
+.mcq-option.disabled { pointer-events: none; opacity: 0.5; }
+
+/* Feedback */
+.feedback {
+  margin-top: 10px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 13.5px;
+  display: none;
+}
+
+.feedback.correct { background: var(--green-bg); color: var(--green); border: 1px solid #74c69d; display: block; }
+.feedback.wrong   { background: var(--red-bg);   color: var(--red);   border: 1px solid #f4a5ae; display: block; }
+
+.feedback .feedback-explanation {
+  margin-top: 6px;
+  font-size: 13px;
+  opacity: 0.85;
+}
+
+/* ─── TRUE/FALSE ─────────────────────────────────────────────── */
+.tf-buttons {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.tf-btn {
+  flex: 1;
+  padding: 9px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: center;
+}
+
+.tf-btn:hover { background: var(--accent-soft); border-color: var(--accent); }
+.tf-btn.correct { background: var(--green-bg); border-color: var(--green); color: var(--green); pointer-events: none; }
+.tf-btn.wrong   { background: var(--red-bg);   border-color: var(--red);   color: var(--red);   pointer-events: none; }
+.tf-btn.disabled { pointer-events: none; opacity: 0.4; }
+
+/* ─── NUMERIC INPUT ──────────────────────────────────────────── */
+.num-input-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+  align-items: center;
+}
+
+.num-input {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-family: 'DM Mono', monospace;
+  font-size: 14px;
+  background: var(--surface);
+  color: var(--text);
+  transition: border-color 0.15s;
+}
+
+.num-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(47,95,143,0.1); }
+
+.check-btn {
+  padding: 8px 18px;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.check-btn:hover { opacity: 0.85; }
+
+/* ─── STAGED REVEAL (Problem Solving) ───────────────────────── */
+.staged-step {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-top: 10px;
+  overflow: hidden;
+}
+
+.staged-step-header {
+  padding: 9px 14px;
+  background: var(--surface2);
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+
+.staged-step-body {
+  display: none;
+  padding: 12px 14px;
+  font-size: 14px;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+}
+
+.staged-step.open .staged-step-body { display: block; }
+.staged-step .chevron { transition: transform 0.2s; font-size: 11px; }
+.staged-step.open .chevron { transform: rotate(180deg); }
+
+/* ─── MINI QUIZ ──────────────────────────────────────────────── */
+.quiz-wrapper {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-top: 12px;
+}
+
+.quiz-progress-bar {
+  height: 3px;
+  background: var(--border);
+  position: relative;
+}
+
+.quiz-progress-fill {
+  height: 100%;
+  background: var(--accent);
+  transition: width 0.3s ease;
+  border-radius: 3px;
+}
+
+.quiz-question-area {
+  padding: 16px 16px 14px;
+}
+
+.quiz-counter {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 8px;
+}
+
+.quiz-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
+  background: var(--surface2);
+  border-top: 1px solid var(--border);
+}
+
+.quiz-score-display {
+  text-align: center;
+  padding: 24px 20px;
+  display: none;
+}
+
+.quiz-score-display .score-big {
+  font-family: 'DM Serif Display', serif;
+  font-size: 2.4rem;
+  color: var(--accent);
+  margin: 6px 0;
+}
+
+.quiz-score-display .score-label {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.quiz-score-display .score-feedback {
+  margin-top: 10px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  display: inline-block;
+}
+
+.btn-ghost {
+  padding: 7px 14px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  color: var(--text);
+  transition: all 0.15s;
+}
+
+.btn-ghost:hover { background: var(--surface); }
+
+.btn-primary {
+  padding: 7px 16px;
+  background: var(--accent);
+  border: none;
+  border-radius: 7px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  color: white;
+  transition: opacity 0.15s;
+}
+
+.btn-primary:hover { opacity: 0.85; }
+.btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ─── SIMULATION CARDS ───────────────────────────────────────── */
+.sim-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 14px;
+  margin-top: 14px;
+}
+
+.sim-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sim-card .sim-icon { font-size: 1.6rem; }
+
+.sim-card .sim-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1rem;
+}
+
+.sim-card .sim-desc {
+  font-size: 13px;
+  color: var(--text-muted);
+  flex: 1;
+}
+
+.sim-card .sim-observe {
+  font-size: 12.5px;
+  color: var(--yellow);
+  background: var(--yellow-bg);
+  border-radius: 6px;
+  padding: 7px 10px;
+  margin-top: 4px;
+}
+
+.sim-card .sim-observe::before {
+  content: "👁 Observe: ";
+  font-weight: 600;
+}
+
+.sim-link {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 6px 14px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-radius: 6px;
+  font-size: 12.5px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.15s;
+}
+
+.sim-link:hover { background: var(--accent); color: white; }
+
+/* ─── MISTAKE CARDS ──────────────────────────────────────────── */
+.mistake-item {
+  background: var(--red-bg);
+  border: 1px solid #f4a5ae;
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  margin-top: 10px;
+  font-size: 13.5px;
+}
+
+.mistake-item .mistake-label {
+  font-weight: 600;
+  color: var(--red);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 4px;
+}
+
+.mistake-item .mistake-fix {
+  color: var(--green);
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+.mistake-item .mistake-fix::before { content: "✓ Fix: "; font-weight: 600; }
+
+/* ─── TEMPLATE PANEL ─────────────────────────────────────────── */
+.template-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.template-panel pre {
+  background: #1e1c19;
+  color: #d4cfc7;
+  padding: 16px 18px;
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  line-height: 1.7;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.template-panel pre .cm-k  { color: #7eb8d4; }  /* keyword  */
+.template-panel pre .cm-s  { color: #98c97a; }  /* string   */
+.template-panel pre .cm-c  { color: #7a7670; font-style: italic; } /* comment */
+.template-panel pre .cm-n  { color: #e0a97f; }  /* number   */
+
+/* ─── STEP LIST ──────────────────────────────────────────────── */
+.step-list { list-style: none; counter-reset: step-counter; margin-top: 8px; }
+.step-list li {
+  counter-increment: step-counter;
+  padding: 7px 10px 7px 42px;
+  position: relative;
+  font-size: 14px;
+  border-left: 1px dashed var(--border);
+  margin-left: 18px;
+  margin-bottom: 4px;
+}
+.step-list li::before {
+  content: counter(step-counter);
+  position: absolute;
+  left: -18px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 28px;
+  height: 28px;
+  background: var(--accent);
+  color: white;
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ─── INLINE BADGES ──────────────────────────────────────────── */
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.badge-blue   { background: var(--accent-soft);  color: var(--accent); }
+.badge-green  { background: var(--green-bg);      color: var(--green); }
+.badge-yellow { background: var(--yellow-bg);     color: var(--yellow); }
+.badge-red    { background: var(--red-bg);        color: var(--red); }
+
+/* ─── HOME SECTION ───────────────────────────────────────────── */
+.home-hero {
+  padding: 0 0 20px 0;
+}
+
+.home-hero h1 {
+  font-size: 2rem;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.home-hero p {
+  color: var(--text-muted);
+  max-width: 560px;
+  font-size: 14.5px;
+}
+
+.week-nav-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.week-nav-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 18px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+  display: block;
+}
+
+.week-nav-card:hover {
+  border-color: var(--accent);
+  box-shadow: 0 4px 16px rgba(47,95,143,0.12);
+  transform: translateY(-1px);
+}
+
+.week-nav-card .week-num {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+
+.week-nav-card h3 {
+  font-size: 1rem;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.week-nav-card p {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* ─── SECTION HEADER ─────────────────────────────────────────── */
+.section-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin: 28px 0 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* ─── COPY CODE BUTTON ───────────────────────────────────────── */
+.copy-btn {
+  float: right;
+  margin-bottom: 8px;
+  padding: 4px 10px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 5px;
+  color: #a0998f;
+  font-size: 11px;
+  cursor: pointer;
+  font-family: 'DM Mono', monospace;
+  transition: all 0.15s;
+}
+.copy-btn:hover { background: rgba(255,255,255,0.15); color: #d4cfc7; }
+
+/* ─── UTILITY ────────────────────────────────────────────────── */
+.mt-8  { margin-top: 8px; }
+.mt-12 { margin-top: 12px; }
+.mt-16 { margin-top: 16px; }
+.small { font-size: 13px; color: var(--text-muted); }
+
+p + p { margin-top: 8px; }
+
+/* ─── SCROLLBAR ──────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* ─── MOBILE ─────────────────────────────────────────────────── */
+@media (max-width: 760px) {
+  #sidenav { display: none; }
+  #main { padding: 16px 0 40px; }
+  .week-nav-grid { grid-template-columns: 1fr; }
+  .formula-grid { grid-template-columns: 1fr 1fr; }
+  .sim-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+
+<body>
+
+<!-- ████████████ TOP BAR ████████████ -->
+<div id="topbar">
+  <div class="topbar-title">PHY001 · Preparatory Physics</div>
+  <div class="topbar-right">
+    <span id="mode-label" style="font-size:13px;color:var(--text-muted)">Student Mode</span>
+    <div class="mode-toggle" id="modeToggle" title="Toggle Teacher / Student Mode">
+      <span id="modeToggleLeft">Switch to</span>
+      <span class="pill" id="modePill">Teacher</span>
+    </div>
+  </div>
+</div>
+
+<!-- ████████████ LAYOUT ████████████ -->
+<div id="layout">
+
+  <!-- ── SIDEBAR ── -->
+  <nav id="sidenav">
+    <ul>
+      <li><span class="nav-section">Navigation</span></li>
+      <li><a href="#home" class="nav-link active">🏠 Home</a></li>
+      <li><a href="#week1" class="nav-link">📘 Week 1</a></li>
+      <li><a href="#week2" class="nav-link">📗 Week 2</a></li>
+      <li><a href="#week3" class="nav-link">📙 Week 3</a></li>
+      <li><a href="#sims" class="nav-link">🔬 Simulations</a></li>
+      <li><a href="#quickquiz" class="nav-link">⚡ Quick Quiz</a></li>
+      <li><span class="nav-section">Tools</span></li>
+      <li><a href="#teacherpanel" class="nav-link">👩‍🏫 Teacher Panel</a></li>
+      <li><a href="#template" class="nav-link">🧩 Template System</a></li>
+    </ul>
+  </nav>
+
+  <!-- ── MAIN ── -->
+  <main id="main">
+
+    <!-- ═══════════════════════════════════════ HOME -->
+    <section id="home">
+      <div class="home-hero">
+        <h1>Welcome to PHY001</h1>
+        <p>Preparatory Physics — AUS Foundation Programme. Select a week below to begin, or explore the simulations and quiz sections.</p>
+        <div id="teacher-welcome" class="teacher-only" style="margin-top:14px">
+          This site runs in <strong>Student Mode</strong> by default — answers and explanations are hidden. Switch to <strong>Teacher Mode</strong> (top-right) to reveal all solutions, notes, and common mistakes. Content for each week is stored in the <code>WEEK_TEMPLATE_SYSTEM</code> JavaScript object — see the Template Panel to add new weeks.
+        </div>
+      </div>
+
+      <div class="week-nav-grid">
+        <a class="week-nav-card" href="#week1" onclick="openCard('week1-card')">
+          <div class="week-num">Week 1</div>
+          <h3>Units &amp; Measurement</h3>
+          <p>SI units, significant figures, scientific notation</p>
+        </a>
+        <a class="week-nav-card" href="#week2" onclick="openCard('week2-card')">
+          <div class="week-num">Week 2</div>
+          <h3>Kinematics — 1D</h3>
+          <p>Displacement, velocity, acceleration, SUVAT</p>
+        </a>
+        <a class="week-nav-card" href="#week3" onclick="openCard('week3-card')">
+          <div class="week-num">Week 3</div>
+          <h3>Vectors &amp; Forces</h3>
+          <p>Vector components, Newton's Laws, free body diagrams</p>
+        </a>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════ WEEK 1 -->
+    <div class="section-label" id="week1">Week 1</div>
+
+    <div class="card" id="week1-card">
+      <div class="card-header" onclick="toggleCard('week1-card')">
+        <h2><span class="card-icon icon-blue">📘</span> Week 1 — Units &amp; Measurement</h2>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="card-body">
+
+        <!-- Concept Summary -->
+        <div class="subcard" id="w1-concepts">
+          <div class="subcard-header" onclick="toggleSubcard('w1-concepts')">
+            <h3><span class="card-icon icon-blue">💡</span> Concept Summary</h3>
+            <span class="chevron">▼</span>
+          </div>
+          <div class="subcard-body">
+            <div class="concept-box">
+              <strong>SI Base Units</strong>
+              The International System of Units defines 7 base units. The most common in mechanics: metre (m), kilogram (kg), second (s), and ampere (A).
+            </div>
+            <div class="concept-box">
+              <strong>Significant Figures</strong>
+              The number of meaningful digits in a measured value. Non-zero digits are always significant. Zeros between non-zero digits are significant. Leading zeros are never significant.
+            </div>
+            <div class="concept-box">
+              <strong>Scientific Notation</strong>
+              A way to express very large or small numbers: <code>a × 10ⁿ</code>, where <code>1 ≤ a &lt; 10</code>.
+            </div>
+            <div class="teacher-only">
+              <p>Students commonly confuse precision with accuracy. Emphasize the dartboard analogy — precise = clustered, accurate = near the bullseye. Also: many students miscount sig figs with zeros. Spend time on the 3 zero rules before moving on.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Key Formulas -->
+        <div class="subcard" id="w1-formulas">
+          <div class="subcard-header" onclick="toggleSubcard('w1-formulas')">
+            <h3><span class="card-icon icon-green">📐</span> Key Formulas &amp; Conversions</h3>
+            <span class="chevron">▼</span>
+          </div>
+          <div class="subcard-body">
+            <div class="formula-grid">
+              <div class="formula-card">
+                <div class="formula-label">Scientific Notation</div>
+                <div class="formula-eq">a × 10ⁿ</div>
+                <div class="formula-label">1 ≤ a &lt; 10</div>
+              </div>
+              <div class="formula-card">
+                <div class="formula-label">Percent Error</div>
+                <div class="formula-eq">|meas − true| / true × 100%</div>
+              </div>
+              <div class="formula-card">
+                <div class="formula-label">Unit Conversion</div>
+                <div class="formula-eq">multiply by (unit/unit)</div>
+                <div class="formula-label">cancel unwanted units</div>
+              </div>
+            </div>
+            <p class="small mt-12">📌 Placeholder — additional formulas will be added here.</p>
+          </div>
+        </div>
+
+        <!-- Worked Example -->
+        <div class="subcard" id="w1-example">
+          <div class="subcard-header" onclick="toggleSubcard('w1-example')">
+            <h3><span class="card-icon icon-yellow">📝</span> Worked Example</h3>
+            <span class="chevron">▼</span>
+          </div>
+          <div class="subcard-body">
+            <div class="q-item">
+              <div class="q-label">Example</div>
+              <div class="q-text">Convert 72 km/h to m/s. Show your working using the factor-label method.</div>
+
+              <div class="staged-step" id="ex1-s1">
+                <div class="staged-step-header" onclick="toggleStaged('ex1-s1')">
+                  Step 1 — Write down what you're converting <span class="chevron">▼</span>
+                </div>
+                <div class="staged-step-body">
+                  Start: <strong>72 km/h</strong><br>
+                  Target: <strong>? m/s</strong>
+                </div>
+              </div>
+
+              <div class="staged-step" id="ex1-s2">
+                <div class="staged-step-header" onclick="toggleStaged('ex1-s2')">
+                  Step 2 — Set up conversion fractions <span class="chevron">▼</span>
+                </div>
+                <div class="staged-step-body">
+                  <code>72 km/h × (1000 m / 1 km) × (1 h / 3600 s)</code><br><br>
+                  The <em>km</em> cancels and the <em>h</em> cancels.
+                </div>
+              </div>
+
+              <div class="staged-step" id="ex1-s3">
+                <div class="staged-step-header" onclick="toggleStaged('ex1-s3')">
+                  Step 3 — Calculate <span class="chevron">▼</span>
+                </div>
+                <div class="staged-step-body">
+                  <code>72 × 1000 / 3600 = 20 m/s</code><br><br>
+                  ✅ <strong>Answer: 20 m/s</strong>
+                </div>
+              </div>
+
+              <div class="teacher-only">
+                <p>Common error: students divide by 1000 instead of multiplying. Encourage them to always write out the full factor-label chain before calculating. Reinforce that units behave like algebra.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MCQs -->
+        <div class="subcard" id="w1-mcq">
+          <div class="subcard-header" onclick="toggleSubcard('w1-mcq')">
+            <h3><span class="card-icon icon-blue">🔘</span> Multiple Choice Questions</h3>
+            <span class="chevron">▼</span>
+          </div>
+          <div class="subcard-body">
+
+            <!-- MCQ 1 -->
+            <div class="q-item" id="mcq-w1-1">
+              <div class="q-label">MCQ · L1</div>
+              <div class="q-text">How many significant figures are in the number <strong>0.00304</strong>?</div>
+              <div class="mcq-options" data-correct="B" data-explanation="The leading zeros are not significant. The digits 3, 0, and 4 are all significant — the zero between 3 and 4 is significant because it is between two non-zero digits.">
+                <div class="mcq-option" data-val="A"><span class="opt-letter">A</span> 2</div>
+                <div class="mcq-option" data-val="B"><span class="opt-letter">B</span> 3</div>
+                <div class="mcq-option" data-val="C"><span class="opt-letter">C</span> 5</div>
+                <div class="mcq-option" data-val="D"><span class="opt-letter">D</span> 6</div>
+              </div>
+              <div class="feedback" id="mcq-w1-1-fb"></div>
+              <div class="hint-block" style="display:none" id="mcq-w1-1-hint">Start by ignoring all leading zeros. Count only from the first non-zero digit onward.</div>
+              <div class="mt-8">
+                <button class="btn-ghost" onclick="toggleHint('mcq-w1-1-hint')">💡 Show Hint</button>
+              </div>
+              <div class="teacher-only">
+                <strong>Teacher note:</strong> The zero between 3 and 4 is the most commonly missed sig fig. Reinforce: "zeros sandwiched between non-zero digits are always significant."
+              </div>
+            </div>
+
+            <!-- MCQ 2 placeholder -->
+            <div class="q-item">
+              <div class="q-label">MCQ · L2 — Placeholder</div>
+              <div class="q-text">[ Week 1 MCQ #2 will be added here — conversion between SI prefixes ]</div>
+              <p class="small mt-8">📌 Insert question following the pattern above.</p>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- True / False -->
+        <div class="subcard" id="w1-tf">
+          <div class="subcard-header" onclick="toggleSubcard('w1-tf')">
+            <h3><span class="card-icon icon-green">✅</span> True / False</h3>
+            <span class="chevron">▼</span>
+          </div>
+          <div class="subcard-body">
+
+            <div class="q-item" id="tf-w1-1">
+              <div class="q-label">True / False</div>
+              <div class="q-text">The kilogram is an SI base unit for <em>weight</em>.</div>
+              <div class="tf-buttons">
+                <button class="tf-btn" onclick="checkTF('tf-w1-1', false, this, 'False is correct. The kilogram measures <strong>mass</strong>, not weight. Weight is a force measured in Newtons.')">True</button>
+                <button class="tf-btn" onclick="checkTF('tf-w1-1', true, this, 'False is correct. The kilogram measures <strong>mass</strong>, not weight. Weight is a force measured in Newtons.')">False</button>
+              </div>
+              <div class="feedback" id="tf-w1-1-fb"></div>
+              <div class="teacher-only">
+                <p>This distinction is critical for later chapters. Mass is an intrinsic property; weight depends on gravitational field strength. Use Fg = mg to connect them.</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Short Numeric -->
+        <div class="subcard" id="w1-numeric">
+          <div class="subcard-header" onclick="toggleSubcard('w1-numeric')">
+            <h3><span class="card-icon icon-yellow">🔢</span> Short Numeric Answer</h3>
+            <span class="chevron">▼</span>
+          </div>
+          <div class="subcard-body">
+            <div class="q-item">
+              <div class="q-label">Numeric · L1</div>
+              <div class="q-text">Express 0.000056 m in scientific notation. Enter the exponent only (e.g. if the answer is 5.6 × 10⁻⁵, enter <strong>-5</strong>).</div>
+              <div class="hint-block" id="num-w1-1-hint" style="display:none">Move the decimal point until there is exactly one non-zero digit before it. Count how many places you moved.</div>
+              <div class="num-input-row">
+                <input type="number" class="num-input" id="num-w1-1-input" placeholder="Enter exponent...">
+                <button class="check-btn" onclick="checkNumeric('num-w1-1', -5, 0)">Check</button>
+              </div>
+              <div class="feedback" id="num-w1-1-fb"></div>
+              <div class="mt-8"><button class="btn-ghost" onclick="toggleHint('num-w1-1-hint')">💡 Show Hint</button></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Problem Solving -->
+        <div class="subcard" id="w1-ps">
+          <div class="subcard-header" onclick="toggleSubcard('w1-ps')">
+            <h3><span class="card-icon icon-red">🧠</span> Problem Solving</h3>
+            <span class="chevron">▼</span>
+          </div>
+          <div class="subcard-body">
+            <div class="q-item">
+              <div class="q-label">Problem · L2</div>
+              <div class="q-text">A student measures a table as 1.56 m long. The actual length is 1.50 m. Calculate the percent error. Reveal each step when ready.</div>
+              <div class="staged-step" id="ps-w1-s1">
+                <div class="staged-step-header" onclick="toggleStaged('ps-w1-s1')">Step 1 — Identify given values <span class="chevron">▼</span></div>
+                <div class="staged-step-body">Measured = 1.56 m &nbsp;|&nbsp; Actual = 1.50 m</div>
+              </div>
+              <div class="staged-step" id="ps-w1-s2">
+                <div class="staged-step-header" onclick="toggleStaged('ps-w1-s2')">Step 2 — Apply formula <span class="chevron">▼</span></div>
+                <div class="staged-step-body"><code>|1.56 − 1.50| / 1.50 × 100%</code> = <code>0.06 / 1.50 × 100%</code></div>
+              </div>
+              <div class="staged-step" id="ps-w1-s3">
+                <div class="staged-step-header" onclick="toggleStaged('ps-w1-s3')">Step 3 — Answer <span class="chevron">▼</span></div>
+                <div class="staged-step-body">✅ <strong>4.0%</strong> percent error</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mini Quiz -->
+        <div class="subcard" id="w1-quiz">
+          <div class="subcard-header" onclick="toggleSubcard('w1-quiz')">
+            <h3><span class="card-icon icon-purple">⚡</span> Mini Quiz</h3>
+            <span class="chevron">▼</span>
+          </div>
+          <div class="subcard-body">
+            <p class="small mb-8">5-question quick check. Scored automatically.</p>
+            <div id="quiz-w1"></div>
+          </div>
+        </div>
+
+        <!-- Common Mistakes -->
+        <div class="subcard" id="w1-mistakes">
+          <div class="subcard-header" onclick="toggleSubcard('w1-mistakes')">
+            <h3><span class="card-icon icon-red">⚠️</span> Common Mistakes</h3>
+            <span class="chevron">▼</span>
+          </div>
+          <div class="subcard-body">
+            <div class="mistake-item">
+              <div class="mistake-label">Mistake #1</div>
+              Counting leading zeros as significant figures (e.g. saying 0.0045 has 4 sig figs).
+              <div class="mistake-fix">Only start counting from the first non-zero digit. 0.0045 has 2 sig figs.</div>
+            </div>
+            <div class="mistake-item">
+              <div class="mistake-label">Mistake #2</div>
+              Flipping the conversion fraction (e.g. multiplying by h/3600 instead of 3600s/h).
+              <div class="mistake-fix">Write out the unit you want to cancel on the bottom of the fraction.</div>
+            </div>
+            <div class="mistake-item">
+              <div class="mistake-label">Mistake #3 — Placeholder</div>
+              [ Add Week 1 common mistake #3 here ]
+              <div class="mistake-fix">[ Correction here ]</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Simulations link for this week -->
+        <div class="subcard" id="w1-sims">
+          <div class="subcard-header" onclick="toggleSubcard('w1-sims')">
+            <h3><span class="card-icon icon-green">🔬</span> Simulations for This Week</h3>
+            <span class="chevron">▼</span>
+          </div>
+          <div class="subcard-body">
+            <p class="small">[ Week 1 simulation links — placeholder. Will link to PhET unit conversion tools. ]</p>
+          </div>
+        </div>
+
+      </div><!-- /card-body week1 -->
+    </div><!-- /card week1 -->
+
+    <!-- ═══════════════════════════════════════ WEEK 2 -->
+    <div class="section-label" id="week2">Week 2</div>
+
+    <div class="card" id="week2-card">
+      <div class="card-header" onclick="toggleCard('week2-card')">
+        <h2><span class="card-icon icon-green">📗</span> Week 2 — Kinematics (1D)</h2>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="card-body">
+
+        <!-- Concept Summary -->
+        <div class="subcard" id="w2-concepts">
+          <div class="subcard-header" onclick="toggleSubcard('w2-concepts')">
+            <h3><span class="card-icon icon-blue">💡</span> Concept Summary</h3>
+            <span class="chevron">▼</span>
+          </div>
+          <div class="subcard-body">
+            <div class="concept-box">
+              <strong>Displacement vs Distance</strong>
+              Displacement is a vector — it depends only on start and end positions. Distance is scalar — total path length.
+            </div>
+            <div class="concept-box">
+              <strong>SUVAT Variables</strong>
+              <code>s</code> = displacement &nbsp;|&nbsp; <code>u</code> = initial velocity &nbsp;|&nbsp; <code>v</code> = final velocity &nbsp;|&nbsp; <code>a</code> = acceleration &nbsp;|&nbsp; <code>t</code> = time
+            </div>
+            <div class="teacher-only">
+              Emphasise direction conventions. Set up +/− axis early. Students confuse "decelerating" with "negative acceleration" — they are only the same if the object is moving in the + direction.
+            </div>
+          </div>
+        </div>
+
+        <!-- Key Formulas -->
+        <div class="subcard" id="w2-formulas">
+          <div class="subcard-header" onclick="toggleSubcard('w2-formulas')">
+            <h3><span class="card-icon icon-green">📐</span> SUVAT Equations</h3>
+            <span class="chevron">▼</span>
+          </div>
+          <div class="subcard-body">
+            <div class="formula-grid">
+              <div class="formula-card">
+                <div class="formula-label">Equation 1</div>
+                <div class="formula-eq">v = u + at</div>
+                <div class="formula-label">no s</div>
+              </div>
+              <div class="formula-card">
+                <div class="formula-label">Equation 2</div>
+                <div class="formula-eq">s = ut + ½at²</div>
+                <div class="formula-label">no v</div>
+              </div>
+              <div class="formula-card">
+                <div class="formula-label">Equation 3</div>
+                <div class="formula-eq">v² = u² + 2as</div>
+                <div class="formula-label">no t</div>
+              </div>
+              <div class="formula-card">
+                <div class="formula-label">Equation 4</div>
+                <div class="formula-eq">s = ½(u+v)t</div>
+                <div class="formula-label">no a</div>
+              </div>
+            </div>
+            <div class="teacher-only" style="margin-top:12px">
+              Teach students to always list the 5 SUVAT variables first, circle the unknown, and pick the equation that has exactly 3 knowns + the unknown.
+            </div>
+          </div>
+        </div>
+
+        <!-- MCQ Placeholder -->
+        <div class="subcard" id="w2-mcq">
+          <div class="subcard-header" onclick="toggleSubcard('w2-mcq')">
+            <h3><span class="card-icon icon-blue">🔘</span> MCQ — Kinematics</h3>
+            <span class="chevron">▼</span>
+          </div>
+          <div class="subcard-body">
+            <div class="q-item" id="mcq-w2-1">
+              <div class="q-label">MCQ · L1</div>
+              <div class="q-text">A car starts from rest and accelerates at 3 m/s² for 4 seconds. What is its final velocity?</div>
+              <div class="mcq-options" data-correct="C" data-explanation="Using v = u + at: v = 0 + (3)(4) = 12 m/s. The car started from rest so u = 0.">
+                <div class="mcq-option" data-val="A"><span class="opt-letter">A</span> 3 m/s</div>
+                <div class="mcq-option" data-val="B"><span class="opt-letter">B</span> 7 m/s</div>
+                <div class="mcq-option" data-val="C"><span class="opt-letter">C</span> 12 m/s</div>
+                <div class="mcq-option" data-val="D"><span class="opt-letter">D</span> 48 m/s</div>
+              </div>
+              <div class="feedback" id="mcq-w2-1-fb"></div>
+              <div class="hint-block" id="mcq-w2-1-hint" style="display:none">Which SUVAT equation connects v, u, a, and t?</div>
+              <div class="mt-8"><button class="btn-ghost" onclick="toggleHint('mcq-w2-1-hint')">💡 Show Hint</button></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Remaining sub-sections as placeholders -->
+        <div class="subcard" id="w2-placeholder">
+          <div class="subcard-header" onclick="toggleSubcard('w2-placeholder')">
+            <h3><span class="card-icon icon-yellow">📋</span> Guided Practice, T/F, Problem Solving, Mini Quiz</h3>
+            <span class="chevron">▼</span>
+          </div>
+          <div class="subcard-body">
+            <p class="small">📌 <strong>Placeholder</strong> — Week 2 full content will be inserted here using the Week Template System. Sections: Guided Practice · MCQs · True/False · Numeric · Problem Solving · Mini Quiz · Common Mistakes · Simulations.</p>
+            <p class="small mt-8">See the <strong>Template System Panel</strong> at the bottom of this page for how to populate this week.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════ WEEK 3 -->
+    <div class="section-label" id="week3">Week 3</div>
+
+    <div class="card" id="week3-card">
+      <div class="card-header" onclick="toggleCard('week3-card')">
+        <h2><span class="card-icon icon-yellow">📙</span> Week 3 — Vectors &amp; Forces</h2>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="card-body">
+
+        <!-- Concept Summary -->
+        <div class="subcard" id="w3-concepts">
+          <div class="subcard-header" onclick="toggleSubcard('w3-concepts')">
+            <h3><span class="card-icon icon-blue">💡</span> Concept Summary</h3>
+            <span class="chevron">▼</span>
+          </div>
+          <div class="subcard-body">
+            <div class="concept-box">
+              <strong>Vectors vs Scalars</strong>
+              Vectors have both magnitude and direction (e.g. force, velocity, displacement). Scalars have magnitude only (e.g. speed, distance, mass).
+            </div>
+            <div class="concept-box">
+              <strong>Newton's First Law</strong>
+              An object remains at rest or in uniform motion unless acted upon by a net external force.
+            </div>
+            <div class="concept-box">
+              <strong>Newton's Second Law</strong>
+              The net force on an object equals its mass times acceleration: <code>Fnet = ma</code>.
+            </div>
+            <div class="teacher-only">
+              For FBD (free body diagrams): use strictly vertical arrows for vertical force problems. Common student error is drawing the normal force at an angle. Reinforce: N and Fg are always vertical.
+            </div>
+          </div>
+        </div>
+
+        <!-- Placeholder for rest of week 3 -->
+        <div class="subcard" id="w3-placeholder">
+          <div class="subcard-header" onclick="toggleSubcard('w3-placeholder')">
+            <h3><span class="card-icon icon-yellow">📋</span> Full Week 3 Content — Placeholder</h3>
+            <span class="chevron">▼</span>
+          </div>
+          <div class="subcard-body">
+            <p class="small">📌 Week 3 full content (MCQs, T/F, examples, quiz, mistakes, sims) to be populated using the Template System.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════ SIMULATIONS -->
+    <div class="section-label" id="sims">Simulations</div>
+
+    <div class="card open" id="sims-card">
+      <div class="card-header" onclick="toggleCard('sims-card')">
+        <h2><span class="card-icon icon-green">🔬</span> Simulation Links</h2>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="card-body">
+        <p class="small">Explore PhET and Physics Classroom simulations linked to each week's topics. Open in a new tab during study sessions.</p>
+
+        <div class="sim-grid">
+
+          <div class="sim-card">
+            <div class="sim-icon">🏃</div>
+            <div class="sim-title">Projectile Motion</div>
+            <div class="sim-desc">Explore how launch angle and speed affect range and height. Best for Week 2–3 extension.</div>
+            <div class="sim-observe">How does doubling speed change range?</div>
+            <a class="sim-link" href="https://phet.colorado.edu/en/simulations/projectile-motion" target="_blank">Open PhET ↗</a>
+          </div>
+
+          <div class="sim-card">
+            <div class="sim-icon">📈</div>
+            <div class="sim-title">Motion in 1D</div>
+            <div class="sim-desc">Walk the dog simulation — connect position, velocity, and acceleration graphs visually.</div>
+            <div class="sim-observe">When velocity is zero, what does the position graph look like?</div>
+            <a class="sim-link" href="https://phet.colorado.edu/en/simulations/moving-man" target="_blank">Open PhET ↗</a>
+          </div>
+
+          <div class="sim-card">
+            <div class="sim-icon">↗️</div>
+            <div class="sim-title">Vector Addition</div>
+            <div class="sim-desc">Add vectors graphically and algebraically. See how components combine.</div>
+            <div class="sim-observe">Add two equal vectors at 90° — what is the resultant angle?</div>
+            <a class="sim-link" href="https://phet.colorado.edu/en/simulations/vector-addition" target="_blank">Open PhET ↗</a>
+          </div>
+
+          <div class="sim-card">
+            <div class="sim-icon">🌍</div>
+            <div class="sim-title">Free Fall &amp; Gravity</div>
+            <div class="sim-desc">Drop objects in different gravitational fields. Observe how g affects fall time.</div>
+            <div class="sim-observe">Drop a feather vs a ball — what changes on the Moon?</div>
+            <a class="sim-link" href="https://phet.colorado.edu/en/simulations/gravity-and-orbits" target="_blank">Open PhET ↗</a>
+          </div>
+
+          <div class="sim-card">
+            <div class="sim-icon">⚖️</div>
+            <div class="sim-title">Forces &amp; Motion</div>
+            <div class="sim-desc">Apply forces to objects and observe net force, friction, and acceleration.</div>
+            <div class="sim-observe">What happens to acceleration when mass doubles but force stays the same?</div>
+            <a class="sim-link" href="https://phet.colorado.edu/en/simulations/forces-and-motion-basics" target="_blank">Open PhET ↗</a>
+          </div>
+
+          <div class="sim-card">
+            <div class="sim-icon">📊</div>
+            <div class="sim-title">Graphing Position / Velocity</div>
+            <div class="sim-desc">Physics Classroom — graph matching tool. Match the graph by moving the character.</div>
+            <div class="sim-observe">How does the v-t graph look during uniform acceleration?</div>
+            <a class="sim-link" href="https://www.physicsclassroom.com/Physics-Interactives/1-D-Kinematics/Graph-That-Motion/Graph-That-Motion-Interactive" target="_blank">Open ↗</a>
+          </div>
+
+        </div>
+
+        <div class="teacher-only" style="margin-top:16px">
+          <p>Assign PhET labs as screen-captured evidence activities. Require students to: (1) sketch the setup, (2) record a data table, (3) describe one observation in their own words. Avoid turning these into passive viewing sessions.</p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════ QUICK QUIZ -->
+    <div class="section-label" id="quickquiz">Quick Quiz</div>
+
+    <div class="card open" id="quickquiz-card">
+      <div class="card-header" onclick="toggleCard('quickquiz-card')">
+        <h2><span class="card-icon icon-purple">⚡</span> Quick Diagnostic Quiz</h2>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="card-body">
+        <p class="small" style="margin-bottom:14px">A 5-question cross-topic diagnostic. Use at the start of a session to identify gaps.</p>
+        <div id="quiz-main"></div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════ TEACHER PANEL -->
+    <div class="section-label" id="teacherpanel">Teacher Panel</div>
+
+    <div class="card" id="teacherpanel-card">
+      <div class="card-header" onclick="toggleCard('teacherpanel-card')">
+        <h2><span class="card-icon icon-purple">👩‍🏫</span> Teacher Panel</h2>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="card-body">
+
+        <div class="concept-box">
+          <strong>How This Site Works</strong>
+          This is a fully static HTML site. No server, no database. All content is either hardcoded HTML or driven by the <code>WEEK_TEMPLATE_SYSTEM</code> JavaScript object (see Template System Panel below).
+        </div>
+
+        <div class="subcard open" id="tp-modes">
+          <div class="subcard-header" onclick="toggleSubcard('tp-modes')">
+            <h3>Mode System</h3><span class="chevron">▼</span>
+          </div>
+          <div class="subcard-body">
+            <ul style="font-size:14px;padding-left:18px;line-height:2">
+              <li><strong>Student Mode (default):</strong> Answers hidden. Hints available on demand. Minimal text. Staged reveals for solutions.</li>
+              <li><strong>Teacher Mode:</strong> All answers visible. Explanations shown. Teacher notes appear in purple. Toggle at top-right.</li>
+              <li>CSS classes: <code>.teacher-only</code> = visible only in Teacher Mode. <code>.hint-block</code> = toggled by student. <code>.answer-reveal</code> = auto-shown in Teacher Mode.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="subcard" id="tp-add">
+          <div class="subcard-header" onclick="toggleSubcard('tp-add')">
+            <h3>How to Add a New Week</h3><span class="chevron">▼</span>
+          </div>
+          <div class="subcard-body">
+            <ol class="step-list">
+              <li>Open <code>index.html</code> in any text editor (VS Code recommended).</li>
+              <li>Find the comment <code>&lt;!-- WEEK 4 SLOT --&gt;</code> (placed at the end of Week 3 section).</li>
+              <li>Copy the entire Week 1 <code>&lt;div class="card"&gt;...&lt;/div&gt;</code> block.</li>
+              <li>Paste it after the Week 3 card.</li>
+              <li>Update the <code>id</code> attributes to <code>week4-card</code>, <code>w4-concepts</code>, etc.</li>
+              <li>Add your content to the <code>WEEK_TEMPLATE_SYSTEM</code> JS object (see Template Panel).</li>
+              <li>Add a nav link in <code>#sidenav</code>: <code>&lt;a href="#week4" class="nav-link"&gt;📓 Week 4&lt;/a&gt;</code>.</li>
+              <li>Add a card to the home week-nav-grid.</li>
+              <li>Save and open in browser — no build step needed.</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="subcard" id="tp-quiz">
+          <div class="subcard-header" onclick="toggleSubcard('tp-quiz')">
+            <h3>How to Add Quiz Questions</h3><span class="chevron">▼</span>
+          </div>
+          <div class="subcard-body">
+            <p style="font-size:14px">Find the <code>QUIZ_BANKS</code> object in the JavaScript section. Each quiz is an array of question objects. Follow this structure:</p>
+            <pre style="background:#1e1c19;color:#d4cfc7;padding:12px;border-radius:8px;font-size:12px;margin-top:10px;overflow-x:auto">{
+  q: "Question text here?",
+  type: "mcq",            // mcq | tf | numeric
+  options: ["A","B","C","D"],
+  correct: 1,             // index (0-based)
+  explanation: "Why this answer is correct.",
+  teacherNote: "Common mistake or teaching tip."
+}</pre>
+            <p style="font-size:13px;color:var(--text-muted);margin-top:8px">Then call <code>renderQuiz('quiz-container-id', 'quiz-bank-key')</code> to mount it.</p>
+          </div>
+        </div>
+
+        <div class="subcard" id="tp-mcq">
+          <div class="subcard-header" onclick="toggleSubcard('tp-mcq')">
+            <h3>How to Add MCQs to a Week</h3><span class="chevron">▼</span>
+          </div>
+          <div class="subcard-body">
+            <ol class="step-list">
+              <li>Find the MCQ subcard for the target week (e.g. <code>id="w1-mcq"</code>).</li>
+              <li>Add a new <code>&lt;div class="q-item" id="mcq-w1-X"&gt;</code> block.</li>
+              <li>Add <code>.mcq-options</code> with <code>data-correct="B"</code> and <code>data-explanation="..."</code>.</li>
+              <li>Add a <code>&lt;div class="feedback" id="mcq-w1-X-fb"&gt;&lt;/div&gt;</code>.</li>
+              <li>No JS changes needed — the MCQ engine auto-detects all <code>.mcq-options</code> containers on page load.</li>
+            </ol>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════ TEMPLATE SYSTEM -->
+    <div class="section-label" id="template">Template System</div>
+
+    <div class="card" id="template-card">
+      <div class="card-header" onclick="toggleCard('template-card')">
+        <h2><span class="card-icon icon-purple">🧩</span> Week Template System</h2>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="card-body">
+
+        <div class="concept-box">
+          <strong>What is this?</strong>
+          The <code>WEEK_TEMPLATE_SYSTEM</code> is a JavaScript data object that stores structured content for each week. It acts as a content schema. You can use it as the single source of truth for dynamically rendering weeks, or as a reference guide for hardcoding content into HTML.
+        </div>
+
+        <div class="subcard open" id="ts-schema">
+          <div class="subcard-header" onclick="toggleSubcard('ts-schema')">
+            <h3>Data Schema — Week Object</h3><span class="chevron">▼</span>
+          </div>
+          <div class="subcard-body">
+            <div class="template-panel">
+              <pre id="schema-pre"><button class="copy-btn" onclick="copyCode('schema-pre')">copy</button><span class="cm-c">// ─── WEEK_TEMPLATE_SYSTEM ───────────────────────────────────────
+// Each week follows this schema.
+// Add a new entry for each new week.</span>
+
+<span class="cm-k">const</span> WEEK_TEMPLATE_SYSTEM = {
+
+  <span class="cm-s">"week1"</span>: {
+    <span class="cm-s">title</span>:    <span class="cm-s">"Units & Measurement"</span>,
+    <span class="cm-s">icon</span>:     <span class="cm-s">"📘"</span>,
+    <span class="cm-s">color</span>:    <span class="cm-s">"blue"</span>,   <span class="cm-c">// blue | green | yellow | red | purple</span>
+
+    <span class="cm-s">concepts</span>: [
+      {
+        <span class="cm-s">title</span>:   <span class="cm-s">"SI Base Units"</span>,
+        <span class="cm-s">body</span>:    <span class="cm-s">"The 7 SI base units and their symbols..."</span>
+      }
+    ],
+
+    <span class="cm-s">formulas</span>: [
+      {
+        <span class="cm-s">label</span>:   <span class="cm-s">"Percent Error"</span>,
+        <span class="cm-s">eq</span>:      <span class="cm-s">"|meas − true| / true × 100%"</span>,
+        <span class="cm-s">note</span>:    <span class="cm-s">"Always use absolute value on top"</span>
+      }
+    ],
+
+    <span class="cm-s">worked_example</span>: {
+      <span class="cm-s">question</span>: <span class="cm-s">"Convert 72 km/h to m/s."</span>,
+      <span class="cm-s">steps</span>: [
+        <span class="cm-s">"Write the given value: 72 km/h"</span>,
+        <span class="cm-s">"Multiply by (1000 m / 1 km) × (1 h / 3600 s)"</span>,
+        <span class="cm-s">"Answer: 20 m/s"</span>
+      ]
+    },
+
+    <span class="cm-s">mcqs</span>: [
+      {
+        <span class="cm-s">q</span>:           <span class="cm-s">"How many sig figs in 0.00304?"</span>,
+        <span class="cm-s">options</span>:     [<span class="cm-s">"2"</span>, <span class="cm-s">"3"</span>, <span class="cm-s">"5"</span>, <span class="cm-s">"6"</span>],
+        <span class="cm-s">correct</span>:     <span class="cm-n">1</span>,     <span class="cm-c">// 0-indexed</span>
+        <span class="cm-s">level</span>:       <span class="cm-s">"L1"</span>,
+        <span class="cm-s">hint</span>:        <span class="cm-s">"Count from the first non-zero digit."</span>,
+        <span class="cm-s">explanation</span>: <span class="cm-s">"Leading zeros are not significant..."</span>,
+        <span class="cm-s">teacherNote</span>: <span class="cm-s">"The middle zero is the tricky one."</span>
+      }
+    ],
+
+    <span class="cm-s">trueFalse</span>: [
+      {
+        <span class="cm-s">q</span>:           <span class="cm-s">"The kg is a unit of weight."</span>,
+        <span class="cm-s">answer</span>:     <span class="cm-k">false</span>,
+        <span class="cm-s">explanation</span>: <span class="cm-s">"kg measures mass, not weight (force)."</span>
+      }
+    ],
+
+    <span class="cm-s">numericQs</span>: [
+      {
+        <span class="cm-s">q</span>:           <span class="cm-s">"What is the exponent in 5.6 × 10⁻⁵?"</span>,
+        <span class="cm-s">answer</span>:     <span class="cm-n">-5</span>,
+        <span class="cm-s">tolerance</span>:  <span class="cm-n">0</span>,
+        <span class="cm-s">hint</span>:        <span class="cm-s">"Count decimal places moved."</span>
+      }
+    ],
+
+    <span class="cm-s">problems</span>: [
+      {
+        <span class="cm-s">q</span>:       <span class="cm-s">"Measured = 1.56m, Actual = 1.50m. Find % error."</span>,
+        <span class="cm-s">steps</span>: [
+          <span class="cm-s">"Identify: measured=1.56, actual=1.50"</span>,
+          <span class="cm-s">"Apply: |1.56−1.50|/1.50 × 100%"</span>,
+          <span class="cm-s">"Answer: 4.0%"</span>
+        ]
+      }
+    ],
+
+    <span class="cm-s">miniQuiz</span>: <span class="cm-s">"w1"</span>,   <span class="cm-c">// key into QUIZ_BANKS</span>
+
+    <span class="cm-s">mistakes</span>: [
+      {
+        <span class="cm-s">mistake</span>: <span class="cm-s">"Counting leading zeros as sig figs"</span>,
+        <span class="cm-s">fix</span>:     <span class="cm-s">"Start counting from the first non-zero digit"</span>
+      }
+    ],
+
+    <span class="cm-s">simulations</span>: [
+      {
+        <span class="cm-s">title</span>:    <span class="cm-s">"Unit Conversion Tool"</span>,
+        <span class="cm-s">url</span>:      <span class="cm-s">"https://phet.colorado.edu/..."</span>,
+        <span class="cm-s">observe</span>:  <span class="cm-s">"How many mm in 1 m?"</span>
+      }
+    ]
+  },
+
+  <span class="cm-c">// ─── ADD WEEK 4 HERE ────────────────────────────────────────────
+  // Copy the "week1" block above and change key to "week4"
+  // Then follow the Teacher Panel > How to Add a New Week steps</span>
+
+  <span class="cm-s">"week4"</span>: {
+    <span class="cm-s">title</span>:    <span class="cm-s">"[ Your Week 4 Topic ]"</span>,
+    <span class="cm-c">// ... fill in all fields following the schema above</span>
+  }
+
+};</pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="subcard" id="ts-quiz-schema">
+          <div class="subcard-header" onclick="toggleSubcard('ts-quiz-schema')">
+            <h3>Quiz Bank Schema</h3><span class="chevron">▼</span>
+          </div>
+          <div class="subcard-body">
+            <div class="template-panel">
+              <pre id="quiz-schema-pre"><button class="copy-btn" onclick="copyCode('quiz-schema-pre')">copy</button><span class="cm-c">// ─── QUIZ_BANKS ────────────────────────────────────────────────
+// Each bank key matches a week's miniQuiz field.
+// renderQuiz(containerId, bankKey) mounts the quiz UI.</span>
+
+<span class="cm-k">const</span> QUIZ_BANKS = {
+
+  <span class="cm-s">"w1"</span>: [
+    {
+      <span class="cm-s">q</span>:           <span class="cm-s">"Question text?"</span>,
+      <span class="cm-s">type</span>:        <span class="cm-s">"mcq"</span>,  <span class="cm-c">// mcq | tf | numeric</span>
+      <span class="cm-s">options</span>:     [<span class="cm-s">"Option A"</span>, <span class="cm-s">"B"</span>, <span class="cm-s">"C"</span>, <span class="cm-s">"D"</span>],
+      <span class="cm-s">correct</span>:     <span class="cm-n">0</span>,     <span class="cm-c">// 0-indexed for MCQ, true/false for TF</span>
+      <span class="cm-s">explanation</span>: <span class="cm-s">"Why this answer is correct."</span>
+    },
+    {
+      <span class="cm-s">q</span>:           <span class="cm-s">"True or false statement?"</span>,
+      <span class="cm-s">type</span>:        <span class="cm-s">"tf"</span>,
+      <span class="cm-s">correct</span>:     <span class="cm-k">true</span>,
+      <span class="cm-s">explanation</span>: <span class="cm-s">"Explanation here."</span>
+    }
+  ]
+
+};</pre>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- WEEK 4 SLOT -->
+    <!-- Add Week 4 card here following Teacher Panel instructions -->
+
+  </main><!-- /main -->
+</div><!-- /layout -->
+
+
+<!-- ████████████ JAVASCRIPT ████████████ -->
+<script>
+
+// ══════════════════════════════════════════════
+// WEEK_TEMPLATE_SYSTEM
+// ══════════════════════════════════════════════
+const WEEK_TEMPLATE_SYSTEM = {
+  "week1": {
+    title: "Units & Measurement",
+    icon: "📘",
+    color: "blue",
+    concepts: [
+      { title: "SI Base Units", body: "7 base units. Mechanics: metre (m), kilogram (kg), second (s)." },
+      { title: "Significant Figures", body: "Non-zero digits always significant. Sandwiched zeros are significant. Leading zeros are never significant." },
+      { title: "Scientific Notation", body: "a × 10ⁿ where 1 ≤ a < 10." }
+    ],
+    formulas: [
+      { label: "Percent Error", eq: "|meas−true|/true × 100%", note: "Use absolute value in numerator" },
+      { label: "Scientific Notation", eq: "a × 10ⁿ", note: "1 ≤ a < 10" }
+    ],
+    mistakes: [
+      { mistake: "Counting leading zeros as sig figs", fix: "Start counting from the first non-zero digit" },
+      { mistake: "Flipping the conversion fraction", fix: "Write the unit you want to cancel on the bottom" }
+    ]
+  },
+  "week2": {
+    title: "Kinematics (1D)",
+    icon: "📗",
+    color: "green",
+    formulas: [
+      { label: "v = u + at",    eq: "v = u + at",    note: "no s" },
+      { label: "s = ut + ½at²", eq: "s = ut + ½at²", note: "no v" },
+      { label: "v² = u² + 2as", eq: "v² = u² + 2as", note: "no t" },
+      { label: "s = ½(u+v)t",   eq: "s = ½(u+v)t",   note: "no a" }
+    ],
+    mistakes: [
+      { mistake: "Forgetting to set u = 0 for 'starts from rest'", fix: "Always read: 'starts from rest' → u = 0" }
+    ]
+  },
+  "week3": {
+    title: "Vectors & Forces",
+    icon: "📙",
+    color: "yellow",
+    formulas: [
+      { label: "Newton 2nd Law", eq: "Fnet = ma", note: "net force, not applied force" },
+      { label: "Weight", eq: "Fg = mg", note: "g = 10 m/s² (PHY001)" }
+    ],
+    mistakes: [
+      { mistake: "Drawing FBD arrows at angles for vertical problems", fix: "Normal force and Fg are always vertical (up/down only)" }
+    ]
+  }
+};
+
+// ══════════════════════════════════════════════
+// QUIZ_BANKS
+// ══════════════════════════════════════════════
+const QUIZ_BANKS = {
+  "w1": [
+    {
+      q: "How many significant figures does 0.00304 have?",
+      type: "mcq",
+      options: ["2", "3", "5", "6"],
+      correct: 1,
+      explanation: "Only 3, 0, 4 are significant. The leading zeros are not. The zero between 3 and 4 IS significant."
+    },
+    {
+      q: "The kilogram is a unit of weight.",
+      type: "tf",
+      correct: false,
+      explanation: "kg measures mass. Weight is a force — measured in Newtons (N)."
+    },
+    {
+      q: "Convert 5400 m to km. Enter the number only.",
+      type: "numeric",
+      answer: 5.4,
+      tolerance: 0.1,
+      explanation: "Divide by 1000: 5400 ÷ 1000 = 5.4 km."
+    },
+    {
+      q: "Which of these is an SI base unit?",
+      type: "mcq",
+      options: ["Newton", "Joule", "Metre", "Pascal"],
+      correct: 2,
+      explanation: "The metre (m) is one of the 7 SI base units. Newton, Joule, and Pascal are derived units."
+    },
+    {
+      q: "A measurement of 9.8 has 2 significant figures.",
+      type: "tf",
+      correct: false,
+      explanation: "9.8 has 2 significant figures: 9 and 8. So this statement is actually TRUE. (Both digits are non-zero and significant.)"
+    }
+  ],
+
+  "main": [
+    {
+      q: "What is the SI unit for force?",
+      type: "mcq",
+      options: ["Joule", "Pascal", "Newton", "Watt"],
+      correct: 2,
+      explanation: "The Newton (N) is the SI unit for force. 1 N = 1 kg·m/s²."
+    },
+    {
+      q: "Speed and velocity are the same thing.",
+      type: "tf",
+      correct: false,
+      explanation: "Speed is scalar (magnitude only). Velocity is a vector — it includes direction."
+    },
+    {
+      q: "A car accelerates from rest at 4 m/s² for 5 s. What is its final speed in m/s?",
+      type: "numeric",
+      answer: 20,
+      tolerance: 0.5,
+      explanation: "v = u + at = 0 + 4 × 5 = 20 m/s."
+    },
+    {
+      q: "Which SUVAT equation would you use if time is unknown?",
+      type: "mcq",
+      options: ["v = u + at", "s = ut + ½at²", "v² = u² + 2as", "s = ½(u+v)t"],
+      correct: 2,
+      explanation: "v² = u² + 2as does not contain t — use this when t is not given or needed."
+    },
+    {
+      q: "Newton's First Law applies only to objects that are moving.",
+      type: "tf",
+      correct: false,
+      explanation: "Newton's First Law applies to objects at rest AND in uniform motion. Both cases require zero net force."
+    }
+  ]
+};
+
+// ══════════════════════════════════════════════
+// TOGGLE ENGINE
+// ══════════════════════════════════════════════
+function toggleCard(id) {
+  const el = document.getElementById(id);
+  if (el) el.classList.toggle('open');
+}
+
+function openCard(id) {
+  const el = document.getElementById(id);
+  if (el) el.classList.add('open');
+}
+
+function toggleSubcard(id) {
+  const el = document.getElementById(id);
+  if (el) el.classList.toggle('open');
+}
+
+function toggleStaged(id) {
+  const el = document.getElementById(id);
+  if (el) el.classList.toggle('open');
+}
+
+function toggleHint(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.style.display = (el.style.display === 'none' || el.style.display === '') ? 'block' : 'none';
+}
+
+// ══════════════════════════════════════════════
+// MODE TOGGLE
+// ══════════════════════════════════════════════
+const modeToggle = document.getElementById('modeToggle');
+const modeLabel  = document.getElementById('mode-label');
+const modePill   = document.getElementById('modePill');
+const modeToggleLeft = document.getElementById('modeToggleLeft');
+let teacherMode = false;
+
+modeToggle.addEventListener('click', () => {
+  teacherMode = !teacherMode;
+  document.body.classList.toggle('teacher-mode', teacherMode);
+  if (teacherMode) {
+    modeLabel.textContent  = 'Teacher Mode';
+    modePill.textContent   = 'Student';
+    modeToggleLeft.textContent = 'Switch to';
+    modeLabel.style.color = 'var(--teacher)';
+  } else {
+    modeLabel.textContent  = 'Student Mode';
+    modePill.textContent   = 'Teacher';
+    modeToggleLeft.textContent = 'Switch to';
+    modeLabel.style.color = 'var(--text-muted)';
+  }
+});
+
+// ══════════════════════════════════════════════
+// MCQ ENGINE — auto-bind all .mcq-options
+// ══════════════════════════════════════════════
+function initMCQs() {
+  document.querySelectorAll('.mcq-options').forEach(container => {
+    const correct     = container.dataset.correct;
+    const explanation = container.dataset.explanation;
+    const options     = container.querySelectorAll('.mcq-option');
+    const qItem       = container.closest('.q-item');
+    const fbId        = qItem ? qItem.id + '-fb' : null;
+
+    options.forEach(opt => {
+      opt.addEventListener('click', () => {
+        // Already answered
+        if (container.dataset.answered) return;
+        container.dataset.answered = 'true';
+
+        const chosen = opt.dataset.val;
+        options.forEach(o => o.classList.add('disabled'));
+
+        if (chosen === correct) {
+          opt.classList.remove('selected');
+          opt.classList.add('correct');
+          showFeedback(fbId, true, '✓ Correct! ' + explanation);
+        } else {
+          opt.classList.remove('selected');
+          opt.classList.add('wrong');
+          // highlight correct
+          options.forEach(o => { if (o.dataset.val === correct) o.classList.add('correct'); });
+          showFeedback(fbId, false, '✗ Not quite. ' + explanation);
+        }
+      });
+
+      opt.addEventListener('mouseenter', () => {
+        if (!container.dataset.answered) opt.classList.add('selected');
+      });
+      opt.addEventListener('mouseleave', () => {
+        if (!container.dataset.answered) opt.classList.remove('selected');
+      });
+    });
+  });
+}
+
+// ══════════════════════════════════════════════
+// TRUE / FALSE ENGINE
+// ══════════════════════════════════════════════
+function checkTF(qId, isTrue, clickedBtn, explanation) {
+  const qItem   = document.getElementById(qId);
+  const fbId    = qId + '-fb';
+  const buttons = qItem.querySelectorAll('.tf-btn');
+  const correct = isTrue;
+
+  buttons.forEach(b => b.classList.add('disabled'));
+
+  const userSaysTrue = clickedBtn.textContent === 'True';
+  const isCorrect    = (userSaysTrue === correct);
+
+  if (isCorrect) {
+    clickedBtn.classList.remove('disabled');
+    clickedBtn.classList.add('correct');
+    showFeedback(fbId, true, '✓ Correct! ' + explanation);
+  } else {
+    clickedBtn.classList.add('wrong');
+    // show correct answer
+    buttons.forEach(b => {
+      if ((b.textContent === 'True') === correct) b.classList.add('correct');
+    });
+    showFeedback(fbId, false, '✗ Incorrect. ' + explanation);
+  }
+}
+
+// ══════════════════════════════════════════════
+// NUMERIC ENGINE
+// ══════════════════════════════════════════════
+function checkNumeric(baseId, correctAnswer, tolerance) {
+  const input = document.getElementById(baseId + '-input');
+  const fbId  = baseId + '-fb';
+  const val   = parseFloat(input.value);
+
+  if (isNaN(val)) {
+    showFeedback(fbId, false, '✗ Please enter a number.');
+    return;
+  }
+
+  if (Math.abs(val - correctAnswer) <= tolerance) {
+    showFeedback(fbId, true, '✓ Correct! The answer is ' + correctAnswer + '.');
+    input.style.borderColor = 'var(--green)';
+  } else {
+    showFeedback(fbId, false, '✗ Not quite. The correct answer is ' + correctAnswer + '.');
+    input.style.borderColor = 'var(--red)';
+  }
+}
+
+function showFeedback(id, isCorrect, msg) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.className = 'feedback ' + (isCorrect ? 'correct' : 'wrong');
+  el.innerHTML = msg;
+}
+
+// ══════════════════════════════════════════════
+// MINI QUIZ ENGINE
+// ══════════════════════════════════════════════
+const quizStates = {};
+
+function renderQuiz(containerId, bankKey) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  const questions = QUIZ_BANKS[bankKey];
+  if (!questions || questions.length === 0) {
+    container.innerHTML = '<p class="small">No questions loaded for this bank.</p>';
+    return;
+  }
+
+  const state = {
+    current: 0,
+    score: 0,
+    answered: new Array(questions.length).fill(null),
+    total: questions.length
+  };
+  quizStates[containerId] = state;
+
+  container.innerHTML = buildQuizHTML(containerId, questions, state);
+  bindQuizEvents(containerId, questions, state);
+}
+
+function buildQuizHTML(cid, questions, state) {
+  const q = questions[state.current];
+  const pct = Math.round((state.current / state.total) * 100);
+
+  let optionsHTML = '';
+  if (q.type === 'mcq') {
+    optionsHTML = `<div class="mcq-options quiz-mcq" data-cid="${cid}">
+      ${q.options.map((o, i) => `<div class="mcq-option" data-val="${i}"><span class="opt-letter">${String.fromCharCode(65+i)}</span> ${o}</div>`).join('')}
+    </div>`;
+  } else if (q.type === 'tf') {
+    optionsHTML = `<div class="tf-buttons quiz-tf" data-cid="${cid}">
+      <button class="tf-btn" data-val="true">True</button>
+      <button class="tf-btn" data-val="false">False</button>
+    </div>`;
+  } else if (q.type === 'numeric') {
+    optionsHTML = `<div class="num-input-row quiz-num" data-cid="${cid}">
+      <input type="number" class="num-input" id="${cid}-num-input" placeholder="Your answer...">
+      <button class="check-btn" data-cid="${cid}">Check</button>
+    </div>`;
+  }
+
+  return `
+    <div class="quiz-wrapper">
+      <div class="quiz-progress-bar">
+        <div class="quiz-progress-fill" style="width:${pct}%" id="${cid}-progress"></div>
+      </div>
+      <div class="quiz-question-area" id="${cid}-q-area">
+        <div class="quiz-counter">Question ${state.current + 1} of ${state.total}</div>
+        <div class="q-text" style="margin-bottom:12px">${q.q}</div>
+        ${optionsHTML}
+        <div class="feedback" id="${cid}-fb"></div>
+      </div>
+      <div class="quiz-score-display" id="${cid}-score"></div>
+      <div class="quiz-nav" id="${cid}-nav">
+        <span class="small">Score: <strong id="${cid}-score-live">0</strong>/${state.total}</span>
+        <button class="btn-primary" id="${cid}-next-btn" disabled>Next →</button>
+      </div>
+    </div>`;
+}
+
+function bindQuizEvents(cid, questions, state) {
+  const container = document.getElementById(cid);
+
+  function refresh() {
+    container.innerHTML = buildQuizHTML(cid, questions, state);
+    bindQuizEvents(cid, questions, state);
+  }
+
+  // MCQ
+  container.querySelectorAll('.quiz-mcq .mcq-option').forEach(opt => {
+    opt.addEventListener('click', () => {
+      if (state.answered[state.current] !== null) return;
+      const chosen = parseInt(opt.dataset.val);
+      const correct = questions[state.current].correct;
+      const isRight = chosen === correct;
+      state.answered[state.current] = isRight;
+      if (isRight) state.score++;
+      document.getElementById(cid + '-score-live').textContent = state.score;
+
+      container.querySelectorAll('.quiz-mcq .mcq-option').forEach((o, i) => {
+        o.classList.add('disabled');
+        if (i === correct) o.classList.add('correct');
+        if (o === opt && !isRight) o.classList.add('wrong');
+      });
+
+      const fb = document.getElementById(cid + '-fb');
+      if (fb) {
+        fb.className = 'feedback ' + (isRight ? 'correct' : 'wrong');
+        fb.innerHTML = (isRight ? '✓ Correct! ' : '✗ Incorrect. ') + questions[state.current].explanation;
+      }
+
+      const nextBtn = document.getElementById(cid + '-next-btn');
+      if (nextBtn) nextBtn.disabled = false;
+    });
+  });
+
+  // TF
+  container.querySelectorAll('.quiz-tf .tf-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (state.answered[state.current] !== null) return;
+      const userVal = btn.dataset.val === 'true';
+      const correct = questions[state.current].correct;
+      const isRight = userVal === correct;
+      state.answered[state.current] = isRight;
+      if (isRight) state.score++;
+      document.getElementById(cid + '-score-live').textContent = state.score;
+
+      container.querySelectorAll('.quiz-tf .tf-btn').forEach(b => {
+        b.classList.add('disabled');
+        const bVal = b.dataset.val === 'true';
+        if (bVal === correct) b.classList.add('correct');
+        if (b === btn && !isRight) b.classList.add('wrong');
+      });
+
+      const fb = document.getElementById(cid + '-fb');
+      if (fb) {
+        fb.className = 'feedback ' + (isRight ? 'correct' : 'wrong');
+        fb.innerHTML = (isRight ? '✓ Correct! ' : '✗ Incorrect. ') + questions[state.current].explanation;
+      }
+      const nextBtn = document.getElementById(cid + '-next-btn');
+      if (nextBtn) nextBtn.disabled = false;
+    });
+  });
+
+  // Numeric
+  const numBtn = container.querySelector('.quiz-num .check-btn');
+  if (numBtn) {
+    numBtn.addEventListener('click', () => {
+      if (state.answered[state.current] !== null) return;
+      const input = document.getElementById(cid + '-num-input');
+      const val   = parseFloat(input.value);
+      const q     = questions[state.current];
+      const tolerance = q.tolerance || 0.01;
+      const isRight   = !isNaN(val) && Math.abs(val - q.answer) <= tolerance;
+      state.answered[state.current] = isRight;
+      if (isRight) state.score++;
+      document.getElementById(cid + '-score-live').textContent = state.score;
+      input.style.borderColor = isRight ? 'var(--green)' : 'var(--red)';
+      numBtn.disabled = true;
+
+      const fb = document.getElementById(cid + '-fb');
+      if (fb) {
+        fb.className = 'feedback ' + (isRight ? 'correct' : 'wrong');
+        fb.innerHTML = (isRight ? '✓ Correct! ' : '✗ Incorrect. Answer: ' + q.answer + '. ') + q.explanation;
+      }
+      const nextBtn = document.getElementById(cid + '-next-btn');
+      if (nextBtn) nextBtn.disabled = false;
+    });
+  }
+
+  // Next button
+  const nextBtn = document.getElementById(cid + '-next-btn');
+  if (nextBtn) {
+    nextBtn.addEventListener('click', () => {
+      state.current++;
+      if (state.current >= state.total) {
+        showQuizResult(cid, state);
+      } else {
+        refresh();
+      }
+    });
+  }
+}
+
+function showQuizResult(cid, state) {
+  const container = document.getElementById(cid);
+  const pct = Math.round((state.score / state.total) * 100);
+  let msg = '';
+  let msgClass = '';
+  if (pct >= 80) { msg = 'Great work! You\'ve got a solid grip on this topic.'; msgClass = 'correct'; }
+  else if (pct >= 50) { msg = 'Good effort. Review the questions you missed.'; msgClass = 'feedback'; msgClass = ''; }
+  else { msg = 'Keep studying — revisit the Concept Summary and try again.'; msgClass = 'wrong'; }
+
+  container.innerHTML = `
+    <div class="quiz-wrapper">
+      <div class="quiz-progress-bar"><div class="quiz-progress-fill" style="width:100%"></div></div>
+      <div class="quiz-score-display" style="display:block">
+        <div class="score-label">Your Score</div>
+        <div class="score-big">${state.score} / ${state.total}</div>
+        <div class="score-label">${pct}%</div>
+        <div class="score-feedback" style="background:${pct>=80?'var(--green-bg)':pct>=50?'var(--yellow-bg)':'var(--red-bg)'}; color:${pct>=80?'var(--green)':pct>=50?'var(--yellow)':'var(--red)'}">
+          ${msg}
+        </div>
+      </div>
+      <div class="quiz-nav">
+        <span class="small">Quiz complete</span>
+        <button class="btn-primary" onclick="renderQuiz('${cid}', '${state.bankKey || 'main'}')">Retry ↺</button>
+      </div>
+    </div>`;
+}
+
+// ══════════════════════════════════════════════
+// NAV ACTIVE LINK
+// ══════════════════════════════════════════════
+function updateActiveNav() {
+  const sections = ['home','week1','week2','week3','sims','quickquiz','teacherpanel','template'];
+  const links = document.querySelectorAll('#sidenav .nav-link');
+  let active = 'home';
+
+  sections.forEach(id => {
+    const el = document.getElementById(id);
+    if (el && el.getBoundingClientRect().top <= 80) active = id;
+  });
+
+  links.forEach(a => {
+    a.classList.toggle('active', a.getAttribute('href') === '#' + active);
+  });
+}
+
+window.addEventListener('scroll', updateActiveNav, { passive: true });
+
+// ══════════════════════════════════════════════
+// COPY CODE BUTTON
+// ══════════════════════════════════════════════
+function copyCode(preId) {
+  const pre = document.getElementById(preId);
+  if (!pre) return;
+  const text = pre.innerText.replace(/^copy\s*/, '');
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = pre.querySelector('.copy-btn');
+    if (btn) { btn.textContent = 'copied!'; setTimeout(() => btn.textContent = 'copy', 2000); }
+  });
+}
+
+// ══════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+  initMCQs();
+
+  // Render quizzes
+  renderQuiz('quiz-w1', 'w1');
+  renderQuiz('quiz-main', 'main');
+
+  // Store bank keys for retry
+  quizStates['quiz-w1'] && (quizStates['quiz-w1'].bankKey = 'w1');
+  quizStates['quiz-main'] && (quizStates['quiz-main'].bankKey = 'main');
+});
+
+</script>
+</body>
+</html>

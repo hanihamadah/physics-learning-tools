@@ -1,0 +1,530 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Atwood System: Table and Pulley</title>
+  <style>
+    :root {
+      --ink: #1f2933;
+      --muted: #65758b;
+      --line: #c8d1dc;
+      --panel: #f7f9fb;
+      --blue: #245b91;
+      --red: #b6413f;
+      --green: #24745c;
+      --amber: #a86618;
+      --table: #dfe7ef;
+      --block: #7aa6c8;
+      --mass: #d28b73;
+      --shadow: 0 10px 28px rgba(31, 41, 51, 0.12);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: #ffffff;
+      font-family: Georgia, "Times New Roman", serif;
+    }
+
+    main {
+      min-height: 100vh;
+      padding: 22px;
+      display: grid;
+      gap: 18px;
+      grid-template-columns: minmax(360px, 1fr) 360px;
+      grid-template-rows: auto 1fr;
+    }
+
+    header {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 18px;
+      border-bottom: 2px solid var(--ink);
+      padding-bottom: 14px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.7rem, 3vw, 3rem);
+      letter-spacing: 0;
+      line-height: 1;
+    }
+
+    .subtitle {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 1rem;
+      max-width: 760px;
+    }
+
+    .sim-area, .side-panel, .readout, .explain {
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    .sim-area {
+      padding: 14px;
+      min-height: 560px;
+      display: grid;
+      grid-template-rows: 1fr auto;
+      gap: 12px;
+    }
+
+    canvas {
+      width: 100%;
+      min-height: 460px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: linear-gradient(#ffffff 0%, #ffffff 72%, #f6f8fa 72%);
+      display: block;
+    }
+
+    .transport {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    button, .choice {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+      border-radius: 6px;
+      padding: 10px 12px;
+      font: 700 0.95rem Georgia, "Times New Roman", serif;
+      cursor: pointer;
+      transition: transform 120ms ease, border-color 120ms ease, background 120ms ease;
+    }
+
+    button:hover, .choice:hover { transform: translateY(-1px); border-color: var(--blue); }
+    button.active, .choice.active { background: var(--blue); border-color: var(--blue); color: #fff; }
+
+    .side-panel {
+      padding: 16px;
+      display: grid;
+      gap: 16px;
+      align-content: start;
+    }
+
+    .control-group h2, .readout h2, .explain h2 {
+      margin: 0 0 10px;
+      font-size: 1.08rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .choices {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .friction .choices { grid-template-columns: 1fr; }
+
+    .readout, .explain {
+      padding: 16px;
+      grid-column: span 1;
+    }
+
+    .values {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px 14px;
+      font-size: 1.02rem;
+    }
+
+    .metric {
+      border-bottom: 1px solid #e7ecf1;
+      padding-bottom: 6px;
+    }
+
+    .metric strong {
+      display: block;
+      color: var(--muted);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .state {
+      padding: 10px 12px;
+      border-radius: 6px;
+      background: #eef4fa;
+      color: var(--blue);
+      font-weight: 700;
+    }
+
+    .explain p {
+      margin: 0;
+      font-size: 1.05rem;
+      line-height: 1.45;
+    }
+
+    .small {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 980px) {
+      main { grid-template-columns: 1fr; }
+      header { align-items: start; flex-direction: column; }
+      .sim-area { min-height: auto; }
+      canvas { min-height: 360px; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <div>
+        <h1>Atwood System: Table and Pulley</h1>
+        <p class="subtitle">Grade 12 physics simulation for acceleration, constant velocity, and static friction in a connected two-mass system.</p>
+      </div>
+      <div class="state" id="motionState">Accelerating</div>
+    </header>
+
+    <section class="sim-area" aria-label="Physics animation">
+      <canvas id="simCanvas" width="1100" height="640"></canvas>
+      <div class="transport">
+        <div>
+          <button id="playPause" class="active" type="button">Pause</button>
+          <button id="reset" type="button">Reset</button>
+          <button id="slowMo" type="button">Slow motion</button>
+        </div>
+        <span class="small">g = 10 m/s². String and pulley are treated as light and ideal.</span>
+      </div>
+    </section>
+
+    <aside class="side-panel" aria-label="Simulation controls">
+      <section class="control-group">
+        <h2>Hanging mass m1</h2>
+        <div class="choices" id="m1Choices"></div>
+      </section>
+
+      <section class="control-group">
+        <h2>Table mass m2</h2>
+        <div class="choices" id="m2Choices"></div>
+      </section>
+
+      <section class="control-group friction">
+        <h2>Table condition</h2>
+        <div class="choices" id="frictionChoices"></div>
+      </section>
+    </aside>
+
+    <section class="readout" aria-label="Live values">
+      <h2>Live Calculations</h2>
+      <div class="values" id="values"></div>
+    </section>
+
+    <section class="explain" aria-label="Learning explanation">
+      <h2>Physics Note</h2>
+      <p id="explanation"></p>
+    </section>
+  </main>
+
+  <script>
+    // Edit these arrays to change the mass presets shown as toggle buttons.
+    const massPresetsM1 = [1, 2, 5];
+    const massPresetsM2 = [2, 5, 10];
+
+    // Edit these presets to tune the friction teaching cases.
+    // balanced uses kinetic friction equal to m1*g for the selected masses.
+    const frictionModes = [
+      { id: "frictionless", label: "Frictionless", muS: 0, muK: 0, behavior: "moving" },
+      { id: "low", label: "Rough: low friction", muS: 0.18, muK: 0.12, behavior: "moving" },
+      { id: "balanced", label: "Rough: balanced", muS: 0.5, muK: "balanced", behavior: "constant" },
+      { id: "high", label: "Rough: high static friction", muS: 1.25, muK: 0.8, behavior: "static" }
+    ];
+
+    const g = 10;
+    const canvas = document.getElementById("simCanvas");
+    const ctx = canvas.getContext("2d");
+    const ui = {
+      m1Choices: document.getElementById("m1Choices"),
+      m2Choices: document.getElementById("m2Choices"),
+      frictionChoices: document.getElementById("frictionChoices"),
+      values: document.getElementById("values"),
+      explanation: document.getElementById("explanation"),
+      motionState: document.getElementById("motionState"),
+      playPause: document.getElementById("playPause"),
+      reset: document.getElementById("reset"),
+      slowMo: document.getElementById("slowMo")
+    };
+
+    const state = {
+      m1: 2,
+      m2: 5,
+      mode: frictionModes[0],
+      playing: true,
+      slow: false,
+      x: 0,
+      v: 0.6,
+      last: 0
+    };
+
+    function makeButtons(target, values, key, formatter) {
+      target.innerHTML = "";
+      values.forEach(value => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.textContent = formatter(value);
+        button.className = state[key] === value ? "active" : "";
+        button.addEventListener("click", () => {
+          state[key] = value;
+          resetMotion();
+          renderControls();
+        });
+        target.appendChild(button);
+      });
+    }
+
+    function renderControls() {
+      makeButtons(ui.m1Choices, massPresetsM1, "m1", value => `${value} kg`);
+      makeButtons(ui.m2Choices, massPresetsM2, "m2", value => `${value} kg`);
+      ui.frictionChoices.innerHTML = "";
+      frictionModes.forEach(mode => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.textContent = mode.label;
+        button.className = state.mode.id === mode.id ? "active" : "";
+        button.addEventListener("click", () => {
+          state.mode = mode;
+          resetMotion();
+          renderControls();
+        });
+        ui.frictionChoices.appendChild(button);
+      });
+      updateReadout();
+    }
+
+    function physics() {
+      const fg1 = state.m1 * g;
+      const fn = state.m2 * g;
+      let muK = state.mode.muK === "balanced" ? fg1 / fn : state.mode.muK;
+      let muS = Math.max(state.mode.muS, muK);
+      const fsMax = muS * fn;
+      const fk = muK * fn;
+      let net = fg1 - fk;
+      let a = net / (state.m1 + state.m2);
+      let friction = fk;
+      let label = "Accelerating";
+      let explanation = "m1 pulls harder than friction can resist. The net force is not zero, so the system accelerates.";
+
+      if (state.mode.id === "frictionless") {
+        friction = 0;
+        net = fg1;
+        a = fg1 / (state.m1 + state.m2);
+      }
+
+      if (state.mode.behavior === "constant") {
+        friction = fg1;
+        net = 0;
+        a = 0;
+        label = "Constant velocity";
+        explanation = "The forces are balanced. Net force is zero, so acceleration is zero. Because the system starts with an initial velocity, it continues at constant velocity.";
+      }
+
+      if (state.mode.behavior === "static" && fg1 <= fsMax) {
+        friction = fg1;
+        net = 0;
+        a = 0;
+        label = "At rest: static friction prevents motion";
+        explanation = "The hanging weight is not enough to overcome maximum static friction. Static friction grows to match the pull, so the system does not start moving.";
+      }
+
+      return { fg1, fn, muK, muS, fsMax, friction, net, a, label, explanation };
+    }
+
+    function resetMotion() {
+      const p = physics();
+      state.x = 0;
+      state.v = p.label === "Constant velocity" ? 1 : 0;
+      state.last = performance.now();
+      updateReadout();
+    }
+
+    function update(dt) {
+      const p = physics();
+      if (!state.playing) return;
+      const timeScale = state.slow ? 0.32 : 1;
+      const step = Math.min(dt, 0.05) * timeScale;
+      if (p.label === "At rest: static friction prevents motion") {
+        state.v = 0;
+        return;
+      }
+      state.v = Math.max(0, state.v + p.a * step);
+      state.x += state.v * step * 54;
+      if (state.x > 315) {
+        state.x = 315;
+        state.v = 0;
+      }
+    }
+
+    function drawArrow(x1, y1, x2, y2, color, label) {
+      const angle = Math.atan2(y2 - y1, x2 - x1);
+      ctx.strokeStyle = color;
+      ctx.fillStyle = color;
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x2, y2);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(x2, y2);
+      ctx.lineTo(x2 - 13 * Math.cos(angle - 0.55), y2 - 13 * Math.sin(angle - 0.55));
+      ctx.lineTo(x2 - 13 * Math.cos(angle + 0.55), y2 - 13 * Math.sin(angle + 0.55));
+      ctx.closePath();
+      ctx.fill();
+      ctx.font = "700 20px Georgia";
+      ctx.fillText(label, x2 + 8, y2 - 8);
+    }
+
+    function draw() {
+      const p = physics();
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const pulley = { x: 240, y: 250, r: 38 };
+      const tableTop = 285;
+      const tableLeft = 240;
+      const tableRight = 1015;
+      const blockW = 112;
+      const blockH = 72;
+      const blockX = 760 - state.x;
+      const blockY = tableTop - blockH;
+      const massW = 82;
+      const massH = 96;
+      const massX = pulley.x - massW / 2;
+      const massY = 333 + state.x;
+
+      ctx.fillStyle = "#dfe7ef";
+      ctx.fillRect(tableLeft, tableTop, tableRight - tableLeft, 28);
+      ctx.fillStyle = "#eef3f7";
+      ctx.fillRect(tableLeft + 28, tableTop + 28, 28, 235);
+      ctx.fillRect(tableRight - 56, tableTop + 28, 28, 235);
+      ctx.strokeStyle = "#8191a3";
+      ctx.lineWidth = 3;
+      ctx.strokeRect(tableLeft, tableTop, tableRight - tableLeft, 28);
+
+      ctx.beginPath();
+      ctx.arc(pulley.x, pulley.y, pulley.r, 0, Math.PI * 2);
+      ctx.fillStyle = "#f8fafc";
+      ctx.fill();
+      ctx.strokeStyle = "#445466";
+      ctx.lineWidth = 5;
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(pulley.x, pulley.y, 7, 0, Math.PI * 2);
+      ctx.fillStyle = "#445466";
+      ctx.fill();
+
+      ctx.strokeStyle = "#26323f";
+      ctx.lineWidth = 5;
+      ctx.beginPath();
+      ctx.moveTo(blockX, tableTop - blockH / 2);
+      ctx.lineTo(pulley.x, tableTop - blockH / 2);
+      ctx.arc(pulley.x, pulley.y, pulley.r, Math.PI / 2, Math.PI, false);
+      ctx.lineTo(pulley.x - pulley.r, massY);
+      ctx.stroke();
+
+      ctx.fillStyle = "#7aa6c8";
+      ctx.fillRect(blockX, blockY, blockW, blockH);
+      ctx.strokeStyle = "#24465e";
+      ctx.lineWidth = 3;
+      ctx.strokeRect(blockX, blockY, blockW, blockH);
+      ctx.fillStyle = "#102638";
+      ctx.font = "700 28px Georgia";
+      ctx.fillText("m2", blockX + 38, blockY + 45);
+
+      ctx.fillStyle = "#d28b73";
+      ctx.fillRect(massX, massY, massW, massH);
+      ctx.strokeStyle = "#7d4937";
+      ctx.lineWidth = 3;
+      ctx.strokeRect(massX, massY, massW, massH);
+      ctx.fillStyle = "#3b241d";
+      ctx.font = "700 28px Georgia";
+      ctx.fillText("m1", massX + 24, massY + 56);
+
+      drawArrow(massX + massW + 24, massY + 28, massX + massW + 24, massY - 48, "#245b91", "FT");
+      drawArrow(massX + massW + 24, massY + 68, massX + massW + 24, massY + 148, "#b6413f", "Fg1");
+      drawArrow(blockX + 20, blockY - 18, blockX - 82, blockY - 18, "#245b91", "FT");
+      drawArrow(blockX + blockW / 2, blockY - 4, blockX + blockW / 2, blockY - 92, "#24745c", "FN");
+      drawArrow(blockX + blockW / 2, tableTop + 8, blockX + blockW / 2, tableTop + 98, "#b6413f", "Fg2");
+
+      if (p.friction > 0) {
+        drawArrow(blockX + blockW - 12, blockY + blockH + 28, blockX + blockW + 102, blockY + blockH + 28, "#a86618", "friction");
+      }
+
+      ctx.fillStyle = "#1f2933";
+      ctx.font = "700 22px Georgia";
+      ctx.fillText(`v = ${state.v.toFixed(2)} m/s`, 42, 62);
+      ctx.fillText(`a = ${p.a.toFixed(2)} m/s²`, 42, 96);
+      ctx.fillText(p.label, 42, 130);
+
+      if (state.x >= 315) {
+        ctx.fillStyle = "#b6413f";
+        ctx.font = "700 20px Georgia";
+        ctx.fillText("Lower boundary reached: motion stopped.", 42, 166);
+      }
+    }
+
+    function updateReadout() {
+      const p = physics();
+      ui.motionState.textContent = p.label;
+      ui.explanation.textContent = p.explanation;
+      const coefficient = state.mode.id === "frictionless"
+        ? "0"
+        : `μs ${p.muS.toFixed(2)}, μk ${p.muK.toFixed(2)}`;
+      const rows = [
+        ["m1", `${state.m1} kg`],
+        ["m2", `${state.m2} kg`],
+        ["Coefficient", coefficient],
+        ["Fg on m1", `${p.fg1.toFixed(1)} N`],
+        ["FN on m2", `${p.fn.toFixed(1)} N`],
+        ["Friction force", `${p.friction.toFixed(1)} N`],
+        ["Net force", `${p.net.toFixed(1)} N`],
+        ["Acceleration", `${p.a.toFixed(2)} m/s²`],
+        ["Velocity", `${state.v.toFixed(2)} m/s`],
+        ["Motion state", p.label]
+      ];
+      ui.values.innerHTML = rows.map(([name, value]) => (
+        `<div class="metric"><strong>${name}</strong>${value}</div>`
+      )).join("");
+    }
+
+    function frame(now) {
+      const dt = (now - state.last) / 1000 || 0;
+      state.last = now;
+      update(dt);
+      draw();
+      updateReadout();
+      requestAnimationFrame(frame);
+    }
+
+    ui.playPause.addEventListener("click", () => {
+      state.playing = !state.playing;
+      ui.playPause.textContent = state.playing ? "Pause" : "Play";
+      ui.playPause.classList.toggle("active", state.playing);
+    });
+
+    ui.reset.addEventListener("click", resetMotion);
+    ui.slowMo.addEventListener("click", () => {
+      state.slow = !state.slow;
+      ui.slowMo.classList.toggle("active", state.slow);
+    });
+
+    renderControls();
+    resetMotion();
+    requestAnimationFrame(frame);
+  </script>
+</body>
+</html>

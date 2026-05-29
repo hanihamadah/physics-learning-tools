@@ -1,0 +1,2557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>Final Exam Mastery Trainer — Grade 12 Physics</title>
+<style>
+:root{
+  --claret:#7B1034; --crimson:#DC143C; --med-blue:#0047AB; --yale:#00356B;
+  --indigo:#4B0082; --ink:#111111; --line:#222222; --soft:#f5f5f5;
+  --ok:#0a7c3a; --warn:#a83232;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0;background:#ffffff;color:var(--ink);
+  font-family:"Segoe UI","Helvetica Neue",Arial,sans-serif;line-height:1.45;}
+.container{max-width:880px;margin:0 auto;padding:14px 16px 110px;}
+header.app-bar{position:sticky;top:0;background:#fff;border-bottom:2px solid var(--claret);
+  z-index:50;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;}
+header.app-bar h1{font-size:1.05rem;margin:0;color:var(--claret);}
+header.app-bar .sub{font-size:.75rem;color:#666;}
+button{font-family:inherit;cursor:pointer;border:none;}
+.btn{background:var(--med-blue);color:#fff;padding:12px 16px;border-radius:10px;
+  font-weight:600;font-size:1rem;min-height:48px;width:100%;margin-top:8px;}
+.btn:hover{background:var(--yale);}
+.btn.secondary{background:#fff;color:var(--med-blue);border:2px solid var(--med-blue);}
+.btn.secondary:hover{background:#eef3fb;}
+.btn.danger{background:#fff;color:var(--warn);border:2px solid var(--warn);}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid #ccc;}
+.btn.small{padding:8px 12px;font-size:.85rem;min-height:36px;width:auto;}
+.btn:disabled{opacity:.5;cursor:not-allowed;}
+.card{background:#fff;border:1px solid #e3e3e3;border-radius:14px;padding:16px;
+  margin:12px 0;box-shadow:0 1px 3px rgba(0,0,0,0.04);}
+.card.accent{border-left:5px solid var(--claret);}
+h2{color:var(--claret);font-size:1.15rem;margin:0 0 10px;}
+h3{color:var(--yale);font-size:1rem;margin:8px 0;}
+.muted{color:#666;font-size:.85rem;}
+.tag{display:inline-block;padding:2px 8px;border-radius:999px;font-size:.7rem;
+  background:#eef0f4;color:var(--yale);margin-right:6px;font-weight:600;}
+.tag.weak{background:#fdecec;color:var(--warn);}
+.tag.ok{background:#e6f3ec;color:var(--ok);}
+.tag.indigo{background:#ece5f3;color:var(--indigo);}
+.tag.weight20{background:#fff3e6;color:#a05a00;}
+.tag.weight30{background:#eaf3ff;color:var(--med-blue);}
+.tag.weight50{background:#fde6ec;color:var(--claret);}
+.skill-grid{display:grid;grid-template-columns:1fr;gap:10px;}
+@media(min-width:560px){.skill-grid{grid-template-columns:1fr 1fr;}}
+.skill-tile{border:1px solid #e3e3e3;border-radius:12px;padding:14px;background:#fff;
+  display:flex;flex-direction:column;gap:6px;}
+.skill-tile h4{margin:0;color:var(--yale);font-size:.95rem;}
+.skill-tile .progress-bar{height:6px;background:#eee;border-radius:3px;overflow:hidden;}
+.skill-tile .progress-bar > div{height:100%;background:var(--med-blue);transition:width .3s;}
+.q-text{font-size:1rem;margin:8px 0 12px;}
+.choices{display:flex;flex-direction:column;gap:8px;margin-top:8px;}
+.choice{border:2px solid #d8d8d8;background:#fff;border-radius:10px;padding:12px 14px;
+  text-align:left;font-size:.95rem;color:var(--ink);transition:all .15s;}
+.choice:hover{border-color:var(--med-blue);}
+.choice.selected{border-color:var(--med-blue);background:#eef3fb;}
+.choice.correct{border-color:var(--ok);background:#e6f3ec;}
+.choice.incorrect{border-color:var(--warn);background:#fdecec;}
+.choice:disabled{cursor:default;}
+input[type="number"], input[type="text"]{
+  width:100%;font-size:1.05rem;padding:12px 14px;border:2px solid #d8d8d8;
+  border-radius:10px;font-family:inherit;}
+input[type="number"]:focus, input[type="text"]:focus{outline:none;border-color:var(--med-blue);}
+.unit-hint{display:block;color:#666;font-size:.78rem;margin-top:4px;}
+.feedback{margin-top:12px;padding:12px;border-radius:10px;font-size:.92rem;line-height:1.5;}
+.feedback.correct{background:#e6f3ec;border-left:4px solid var(--ok);color:var(--ok);}
+.feedback.incorrect{background:#fdecec;border-left:4px solid var(--warn);color:var(--warn);}
+.feedback.hint{background:#f6f0ff;border-left:4px solid var(--indigo);color:var(--indigo);}
+.feedback.solution{background:#eef0f4;border-left:4px solid var(--yale);color:var(--ink);}
+.solution-block{font-family:"Consolas","Monaco",monospace;font-size:.88rem;
+  background:#fafafa;padding:10px;border-radius:6px;margin-top:8px;white-space:pre-wrap;}
+.streak{display:inline-flex;align-items:center;gap:4px;color:var(--crimson);font-size:.8rem;}
+.qnav{display:flex;justify-content:space-between;align-items:center;margin:6px 0;}
+.qnav .meta{font-size:.78rem;color:#666;}
+.mode-pill{display:inline-block;font-size:.7rem;font-weight:700;padding:3px 9px;border-radius:999px;
+  text-transform:uppercase;letter-spacing:.5px;}
+.mode-pill.diagnostic{background:var(--claret);color:#fff;}
+.mode-pill.mastery{background:var(--med-blue);color:#fff;}
+.mode-pill.mixed{background:var(--indigo);color:#fff;}
+.stats-row{display:flex;gap:8px;flex-wrap:wrap;}
+.stat{flex:1;min-width:120px;border:1px solid #e3e3e3;border-radius:10px;padding:10px;text-align:center;}
+.stat .val{font-size:1.3rem;font-weight:700;color:var(--claret);}
+.stat .lbl{font-size:.72rem;color:#666;text-transform:uppercase;letter-spacing:.3px;}
+.mastery-bar{height:8px;background:#eee;border-radius:4px;overflow:hidden;margin-top:6px;}
+.mastery-bar > div{height:100%;background:linear-gradient(90deg,var(--med-blue),var(--claret));transition:width .4s;}
+.weighted-bar{height:14px;background:#eee;border-radius:7px;overflow:hidden;display:flex;margin-top:8px;}
+.weighted-bar .seg{height:100%;display:flex;align-items:center;justify-content:center;font-size:.7rem;color:#fff;font-weight:700;}
+.weighted-bar .seg.forces{background:#a05a00;}
+.weighted-bar .seg.we{background:var(--med-blue);}
+.weighted-bar .seg.mom{background:var(--claret);}
+.level-Beginner{color:#a83232;}
+.level-Developing{color:#b86c00;}
+.level-Almost{color:var(--med-blue);}
+.level-Mastered{color:var(--ok);}
+.hidden{display:none !important;}
+.footer-bar{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #e3e3e3;
+  padding:10px 16px;display:flex;justify-content:space-between;gap:8px;max-width:880px;margin:0 auto;}
+.footer-bar .btn{margin-top:0;}
+.divider{height:1px;background:#e3e3e3;margin:14px 0;}
+.preview-section{background:#fffdf0;border:2px dashed var(--indigo);border-radius:10px;padding:12px;margin:10px 0;}
+.preview-section h4{margin:0 0 6px;color:var(--indigo);}
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--ink);
+  color:#fff;padding:10px 16px;border-radius:24px;font-size:.85rem;z-index:100;opacity:0;
+  transition:opacity .3s;}
+.toast.show{opacity:1;}
+.weight-banner{background:linear-gradient(135deg,#7B1034 0%,#4B0082 100%);color:#fff;padding:10px 14px;border-radius:10px;margin-bottom:10px;font-size:.85rem;}
+.weight-banner strong{color:#fff;}
+@media(max-width:480px){
+  .container{padding:10px 12px 100px;}
+  h2{font-size:1.05rem;}
+  .stat .val{font-size:1.1rem;}
+}
+</style>
+</head>
+<body>
+
+<header class="app-bar">
+  <div>
+    <h1>Final Exam Mastery Trainer</h1>
+    <div class="sub">Grade 12 Physics • Weighted: F 20% &middot; W&amp;E 30% &middot; Momentum 50%</div>
+  </div>
+  <button class="btn small ghost" id="btnHome" title="Dashboard">&#8962;</button>
+</header>
+
+<div class="container">
+  <div id="screen"></div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+/* ============================================================================
+   CONFIG — Teacher-editable
+============================================================================ */
+const CONFIG = {
+  diagnosticConceptPerUnit:  { forces: 2, work_energy: 3, momentum: 5 },
+  diagnosticProblemPerUnit:  { forces: 2, work_energy: 3, momentum: 5 },
+  masteryQuestionsPerUnit:   { forces: 6, work_energy: 8, momentum: 10 },
+  mixedReviewQuestions: 10,
+  masteryThreshold: 85,
+  numericTolerancePercent: 2.5,
+  numericToleranceAbsolute: 0.05,
+  feedbackDelayMs: 1000,
+  attemptsBeforeFullSolution: 2,
+  weakSubSkillMultiplier: 2.5,
+  noRepeatWindow: 3,
+  showTeacherPreview: false,
+  enableMixedReview: true,
+  enableResetButton: true,
+  storageKey: "amk_final_exam_weighted_trainer_v1",
+  g: 10,
+  unitWeights: { forces: 0.20, work_energy: 0.30, momentum: 0.50 }
+};
+
+/* ============================================================================
+   UNITS (weighted) — these replace the SKILLS registry as the top-level grouping
+============================================================================ */
+const UNITS = [
+  { id:"forces",      name:"1. Forces",                                blurb:"F<sub>net</sub> = ma, balanced/unbalanced, equilibrium, simple FBD, F<sub>g</sub> = mg.", weight:0.20 },
+  { id:"work_energy", name:"2. Work and Energy",                       blurb:"W = Fd&middot;cos&theta;, KE = &frac12;mv&sup2;, PE<sub>g</sub> = mgh, W<sub>net</sub> = &Delta;KE, conservation of ME.", weight:0.30 },
+  { id:"momentum",    name:"3. Momentum, Impulse &amp; Conservation",  blurb:"p = mv, J = F&Delta;t = &Delta;p, stop vs bounce, conservation, perfectly inelastic, recoil.", weight:0.50 },
+  { id:"mixed_review",name:"4. Weighted Mixed Review (2:3:5)",         blurb:"Adaptive review that follows exam weighting: 2 Forces, 3 W&amp;E, 5 Momentum per 10-question round.", weight:0 }
+];
+
+// Backwards-compat SKILLS alias so template engine code referring to SKILLS keeps working
+const SKILLS = UNITS;
+
+/* ============================================================================
+   STATE
+============================================================================ */
+let state = {
+  skillProgress: {},
+  subSkillStats: {},
+  recentQuestions: [],
+  currentSession: null,
+  schemaVersion: 1
+};
+
+/* ============================================================================
+   STORAGE
+============================================================================ */
+function saveState(){
+  try{ localStorage.setItem(CONFIG.storageKey, JSON.stringify(state)); }
+  catch(e){}
+}
+function loadState(){
+  try{
+    const raw = localStorage.getItem(CONFIG.storageKey);
+    if(raw){
+      const parsed = JSON.parse(raw);
+      if(parsed && parsed.schemaVersion === 1){ state = parsed; }
+    }
+  }catch(e){}
+  UNITS.forEach(s=>{
+    if(!state.skillProgress[s.id]){
+      state.skillProgress[s.id] = {
+        diagDone:false, diagAttempts:0, diagCorrect:0,
+        masteryAttempts:0, masteryCorrect:0,
+        weakSubSkills:[], strongSubSkills:[],
+        lastPracticed:null
+      };
+    }
+  });
+}
+function resetProgress(){
+  if(!confirm("Reset all your progress? This cannot be undone."))return;
+  try{ localStorage.removeItem(CONFIG.storageKey); }catch(e){}
+  state = { skillProgress:{}, subSkillStats:{}, recentQuestions:[], currentSession:null, schemaVersion:1 };
+  loadState();
+  renderDashboard();
+  toast("Progress reset.");
+}
+
+/* ============================================================================
+   UTILITIES
+============================================================================ */
+const rand    = (min, max) => Math.random()*(max-min)+min;
+const randInt = (min, max) => Math.floor(rand(min, max+1));
+const choice  = arr => arr[Math.floor(Math.random()*arr.length)];
+const round   = (x, d=2) => Math.round(x*Math.pow(10,d))/Math.pow(10,d);
+const shuffle = arr => { for(let i=arr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]]; } return arr; };
+
+function toast(msg){
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  setTimeout(()=>t.classList.remove("show"), 1800);
+}
+
+function masteryLevel(acc){
+  if(acc >= CONFIG.masteryThreshold) return "Mastered";
+  if(acc >= 70) return "Almost";
+  if(acc >= 50) return "Developing";
+  return "Beginner";
+}
+
+function skillAccuracy(unitId){
+  const p = state.skillProgress[unitId];
+  if(!p) return 0;
+  const total = p.diagAttempts + p.masteryAttempts;
+  const right = p.diagCorrect + p.masteryCorrect;
+  return total === 0 ? 0 : Math.round((right/total)*100);
+}
+
+function recordSubSkillResult(subSkill, correct){
+  if(!state.subSkillStats[subSkill]) state.subSkillStats[subSkill] = { attempts:0, correct:0, missCount:0 };
+  state.subSkillStats[subSkill].attempts++;
+  if(correct) state.subSkillStats[subSkill].correct++;
+  else state.subSkillStats[subSkill].missCount++;
+}
+
+function fingerprint(q){
+  return `${q.templateId}|${JSON.stringify(q.given||{})}`;
+}
+function avoidRepeat(q){
+  return !state.recentQuestions.includes(fingerprint(q));
+}
+function pushRecent(q){
+  state.recentQuestions.push(fingerprint(q));
+  if(state.recentQuestions.length > CONFIG.noRepeatWindow*3){
+    state.recentQuestions = state.recentQuestions.slice(-CONFIG.noRepeatWindow*3);
+  }
+}
+
+function prettySubSkill(s){ return String(s).replace(/_/g," "); }
+function stripHtml(s){ return String(s).replace(/<[^>]+>/g,""); }
+
+/* ============================================================================
+   TEMPLATE REGISTRY
+============================================================================ */
+const TEMPLATES = {};
+function regT(id, fn){ TEMPLATES[id] = fn; }
+
+
+/* ===== TEMPLATES ===== */
+/* ===== Shared context pools ===== */
+const FORCE_OBJECTS = [
+  { name:"crate", mRange:[5, 25] },
+  { name:"toolbox", mRange:[2, 8] },
+  { name:"trolley", mRange:[8, 30] },
+  { name:"sled", mRange:[10, 40] },
+  { name:"cart", mRange:[3, 12] },
+  { name:"luggage piece", mRange:[4, 18] },
+  { name:"speaker box", mRange:[6, 20] },
+  { name:"book stack", mRange:[1, 5] }
+];
+const WE_OBJECTS = [
+  { name:"backpack", mRange:[3, 8], vRange:[1, 6] },
+  { name:"basketball", mRange:[0.55, 0.65], vRange:[3, 12] },
+  { name:"toolbox", mRange:[2, 8], vRange:[1, 5] },
+  { name:"skateboard", mRange:[2, 4], vRange:[2, 8] },
+  { name:"laptop bag", mRange:[1.5, 4], vRange:[1, 4] },
+  { name:"water bottle", mRange:[0.5, 1.2], vRange:[2, 6] },
+  { name:"crate", mRange:[4, 12], vRange:[1, 5] },
+  { name:"rocket model", mRange:[0.8, 2], vRange:[5, 15] }
+];
+const MOM_OBJECTS = [
+  { name:"hockey puck", mRange:[0.15, 0.20] },
+  { name:"basketball", mRange:[0.55, 0.65] },
+  { name:"tennis ball", mRange:[0.055, 0.060] },
+  { name:"soccer ball", mRange:[0.40, 0.45] },
+  { name:"baseball", mRange:[0.14, 0.16] },
+  { name:"medicine ball", mRange:[3, 6] },
+  { name:"bowling ball", mRange:[5, 7] },
+  { name:"rugby ball", mRange:[0.42, 0.46] },
+  { name:"cricket ball", mRange:[0.155, 0.165] },
+  { name:"volleyball", mRange:[0.26, 0.28] }
+];
+const VEHICLES = [
+  { name:"go-kart", mRange:[150, 200] },
+  { name:"small car", mRange:[800, 1200] },
+  { name:"pickup truck", mRange:[1500, 2000] },
+  { name:"scooter", mRange:[80, 120] },
+  { name:"motorcycle", mRange:[180, 250] }
+];
+
+/* ====================================================================== */
+/* UNIT 1 - FORCES (20%)   bank: 8 concept + 13 problem templates         */
+/* ====================================================================== */
+
+regT("frc_newton2_tf", () => {
+  const isTrue = Math.random() < 0.5;
+  if (isTrue) return {
+    templateId:"frc_newton2_tf", unit:"forces", skill:"forces", subSkill:"newton2_relationship",
+    formulaUsed:"F<sub>net</sub> = ma", questionType:"tf", type:"tf", examWeight:0.20,
+    stem:"For a fixed mass, doubling the net force doubles the acceleration.",
+    correct:true,
+    explanation:"From F<sub>net</sub> = ma, a is proportional to F<sub>net</sub> when m is constant.",
+    misconception:"force and acceleration are unrelated",
+    misconceptionTargeted:"force and acceleration are unrelated",
+    given:{}
+  };
+  return {
+    templateId:"frc_newton2_tf", unit:"forces", skill:"forces", subSkill:"newton2_relationship",
+    formulaUsed:"F<sub>net</sub> = ma", questionType:"tf", type:"tf", examWeight:0.20,
+    stem:"If the net force on an object is zero, the object must be at rest.",
+    correct:false,
+    explanation:"Zero net force means zero acceleration. The object can move at constant velocity, not just be at rest.",
+    misconception:"no net force means no motion",
+    misconceptionTargeted:"no net force means no motion",
+    given:{}
+  };
+});
+
+regT("frc_balanced_mcq", () => {
+  const opts = shuffle([
+    { txt:"The object is in equilibrium and has zero acceleration.", ok:true },
+    { txt:"The object must be motionless.", ok:false },
+    { txt:"The object speeds up in the direction of the largest force.", ok:false },
+    { txt:"Mass and weight cancel out, so motion stops.", ok:false }
+  ]);
+  return {
+    templateId:"frc_balanced_mcq", unit:"forces", skill:"forces", subSkill:"equilibrium_concept",
+    formulaUsed:"&Sigma;F = 0", questionType:"mcq", type:"mcq", examWeight:0.20,
+    stem:"A box has all the forces on it balanced. What does this tell you?",
+    options:opts.map(o=>o.txt), correct:opts.findIndex(o=>o.ok),
+    explanation:"Balanced forces &rarr; &Sigma;F = 0 &rarr; a = 0. Velocity is constant (zero or non-zero).",
+    misconception:"balanced forces always mean the object is at rest",
+    misconceptionTargeted:"balanced forces always mean the object is at rest",
+    given:{}
+  };
+});
+
+regT("frc_direction_a_mcq", () => {
+  const Fr = randInt(20, 80);
+  const Fl = randInt(5, Fr-5);
+  const opts = shuffle([
+    { txt:"To the right, because the right-pointing force is larger.", ok:true },
+    { txt:"To the left, because the smaller force decides direction.", ok:false },
+    { txt:"No acceleration, the forces cancel.", ok:false },
+    { txt:"Acceleration is upward.", ok:false }
+  ]);
+  return {
+    templateId:"frc_direction_a_mcq", unit:"forces", skill:"forces", subSkill:"acceleration_direction",
+    formulaUsed:"a is along F<sub>net</sub>", questionType:"mcq", type:"mcq", examWeight:0.20,
+    stem:`A crate is pushed right with ${Fr} N and pulled left with ${Fl} N. In which direction does it accelerate?`,
+    options:opts.map(o=>o.txt), correct:opts.findIndex(o=>o.ok),
+    explanation:`F<sub>net</sub> = ${Fr} &minus; ${Fl} = ${Fr-Fl} N to the right. Acceleration is along F<sub>net</sub>.`,
+    misconception:"acceleration direction follows the larger named force regardless of sign",
+    misconceptionTargeted:"acceleration direction follows the larger named force regardless of sign",
+    given:{Fr, Fl}
+  };
+});
+
+regT("frc_fbd_normal_tf", () => {
+  const isTrue = Math.random() < 0.5;
+  if (isTrue) return {
+    templateId:"frc_fbd_normal_tf", unit:"forces", skill:"forces", subSkill:"normal_force_fbd",
+    formulaUsed:"N = F<sub>g</sub> on level surface, no vertical motion", questionType:"tf", type:"tf", examWeight:0.20,
+    stem:"A book resting on a level desk has a normal force equal in magnitude to its weight F<sub>g</sub>.",
+    correct:true,
+    explanation:"On a level surface with no vertical acceleration, the normal force balances F<sub>g</sub>.",
+    misconception:"normal force always equals mg even on inclines or when accelerating vertically",
+    misconceptionTargeted:"normal force always equals mg even on inclines or when accelerating vertically",
+    given:{}
+  };
+  return {
+    templateId:"frc_fbd_normal_tf", unit:"forces", skill:"forces", subSkill:"normal_force_fbd",
+    formulaUsed:"N points away from the surface", questionType:"tf", type:"tf", examWeight:0.20,
+    stem:"The normal force on a book sitting on a level desk points downward into the desk.",
+    correct:false,
+    explanation:"The normal force is the surface pushing UP on the book. It points away from the surface.",
+    misconception:"normal force pushes downward",
+    misconceptionTargeted:"normal force pushes downward",
+    given:{}
+  };
+});
+
+regT("frc_unbalanced_mcq", () => {
+  const o = choice(FORCE_OBJECTS);
+  const same = Math.random() < 0.35;
+  const F1 = randInt(10, 30);
+  const F2 = same ? F1 : randInt(10, 30);
+  const balanced = (F1 === F2);
+  const opts = shuffle([
+    { txt:"Balanced. The object moves at constant velocity or stays at rest.", ok: balanced },
+    { txt:"Unbalanced. The object accelerates.", ok: !balanced },
+    { txt:"The forces add to make the object speed up no matter what.", ok:false },
+    { txt:"Forces only matter if the object is already moving.", ok:false }
+  ]);
+  return {
+    templateId:"frc_unbalanced_mcq", unit:"forces", skill:"forces", subSkill:"balanced_vs_unbalanced",
+    formulaUsed:"&Sigma;F = 0 &harr; balanced", questionType:"mcq", type:"mcq", examWeight:0.20,
+    stem:`A ${o.name} is pulled right with ${F1} N and left with ${F2} N. The forces are:`,
+    options:opts.map(o=>o.txt), correct:opts.findIndex(o=>o.ok),
+    explanation: balanced ? "Equal magnitudes in opposite directions &rarr; balanced &rarr; no acceleration." : `Different magnitudes &rarr; F<sub>net</sub> = ${Math.abs(F1-F2)} N &rarr; unbalanced &rarr; acceleration.`,
+    misconception:"unequal forces are still balanced if they oppose",
+    misconceptionTargeted:"unequal forces are still balanced if they oppose",
+    given:{F1, F2}
+  };
+});
+
+regT("frc_newton1_tf", () => {
+  const isTrue = Math.random() < 0.5;
+  if (isTrue) return {
+    templateId:"frc_newton1_tf", unit:"forces", skill:"forces", subSkill:"newton1_inertia",
+    formulaUsed:"F<sub>net</sub> = 0 &rarr; constant velocity", questionType:"tf", type:"tf", examWeight:0.20,
+    stem:"An object moving in a straight line at constant velocity has zero net force on it.",
+    correct:true,
+    explanation:"Newton's 1st Law. Constant velocity (including zero) requires F<sub>net</sub> = 0.",
+    misconception:"moving objects must have a net force keeping them moving",
+    misconceptionTargeted:"moving objects must have a net force keeping them moving",
+    given:{}
+  };
+  return {
+    templateId:"frc_newton1_tf", unit:"forces", skill:"forces", subSkill:"newton1_inertia",
+    formulaUsed:"F<sub>net</sub> = 0 &rarr; constant velocity", questionType:"tf", type:"tf", examWeight:0.20,
+    stem:"To keep an object moving at constant velocity on a frictionless surface, a continuous forward push is required.",
+    correct:false,
+    explanation:"No friction means no horizontal opposing force; no extra push is needed. Constant v requires F<sub>net</sub> = 0.",
+    misconception:"motion requires a sustaining force",
+    misconceptionTargeted:"motion requires a sustaining force",
+    given:{}
+  };
+});
+
+regT("frc_mass_vs_weight_mcq", () => {
+  const opts = shuffle([
+    { txt:"Mass is the amount of matter (kg); weight is the gravitational force on that mass (N).", ok:true },
+    { txt:"Mass and weight are the same physical quantity with different units.", ok:false },
+    { txt:"Weight is constant everywhere; mass changes with location.", ok:false },
+    { txt:"Mass is measured in newtons; weight is measured in kilograms.", ok:false }
+  ]);
+  return {
+    templateId:"frc_mass_vs_weight_mcq", unit:"forces", skill:"forces", subSkill:"mass_vs_weight",
+    formulaUsed:"F<sub>g</sub> = mg, with g = 10 m/s&sup2;", questionType:"mcq", type:"mcq", examWeight:0.20,
+    stem:"Which statement correctly distinguishes mass and weight?",
+    options:opts.map(o=>o.txt), correct:opts.findIndex(o=>o.ok),
+    explanation:"Mass is invariant matter content. Weight F<sub>g</sub> = mg depends on local g.",
+    misconception:"mass and weight are the same thing",
+    misconceptionTargeted:"mass and weight are the same thing",
+    given:{}
+  };
+});
+
+regT("frc_friction_concept_mcq", () => {
+  const opts = shuffle([
+    { txt:"Friction opposes the relative motion (or tendency of motion) between surfaces.", ok:true },
+    { txt:"Friction always points in the same direction the object is pushed.", ok:false },
+    { txt:"Friction acts only on stationary objects.", ok:false },
+    { txt:"Friction acts only vertically.", ok:false }
+  ]);
+  return {
+    templateId:"frc_friction_concept_mcq", unit:"forces", skill:"forces", subSkill:"friction_direction",
+    formulaUsed:"f opposes relative motion", questionType:"mcq", type:"mcq", examWeight:0.20,
+    stem:"Which statement about the direction of friction is correct?",
+    options:opts.map(o=>o.txt), correct:opts.findIndex(o=>o.ok),
+    explanation:"Friction always opposes the relative motion (or tendency) of the surfaces in contact.",
+    misconception:"friction acts in the direction of the applied force",
+    misconceptionTargeted:"friction acts in the direction of the applied force",
+    given:{}
+  };
+});
+
+/* --- PROBLEM-SOLVING (13) --- */
+
+regT("frc_fnet_find_F", () => {
+  const m = round(rand(2, 25), 1);
+  const a = round(rand(0.5, 6), 2);
+  const F = round(m*a, 2);
+  return {
+    templateId:"frc_fnet_find_F", unit:"forces", skill:"forces", subSkill:"find_Fnet_from_ma",
+    formulaUsed:"F<sub>net</sub> = ma", questionType:"numeric", type:"numeric", examWeight:0.20,
+    stem:`A ${m} kg cart accelerates at ${a} m/s&sup2;. What net force acts on it?`,
+    correct: F, answerUnit:"N", tolerancePct:2.5,
+    explanation:`F<sub>net</sub> = ma = (${m})(${a}) = ${F} N`,
+    misconception:"adding mass and acceleration instead of multiplying",
+    misconceptionTargeted:"adding mass and acceleration instead of multiplying",
+    given:{m, a}
+  };
+});
+
+regT("frc_fnet_find_m", () => {
+  const F = round(rand(20, 200), 1);
+  const a = round(rand(0.5, 6), 2);
+  const m = round(F/a, 2);
+  return {
+    templateId:"frc_fnet_find_m", unit:"forces", skill:"forces", subSkill:"find_m_from_Fnet",
+    formulaUsed:"m = F<sub>net</sub> / a", questionType:"numeric", type:"numeric", examWeight:0.20,
+    stem:`A net force of ${F} N produces an acceleration of ${a} m/s&sup2; on a sled. Find its mass.`,
+    correct: m, answerUnit:"kg", tolerancePct:2.5,
+    explanation:`From F<sub>net</sub> = ma, m = F/a = ${F}/${a} = ${m} kg`,
+    misconception:"multiplying F by a instead of dividing",
+    misconceptionTargeted:"multiplying F by a instead of dividing",
+    given:{F, a}
+  };
+});
+
+regT("frc_fnet_find_a", () => {
+  const m = round(rand(3, 30), 1);
+  const F = round(rand(10, 120), 1);
+  const a = round(F/m, 2);
+  return {
+    templateId:"frc_fnet_find_a", unit:"forces", skill:"forces", subSkill:"find_a_from_Fnet",
+    formulaUsed:"a = F<sub>net</sub> / m", questionType:"numeric", type:"numeric", examWeight:0.20,
+    stem:`A ${m} kg trolley is acted on by a net force of ${F} N. Find its acceleration.`,
+    correct: a, answerUnit:"m/s&sup2;", tolerancePct:2.5,
+    explanation:`a = F<sub>net</sub>/m = ${F}/${m} = ${a} m/s&sup2;`,
+    misconception:"multiplying F by m instead of dividing",
+    misconceptionTargeted:"multiplying F by m instead of dividing",
+    given:{m, F}
+  };
+});
+
+regT("frc_two_forces_find_Fnet", () => {
+  const Fr = randInt(15, 90);
+  const Fl = randInt(5, Fr-3);
+  const Fnet = Fr - Fl;
+  return {
+    templateId:"frc_two_forces_find_Fnet", unit:"forces", skill:"forces", subSkill:"compute_Fnet_two_forces",
+    formulaUsed:"F<sub>net</sub> = &Sigma;F (1D)", questionType:"numeric", type:"numeric", examWeight:0.20,
+    stem:`Two horizontal forces act on a box: ${Fr} N to the right and ${Fl} N to the left. Find the magnitude of the net force.`,
+    correct: Fnet, answerUnit:"N", tolerancePct:2.5,
+    explanation:`F<sub>net</sub> = ${Fr} &minus; ${Fl} = ${Fnet} N to the right`,
+    misconception:"adding both forces together instead of subtracting opposing ones",
+    misconceptionTargeted:"adding both forces together instead of subtracting opposing ones",
+    given:{Fr, Fl}
+  };
+});
+
+regT("frc_weight_find_Fg", () => {
+  const m = round(rand(2, 80), 1);
+  const Fg = round(m*10, 1);
+  return {
+    templateId:"frc_weight_find_Fg", unit:"forces", skill:"forces", subSkill:"find_Fg_from_m",
+    formulaUsed:"F<sub>g</sub> = mg, g = 10 m/s&sup2;", questionType:"numeric", type:"numeric", examWeight:0.20,
+    stem:`A ${m} kg toolbox sits on the ground. Find its weight F<sub>g</sub>. (Use g = 10 m/s&sup2;.)`,
+    correct: Fg, answerUnit:"N", tolerancePct:2.5,
+    explanation:`F<sub>g</sub> = mg = (${m})(10) = ${Fg} N`,
+    misconception:"confusing mass (kg) and weight (N)",
+    misconceptionTargeted:"confusing mass (kg) and weight (N)",
+    given:{m}
+  };
+});
+
+regT("frc_weight_find_m", () => {
+  const m = round(rand(2, 60), 1);
+  const Fg = round(m*10, 1);
+  return {
+    templateId:"frc_weight_find_m", unit:"forces", skill:"forces", subSkill:"find_m_from_Fg",
+    formulaUsed:"m = F<sub>g</sub> / g, g = 10 m/s&sup2;", questionType:"numeric", type:"numeric", examWeight:0.20,
+    stem:`An object weighs ${Fg} N. Find its mass. (Use g = 10 m/s&sup2;.)`,
+    correct: m, answerUnit:"kg", tolerancePct:2.5,
+    explanation:`m = F<sub>g</sub>/g = ${Fg}/10 = ${m} kg`,
+    misconception:"multiplying instead of dividing",
+    misconceptionTargeted:"multiplying instead of dividing",
+    given:{Fg}
+  };
+});
+
+regT("frc_normal_level_find_N", () => {
+  const m = round(rand(3, 40), 1);
+  const N = round(m*10, 1);
+  return {
+    templateId:"frc_normal_level_find_N", unit:"forces", skill:"forces", subSkill:"find_N_level",
+    formulaUsed:"N = F<sub>g</sub> = mg on level surface", questionType:"numeric", type:"numeric", examWeight:0.20,
+    stem:`A ${m} kg crate sits at rest on a horizontal floor. What is the magnitude of the normal force on the crate? (g = 10 m/s&sup2;.)`,
+    correct: N, answerUnit:"N", tolerancePct:2.5,
+    explanation:`Vertical equilibrium: N = F<sub>g</sub> = mg = (${m})(10) = ${N} N`,
+    misconception:"forgetting that N is a force, not a mass",
+    misconceptionTargeted:"forgetting that N is a force, not a mass",
+    given:{m}
+  };
+});
+
+regT("frc_tension_hanging_find_T", () => {
+  const m = round(rand(1, 20), 1);
+  const T = round(m*10, 1);
+  return {
+    templateId:"frc_tension_hanging_find_T", unit:"forces", skill:"forces", subSkill:"find_T_static",
+    formulaUsed:"T = F<sub>g</sub> = mg (object hanging at rest)", questionType:"numeric", type:"numeric", examWeight:0.20,
+    stem:`A ${m} kg lamp hangs at rest from a single vertical cable. Find the tension in the cable. (g = 10 m/s&sup2;.)`,
+    correct: T, answerUnit:"N", tolerancePct:2.5,
+    explanation:`Vertical equilibrium: T = F<sub>g</sub> = mg = (${m})(10) = ${T} N`,
+    misconception:"thinking tension is larger or smaller than the weight when at rest",
+    misconceptionTargeted:"thinking tension is larger or smaller than the weight when at rest",
+    given:{m}
+  };
+});
+
+regT("frc_friction_net_find_a", () => {
+  const m = round(rand(5, 25), 1);
+  const Fapp = round(rand(40, 120), 1);
+  const Ff = round(rand(5, Fapp-10), 1);
+  const a = round((Fapp - Ff)/m, 2);
+  return {
+    templateId:"frc_friction_net_find_a", unit:"forces", skill:"forces", subSkill:"net_force_with_friction",
+    formulaUsed:"F<sub>net</sub> = F<sub>applied</sub> &minus; f; a = F<sub>net</sub>/m", questionType:"numeric", type:"numeric", examWeight:0.20,
+    stem:`A ${m} kg crate is pushed with ${Fapp} N. Friction on the floor opposes the motion with ${Ff} N. Find the acceleration of the crate.`,
+    correct: a, answerUnit:"m/s&sup2;", tolerancePct:3,
+    explanation:`F<sub>net</sub> = ${Fapp} &minus; ${Ff} = ${round(Fapp-Ff,1)} N; a = F<sub>net</sub>/m = ${round(Fapp-Ff,1)}/${m} = ${a} m/s&sup2;`,
+    misconception:"adding friction to the applied force instead of subtracting",
+    misconceptionTargeted:"adding friction to the applied force instead of subtracting",
+    given:{m, Fapp, Ff}
+  };
+});
+
+regT("frc_three_forces_find_Fnet", () => {
+  const F1 = randInt(10, 50);
+  const F2 = randInt(10, 50);
+  const F3 = randInt(5, 30);
+  const Fnet = F1 + F2 - F3;
+  return {
+    templateId:"frc_three_forces_find_Fnet", unit:"forces", skill:"forces", subSkill:"compute_Fnet_three_forces",
+    formulaUsed:"F<sub>net</sub> = &Sigma;F (1D, signed)", questionType:"numeric", type:"numeric", examWeight:0.20,
+    stem:`Three horizontal forces act on a cart: ${F1} N right, ${F2} N right, and ${F3} N left. Find F<sub>net</sub> (positive = right).`,
+    correct: Fnet, answerUnit:"N", tolerancePct:2.5,
+    explanation:`F<sub>net</sub> = +${F1} + ${F2} &minus; ${F3} = ${Fnet} N`,
+    misconception:"ignoring direction signs",
+    misconceptionTargeted:"ignoring direction signs",
+    given:{F1, F2, F3}
+  };
+});
+
+regT("frc_equilibrium_find_F", () => {
+  const o = choice(FORCE_OBJECTS);
+  const F1 = randInt(20, 80);
+  return {
+    templateId:"frc_equilibrium_find_F", unit:"forces", skill:"forces", subSkill:"equilibrium_balance",
+    formulaUsed:"&Sigma;F = 0 (equilibrium)", questionType:"numeric", type:"numeric", examWeight:0.20,
+    stem:`A ${o.name} is pulled to the right with a force of ${F1} N. To keep it in equilibrium, what magnitude of force must act on it to the left?`,
+    correct: F1, answerUnit:"N", tolerancePct:2,
+    explanation:`Equilibrium &rArr; &Sigma;F = 0. The opposing force must equal ${F1} N.`,
+    misconception:"equilibrium needs a larger opposing force",
+    misconceptionTargeted:"equilibrium needs a larger opposing force",
+    given:{F1}
+  };
+});
+
+regT("frc_two_unequal_find_a", () => {
+  const m = round(rand(2, 20), 1);
+  const Fr = randInt(20, 100);
+  const Fl = randInt(5, Fr-5);
+  const Fnet = Fr - Fl;
+  const a = round(Fnet/m, 2);
+  return {
+    templateId:"frc_two_unequal_find_a", unit:"forces", skill:"forces", subSkill:"a_from_two_forces",
+    formulaUsed:"a = (F<sub>1</sub> &minus; F<sub>2</sub>) / m", questionType:"numeric", type:"numeric", examWeight:0.20,
+    stem:`A ${m} kg trolley is pulled right with ${Fr} N and left with ${Fl} N. Find its acceleration (positive = right).`,
+    correct: a, answerUnit:"m/s&sup2;", tolerancePct:3,
+    explanation:`F<sub>net</sub> = ${Fr} &minus; ${Fl} = ${Fnet} N; a = ${Fnet}/${m} = ${a} m/s&sup2;`,
+    misconception:"using the larger force only, ignoring the smaller one",
+    misconceptionTargeted:"using the larger force only, ignoring the smaller one",
+    given:{m, Fr, Fl}
+  };
+});
+
+regT("frc_find_F_from_a_only", () => {
+  const m = round(rand(2, 15), 1);
+  const a = round(rand(1, 5), 2);
+  const F = round(m*a, 2);
+  return {
+    templateId:"frc_find_F_from_a_only", unit:"forces", skill:"forces", subSkill:"horizontal_Fnet_only",
+    formulaUsed:"F<sub>net</sub> = ma", questionType:"numeric", type:"numeric", examWeight:0.20,
+    stem:`A ${m} kg object accelerates horizontally at ${a} m/s&sup2;. Find the horizontal net force on it.`,
+    correct: F, answerUnit:"N", tolerancePct:2.5,
+    explanation:`F<sub>net</sub> = ma = (${m})(${a}) = ${F} N (horizontal; weight acts vertically and is not asked here).`,
+    misconception:"reporting weight instead of horizontal net force",
+    misconceptionTargeted:"reporting weight instead of horizontal net force",
+    given:{m, a}
+  };
+});
+
+/* ====================================================================== */
+/* UNIT 2 - WORK & ENERGY (30%)  bank: 9 concept + 19 problem templates  */
+/* ====================================================================== */
+
+regT("we_sign_of_work_mcq", () => {
+  const cases = [
+    { ctx:"a person carries a box horizontally at constant velocity (force is vertical, motion is horizontal)", ans:"zero", expl:"Force perpendicular to displacement &rarr; cos 90&deg; = 0 &rarr; W = 0." },
+    { ctx:"friction acts on a crate sliding to the right", ans:"negative", expl:"Friction opposes displacement &rarr; angle = 180&deg; &rarr; cos 180&deg; = &minus;1 &rarr; W < 0." },
+    { ctx:"a rope pulls a sled forward in the direction of motion", ans:"positive", expl:"Force and displacement aligned &rarr; cos 0&deg; = 1 &rarr; W > 0." },
+    { ctx:"gravity acts on a ball falling straight down", ans:"positive", expl:"F<sub>g</sub> and downward displacement are aligned &rarr; W > 0." },
+    { ctx:"gravity acts on a ball thrown straight up while it rises", ans:"negative", expl:"F<sub>g</sub> is opposite to displacement &rarr; W < 0." }
+  ];
+  const c = choice(cases);
+  const opts = shuffle([
+    { txt:"Positive work.", ok: c.ans === "positive" },
+    { txt:"Negative work.", ok: c.ans === "negative" },
+    { txt:"Zero work.",     ok: c.ans === "zero" },
+    { txt:"Cannot be determined without numbers.", ok:false }
+  ]);
+  return {
+    templateId:"we_sign_of_work_mcq", unit:"work_energy", skill:"work_energy", subSkill:"sign_of_work",
+    formulaUsed:"W = Fd cos&theta;", questionType:"mcq", type:"mcq", examWeight:0.30,
+    stem:`What is the sign of the work done in the following case: ${c.ctx}?`,
+    options:opts.map(o=>o.txt), correct:opts.findIndex(o=>o.ok),
+    explanation:c.expl,
+    misconception:"any applied force always does positive work",
+    misconceptionTargeted:"any applied force always does positive work",
+    given:{caseSign:c.ans}
+  };
+});
+
+regT("we_zero_work_tf", () => {
+  const isTrue = Math.random() < 0.5;
+  if (isTrue) return {
+    templateId:"we_zero_work_tf", unit:"work_energy", skill:"work_energy", subSkill:"zero_work_perpendicular",
+    formulaUsed:"W = Fd cos&theta;; cos 90&deg; = 0", questionType:"tf", type:"tf", examWeight:0.30,
+    stem:"A waiter carries a tray of food at constant height across a level room. The work done by the upward force of the waiter on the tray is zero.",
+    correct:true,
+    explanation:"Force is vertical, displacement is horizontal &rarr; &theta; = 90&deg; &rarr; W = Fd cos 90&deg; = 0.",
+    misconception:"any force exerted on a moving object does work",
+    misconceptionTargeted:"any force exerted on a moving object does work",
+    given:{}
+  };
+  return {
+    templateId:"we_zero_work_tf", unit:"work_energy", skill:"work_energy", subSkill:"zero_work_perpendicular",
+    formulaUsed:"W = Fd cos&theta;", questionType:"tf", type:"tf", examWeight:0.30,
+    stem:"A perfectly perpendicular force always does positive work on a moving object.",
+    correct:false,
+    explanation:"Perpendicular &rarr; cos 90&deg; = 0 &rarr; W = 0, not positive.",
+    misconception:"perpendicular forces still do work",
+    misconceptionTargeted:"perpendicular forces still do work",
+    given:{}
+  };
+});
+
+regT("we_ke_velocity_mcq", () => {
+  const opts = shuffle([
+    { txt:"KE is proportional to v&sup2;: doubling v multiplies KE by 4.", ok:true },
+    { txt:"KE doubles when v doubles.", ok:false },
+    { txt:"KE depends only on mass, not velocity.", ok:false },
+    { txt:"KE depends on the square root of v.", ok:false }
+  ]);
+  return {
+    templateId:"we_ke_velocity_mcq", unit:"work_energy", skill:"work_energy", subSkill:"ke_scaling_with_v",
+    formulaUsed:"KE = &frac12; mv&sup2;", questionType:"mcq", type:"mcq", examWeight:0.30,
+    stem:"Which statement correctly describes how kinetic energy depends on speed?",
+    options:opts.map(o=>o.txt), correct:opts.findIndex(o=>o.ok),
+    explanation:"KE = &frac12; mv&sup2;. Velocity is squared, so doubling v gives a factor of 2&sup2; = 4 in KE.",
+    misconception:"KE is linear in v (doubling v doubles KE)",
+    misconceptionTargeted:"KE is linear in v (doubling v doubles KE)",
+    given:{}
+  };
+});
+
+regT("we_pe_height_tf", () => {
+  const isTrue = Math.random() < 0.5;
+  if (isTrue) return {
+    templateId:"we_pe_height_tf", unit:"work_energy", skill:"work_energy", subSkill:"pe_proportional_to_h",
+    formulaUsed:"PE<sub>g</sub> = mgh, g = 10", questionType:"tf", type:"tf", examWeight:0.30,
+    stem:"For a fixed mass, doubling the height above the reference level doubles the gravitational potential energy.",
+    correct:true,
+    explanation:"PE<sub>g</sub> = mgh is linear in h &rarr; doubling h doubles PE<sub>g</sub>.",
+    misconception:"PE depends on h&sup2;",
+    misconceptionTargeted:"PE depends on h&sup2;",
+    given:{}
+  };
+  return {
+    templateId:"we_pe_height_tf", unit:"work_energy", skill:"work_energy", subSkill:"pe_proportional_to_h",
+    formulaUsed:"PE<sub>g</sub> = mgh", questionType:"tf", type:"tf", examWeight:0.30,
+    stem:"Doubling the mass while keeping the height the same has no effect on gravitational potential energy.",
+    correct:false,
+    explanation:"PE<sub>g</sub> = mgh: doubling m doubles PE<sub>g</sub>.",
+    misconception:"only height matters for PE",
+    misconceptionTargeted:"only height matters for PE",
+    given:{}
+  };
+});
+
+regT("we_wnet_ke_mcq", () => {
+  const opts = shuffle([
+    { txt:"The net work done on the object equals its change in kinetic energy.", ok:true },
+    { txt:"The net work done equals its change in potential energy.", ok:false },
+    { txt:"The applied force always equals the change in kinetic energy.", ok:false },
+    { txt:"Net work is always zero if the object eventually stops.", ok:false }
+  ]);
+  return {
+    templateId:"we_wnet_ke_mcq", unit:"work_energy", skill:"work_energy", subSkill:"work_energy_theorem",
+    formulaUsed:"W<sub>net</sub> = &Delta;KE", questionType:"mcq", type:"mcq", examWeight:0.30,
+    stem:"Which statement is the Work-Energy Theorem?",
+    options:opts.map(o=>o.txt), correct:opts.findIndex(o=>o.ok),
+    explanation:"W<sub>net</sub> = &Delta;KE = KE<sub>f</sub> &minus; KE<sub>i</sub>.",
+    misconception:"net work equals change in PE",
+    misconceptionTargeted:"net work equals change in PE",
+    given:{}
+  };
+});
+
+regT("we_conservation_tf", () => {
+  const isTrue = Math.random() < 0.5;
+  if (isTrue) return {
+    templateId:"we_conservation_tf", unit:"work_energy", skill:"work_energy", subSkill:"conservation_of_ME",
+    formulaUsed:"KE<sub>i</sub> + PE<sub>i</sub> = KE<sub>f</sub> + PE<sub>f</sub>", questionType:"tf", type:"tf", examWeight:0.30,
+    stem:"When only gravity does work, the total mechanical energy (KE + PE<sub>g</sub>) of an object stays constant.",
+    correct:true,
+    explanation:"That is the conservation of mechanical energy: with only conservative forces acting, KE + PE<sub>g</sub> = constant.",
+    misconception:"energy is lost during free-fall conversions",
+    misconceptionTargeted:"energy is lost during free-fall conversions",
+    given:{}
+  };
+  return {
+    templateId:"we_conservation_tf", unit:"work_energy", skill:"work_energy", subSkill:"conservation_of_ME",
+    formulaUsed:"&Delta;ME = 0 when only conservative forces act", questionType:"tf", type:"tf", examWeight:0.30,
+    stem:"When friction acts, the total mechanical energy of an object is still conserved.",
+    correct:false,
+    explanation:"Friction is non-conservative: it removes mechanical energy (typically as heat), so ME decreases.",
+    misconception:"friction does not affect mechanical energy conservation",
+    misconceptionTargeted:"friction does not affect mechanical energy conservation",
+    given:{}
+  };
+});
+
+regT("we_falling_transformation_mcq", () => {
+  const opts = shuffle([
+    { txt:"PE<sub>g</sub> decreases and KE increases by the same amount.", ok:true },
+    { txt:"Both PE<sub>g</sub> and KE increase.", ok:false },
+    { txt:"KE stays constant; PE<sub>g</sub> decreases.", ok:false },
+    { txt:"KE decreases as the ball falls.", ok:false }
+  ]);
+  return {
+    templateId:"we_falling_transformation_mcq", unit:"work_energy", skill:"work_energy", subSkill:"energy_transfer_falling",
+    formulaUsed:"&Delta;PE = &minus;&Delta;KE (no air resistance)", questionType:"mcq", type:"mcq", examWeight:0.30,
+    stem:"A ball is released from rest and falls freely. Ignoring air resistance, what happens to its energies as it falls?",
+    options:opts.map(o=>o.txt), correct:opts.findIndex(o=>o.ok),
+    explanation:"As h decreases, PE<sub>g</sub> falls; the same amount appears as KE so total ME is unchanged.",
+    misconception:"energy is gained from nothing as the ball speeds up",
+    misconceptionTargeted:"energy is gained from nothing as the ball speeds up",
+    given:{}
+  };
+});
+
+regT("we_rising_transformation_tf", () => {
+  const isTrue = Math.random() < 0.5;
+  if (isTrue) return {
+    templateId:"we_rising_transformation_tf", unit:"work_energy", skill:"work_energy", subSkill:"energy_transfer_rising",
+    formulaUsed:"&Delta;KE = &minus;&Delta;PE (no air resistance)", questionType:"tf", type:"tf", examWeight:0.30,
+    stem:"A ball thrown straight up loses kinetic energy as it rises, and gains an equal amount of gravitational potential energy.",
+    correct:true,
+    explanation:"Energy is transformed KE &rarr; PE<sub>g</sub>. With no air resistance, total ME is constant.",
+    misconception:"energy is destroyed as the ball slows",
+    misconceptionTargeted:"energy is destroyed as the ball slows",
+    given:{}
+  };
+  return {
+    templateId:"we_rising_transformation_tf", unit:"work_energy", skill:"work_energy", subSkill:"energy_transfer_rising",
+    formulaUsed:"&Delta;KE + &Delta;PE = 0 (conservative)", questionType:"tf", type:"tf", examWeight:0.30,
+    stem:"A ball thrown straight up keeps the same kinetic energy at the top of its flight as at the moment it left the hand.",
+    correct:false,
+    explanation:"At the top, v = 0 momentarily, so KE = 0. All initial KE has converted to PE<sub>g</sub>.",
+    misconception:"KE remains constant during rising motion",
+    misconceptionTargeted:"KE remains constant during rising motion",
+    given:{}
+  };
+});
+
+regT("we_compare_ke_mcq", () => {
+  const m = round(rand(0.5, 5), 2);
+  const v = round(rand(2, 8), 1);
+  const KE1 = round(0.5*m*v*v, 2);
+  const KE2 = round(0.5*m*4*v*v, 2);
+  const opts = shuffle([
+    { txt:"KE quadruples (becomes 4 times larger).", ok:true },
+    { txt:"KE doubles.", ok:false },
+    { txt:"KE stays the same.", ok:false },
+    { txt:"KE halves.", ok:false }
+  ]);
+  return {
+    templateId:"we_compare_ke_mcq", unit:"work_energy", skill:"work_energy", subSkill:"compare_KE_before_after",
+    formulaUsed:"KE = &frac12; mv&sup2;", questionType:"mcq", type:"mcq", examWeight:0.30,
+    stem:`A ${m} kg object moving at ${v} m/s has KE = ${KE1} J. If its speed is doubled to ${round(2*v,1)} m/s, what happens to its KE?`,
+    options:opts.map(o=>o.txt), correct:opts.findIndex(o=>o.ok),
+    explanation:`KE &prop; v&sup2;. Doubling v multiplies KE by 4 &rarr; ${KE2} J.`,
+    misconception:"KE only doubles when v doubles",
+    misconceptionTargeted:"KE only doubles when v doubles",
+    given:{m, v}
+  };
+});
+
+/* --- WORK & ENERGY PROBLEM-SOLVING (19) --- */
+
+regT("we_find_W_simple", () => {
+  const F = round(rand(20, 200), 1);
+  const d = round(rand(2, 15), 1);
+  const W = round(F*d, 1);
+  return {
+    templateId:"we_find_W_simple", unit:"work_energy", skill:"work_energy", subSkill:"find_W_parallel",
+    formulaUsed:"W = Fd (force parallel to motion)", questionType:"numeric", type:"numeric", examWeight:0.30,
+    stem:`A ${F} N force pushes a crate ${d} m in the direction of the force. Find the work done.`,
+    correct: W, answerUnit:"J", tolerancePct:2.5,
+    explanation:`W = Fd cos 0&deg; = (${F})(${d}) = ${W} J`,
+    misconception:"dividing F and d instead of multiplying",
+    misconceptionTargeted:"dividing F and d instead of multiplying",
+    given:{F, d}
+  };
+});
+
+regT("we_find_W_angle", () => {
+  const F = round(rand(30, 200), 1);
+  const d = round(rand(2, 15), 1);
+  const thetas = [30, 37, 45, 53, 60];
+  const cosvals = {30:0.866, 37:0.8, 45:0.707, 53:0.6, 60:0.5};
+  const theta = choice(thetas);
+  const W = round(F*d*cosvals[theta], 1);
+  return {
+    templateId:"we_find_W_angle", unit:"work_energy", skill:"work_energy", subSkill:"find_W_with_angle",
+    formulaUsed:"W = Fd cos&theta;", questionType:"numeric", type:"numeric", examWeight:0.30,
+    stem:`A force of ${F} N is applied at ${theta}&deg; above the horizontal, pulling a sled ${d} m along the ground. Use cos ${theta}&deg; &asymp; ${cosvals[theta]}. Find the work done by the force.`,
+    correct: W, answerUnit:"J", tolerancePct:3,
+    explanation:`W = Fd cos&theta; = (${F})(${d})(${cosvals[theta]}) = ${W} J`,
+    misconception:"ignoring cos&theta;",
+    misconceptionTargeted:"ignoring cos&theta;",
+    given:{F, d, theta}
+  };
+});
+
+regT("we_find_W_negative_friction", () => {
+  const f = round(rand(5, 60), 1);
+  const d = round(rand(2, 12), 1);
+  const W = round(-f*d, 1);
+  return {
+    templateId:"we_find_W_negative_friction", unit:"work_energy", skill:"work_energy", subSkill:"find_W_negative",
+    formulaUsed:"W = Fd cos 180&deg; = &minus;fd", questionType:"numeric", type:"numeric", examWeight:0.30,
+    stem:`A ${f} N friction force opposes a crate that slides ${d} m to the right. Find the work done by friction (signed).`,
+    correct: W, answerUnit:"J", tolerancePct:3,
+    explanation:`Friction opposes motion: &theta; = 180&deg;, cos 180&deg; = &minus;1. W = (${f})(${d})(&minus;1) = ${W} J`,
+    misconception:"forgetting that opposing friction does negative work",
+    misconceptionTargeted:"forgetting that opposing friction does negative work",
+    given:{f, d}
+  };
+});
+
+regT("we_find_KE", () => {
+  const o = choice(WE_OBJECTS);
+  const m = round(rand(o.mRange[0], o.mRange[1]), 2);
+  const v = round(rand(o.vRange[0], o.vRange[1]), 1);
+  const KE = round(0.5*m*v*v, 2);
+  return {
+    templateId:"we_find_KE", unit:"work_energy", skill:"work_energy", subSkill:"find_KE_from_m_v",
+    formulaUsed:"KE = &frac12; mv&sup2;", questionType:"numeric", type:"numeric", examWeight:0.30,
+    stem:`Find the kinetic energy of a ${m} kg ${o.name} moving at ${v} m/s.`,
+    correct: KE, answerUnit:"J", tolerancePct:3,
+    explanation:`KE = &frac12; mv&sup2; = (0.5)(${m})(${v})&sup2; = ${KE} J`,
+    misconception:"forgetting the &frac12; or to square v",
+    misconceptionTargeted:"forgetting the &frac12; or to square v",
+    given:{m, v}
+  };
+});
+
+regT("we_find_v_from_KE", () => {
+  const m = round(rand(0.5, 8), 2);
+  const v = round(rand(2, 10), 1);
+  const KE = round(0.5*m*v*v, 2);
+  const vAns = round(Math.sqrt(2*KE/m), 2);
+  return {
+    templateId:"we_find_v_from_KE", unit:"work_energy", skill:"work_energy", subSkill:"find_v_from_KE_and_m",
+    formulaUsed:"v = &radic;(2KE / m)", questionType:"numeric", type:"numeric", examWeight:0.30,
+    stem:`A ${m} kg object has KE = ${KE} J. Find its speed.`,
+    correct: vAns, answerUnit:"m/s", tolerancePct:3.5,
+    explanation:`From KE = &frac12;mv&sup2;, v = &radic;(2KE/m) = &radic;(2&middot;${KE}/${m}) &asymp; ${vAns} m/s`,
+    misconception:"forgetting to take the square root",
+    misconceptionTargeted:"forgetting to take the square root",
+    given:{m, KE}
+  };
+});
+
+regT("we_find_m_from_KE", () => {
+  const m = round(rand(1, 6), 2);
+  const v = round(rand(2, 9), 1);
+  const KE = round(0.5*m*v*v, 2);
+  const mAns = round(2*KE/(v*v), 2);
+  return {
+    templateId:"we_find_m_from_KE", unit:"work_energy", skill:"work_energy", subSkill:"find_m_from_KE_and_v",
+    formulaUsed:"m = 2KE / v&sup2;", questionType:"numeric", type:"numeric", examWeight:0.30,
+    stem:`An object with KE = ${KE} J moves at ${v} m/s. Find its mass.`,
+    correct: mAns, answerUnit:"kg", tolerancePct:3.5,
+    explanation:`From KE = &frac12;mv&sup2;, m = 2KE/v&sup2; = (2)(${KE})/(${v})&sup2; &asymp; ${mAns} kg`,
+    misconception:"forgetting to square v",
+    misconceptionTargeted:"forgetting to square v",
+    given:{KE, v}
+  };
+});
+
+regT("we_find_PEg", () => {
+  const m = round(rand(0.5, 20), 2);
+  const h = round(rand(1, 25), 1);
+  const PE = round(m*10*h, 2);
+  return {
+    templateId:"we_find_PEg", unit:"work_energy", skill:"work_energy", subSkill:"find_PE_from_m_h",
+    formulaUsed:"PE<sub>g</sub> = mgh, g = 10", questionType:"numeric", type:"numeric", examWeight:0.30,
+    stem:`Find the gravitational potential energy of a ${m} kg object at a height of ${h} m above the reference level. (g = 10 m/s&sup2;.)`,
+    correct: PE, answerUnit:"J", tolerancePct:2.5,
+    explanation:`PE<sub>g</sub> = mgh = (${m})(10)(${h}) = ${PE} J`,
+    misconception:"forgetting to multiply by g",
+    misconceptionTargeted:"forgetting to multiply by g",
+    given:{m, h}
+  };
+});
+
+regT("we_find_h_from_PE", () => {
+  const m = round(rand(0.5, 10), 2);
+  const h = round(rand(2, 20), 1);
+  const PE = round(m*10*h, 2);
+  const hAns = round(PE/(m*10), 2);
+  return {
+    templateId:"we_find_h_from_PE", unit:"work_energy", skill:"work_energy", subSkill:"find_h_from_PE_and_m",
+    formulaUsed:"h = PE<sub>g</sub> / (mg)", questionType:"numeric", type:"numeric", examWeight:0.30,
+    stem:`A ${m} kg object has PE<sub>g</sub> = ${PE} J relative to the ground. Find its height. (g = 10 m/s&sup2;.)`,
+    correct: hAns, answerUnit:"m", tolerancePct:3,
+    explanation:`h = PE/(mg) = ${PE}/(${m}&middot;10) = ${hAns} m`,
+    misconception:"using only m or only g instead of mg",
+    misconceptionTargeted:"using only m or only g instead of mg",
+    given:{m, PE}
+  };
+});
+
+regT("we_find_m_from_PE", () => {
+  const m = round(rand(1, 12), 2);
+  const h = round(rand(2, 15), 1);
+  const PE = round(m*10*h, 2);
+  const mAns = round(PE/(10*h), 2);
+  return {
+    templateId:"we_find_m_from_PE", unit:"work_energy", skill:"work_energy", subSkill:"find_m_from_PE_and_h",
+    formulaUsed:"m = PE<sub>g</sub> / (gh)", questionType:"numeric", type:"numeric", examWeight:0.30,
+    stem:`At a height of ${h} m, an object has PE<sub>g</sub> = ${PE} J. Find its mass. (g = 10 m/s&sup2;.)`,
+    correct: mAns, answerUnit:"kg", tolerancePct:3,
+    explanation:`m = PE/(gh) = ${PE}/(10&middot;${h}) = ${mAns} kg`,
+    misconception:"forgetting to divide by both g and h",
+    misconceptionTargeted:"forgetting to divide by both g and h",
+    given:{PE, h}
+  };
+});
+
+regT("we_wnet_find_dKE", () => {
+  const m = round(rand(1, 8), 2);
+  const vi = round(rand(2, 6), 1);
+  const vf = round(rand(vi+1, vi+6), 1);
+  const dKE = round(0.5*m*(vf*vf - vi*vi), 2);
+  return {
+    templateId:"we_wnet_find_dKE", unit:"work_energy", skill:"work_energy", subSkill:"find_Wnet_from_dKE",
+    formulaUsed:"W<sub>net</sub> = &Delta;KE = &frac12; m (V<sub>f</sub>&sup2; &minus; V<sub>i</sub>&sup2;)", questionType:"numeric", type:"numeric", examWeight:0.30,
+    stem:`A ${m} kg object speeds up from V<sub>i</sub> = ${vi} m/s to V<sub>f</sub> = ${vf} m/s. Find the net work done on it.`,
+    correct: dKE, answerUnit:"J", tolerancePct:3.5,
+    explanation:`W<sub>net</sub> = &Delta;KE = &frac12;m(V<sub>f</sub>&sup2; &minus; V<sub>i</sub>&sup2;) = (0.5)(${m})(${vf}&sup2; &minus; ${vi}&sup2;) = ${dKE} J`,
+    misconception:"using (Vf - Vi) squared instead of (Vf squared - Vi squared)",
+    misconceptionTargeted:"using (Vf - Vi) squared instead of (Vf squared - Vi squared)",
+    given:{m, vi, vf}
+  };
+});
+
+regT("we_wnet_find_vf", () => {
+  const m = round(rand(1, 6), 2);
+  const vi = round(rand(2, 6), 1);
+  const W = round(rand(10, 150), 1);
+  const vf = round(Math.sqrt(vi*vi + 2*W/m), 2);
+  return {
+    templateId:"we_wnet_find_vf", unit:"work_energy", skill:"work_energy", subSkill:"find_vf_from_Wnet",
+    formulaUsed:"V<sub>f</sub> = &radic;(V<sub>i</sub>&sup2; + 2 W<sub>net</sub>/m)", questionType:"numeric", type:"numeric", examWeight:0.30,
+    stem:`A ${m} kg object moving at ${vi} m/s has net work W<sub>net</sub> = ${W} J done on it. Find its final speed.`,
+    correct: vf, answerUnit:"m/s", tolerancePct:3.5,
+    explanation:`W<sub>net</sub> = &frac12; m(V<sub>f</sub>&sup2; &minus; V<sub>i</sub>&sup2;) &rArr; V<sub>f</sub> = &radic;(V<sub>i</sub>&sup2; + 2W/m) &asymp; ${vf} m/s`,
+    misconception:"dropping V<sub>i</sub>&sup2; from the square root",
+    misconceptionTargeted:"dropping V<sub>i</sub>&sup2; from the square root",
+    given:{m, vi, W}
+  };
+});
+
+regT("we_conservation_find_vf", () => {
+  const m = round(rand(0.5, 5), 2);
+  const h = round(rand(1, 12), 1);
+  const vf = round(Math.sqrt(2*10*h), 2);
+  return {
+    templateId:"we_conservation_find_vf", unit:"work_energy", skill:"work_energy", subSkill:"conservation_drop_find_vf",
+    formulaUsed:"V<sub>f</sub> = &radic;(2gh)", questionType:"numeric", type:"numeric", examWeight:0.30,
+    stem:`A ${m} kg ball is released from rest at height ${h} m and falls freely. Find its speed just before hitting the ground. (g = 10 m/s&sup2;; ignore air resistance.)`,
+    correct: vf, answerUnit:"m/s", tolerancePct:3.5,
+    explanation:`Conservation of ME: mgh = &frac12;mV<sub>f</sub>&sup2; &rArr; V<sub>f</sub> = &radic;(2gh) = &radic;(2&middot;10&middot;${h}) &asymp; ${vf} m/s`,
+    misconception:"thinking mass affects the landing speed",
+    misconceptionTargeted:"thinking mass affects the landing speed",
+    given:{m, h}
+  };
+});
+
+regT("we_conservation_find_h", () => {
+  const m = round(rand(0.5, 4), 2);
+  const v = round(rand(4, 12), 1);
+  const h = round(v*v/(2*10), 2);
+  return {
+    templateId:"we_conservation_find_h", unit:"work_energy", skill:"work_energy", subSkill:"conservation_rise_find_h",
+    formulaUsed:"h = V&sup2; / (2g)", questionType:"numeric", type:"numeric", examWeight:0.30,
+    stem:`A ${m} kg ball is thrown straight up at ${v} m/s from ground level. Ignoring air resistance, find the maximum height it reaches. (g = 10 m/s&sup2;.)`,
+    correct: h, answerUnit:"m", tolerancePct:3.5,
+    explanation:`Conservation: &frac12;mV&sup2; = mgh &rArr; h = V&sup2;/(2g) = ${v}&sup2;/20 &asymp; ${h} m`,
+    misconception:"using V instead of V&sup2;",
+    misconceptionTargeted:"using V instead of V&sup2;",
+    given:{m, v}
+  };
+});
+
+regT("we_gravity_work_falling", () => {
+  const m = round(rand(0.5, 8), 2);
+  const h = round(rand(1, 15), 1);
+  const Wg = round(m*10*h, 2);
+  return {
+    templateId:"we_gravity_work_falling", unit:"work_energy", skill:"work_energy", subSkill:"W_by_gravity_falling",
+    formulaUsed:"W<sub>g</sub> = +mgh on a falling object", questionType:"numeric", type:"numeric", examWeight:0.30,
+    stem:`A ${m} kg object falls a vertical distance of ${h} m. Find the work done on it by gravity (signed). (g = 10 m/s&sup2;.)`,
+    correct: Wg, answerUnit:"J", tolerancePct:2.5,
+    explanation:`Force (F<sub>g</sub>) and displacement (downward) are aligned. W<sub>g</sub> = +mgh = (${m})(10)(${h}) = ${Wg} J`,
+    misconception:"sign error for gravity on a falling object",
+    misconceptionTargeted:"sign error for gravity on a falling object",
+    given:{m, h}
+  };
+});
+
+regT("we_gravity_work_rising", () => {
+  const m = round(rand(0.5, 6), 2);
+  const h = round(rand(1, 10), 1);
+  const Wg = round(-m*10*h, 2);
+  return {
+    templateId:"we_gravity_work_rising", unit:"work_energy", skill:"work_energy", subSkill:"W_by_gravity_rising",
+    formulaUsed:"W<sub>g</sub> = &minus;mgh on a rising object", questionType:"numeric", type:"numeric", examWeight:0.30,
+    stem:`A ${m} kg ball rises a vertical distance of ${h} m. Find the signed work done on it by gravity. (g = 10 m/s&sup2;.)`,
+    correct: Wg, answerUnit:"J", tolerancePct:2.5,
+    explanation:`F<sub>g</sub> is down, displacement is up &rarr; angle 180&deg; &rarr; W<sub>g</sub> = &minus;mgh = ${Wg} J`,
+    misconception:"forgetting the negative sign on rising objects",
+    misconceptionTargeted:"forgetting the negative sign on rising objects",
+    given:{m, h}
+  };
+});
+
+regT("we_height_to_speed", () => {
+  const h = round(rand(2, 20), 1);
+  const v = round(Math.sqrt(2*10*h), 2);
+  return {
+    templateId:"we_height_to_speed", unit:"work_energy", skill:"work_energy", subSkill:"height_to_speed",
+    formulaUsed:"V = &radic;(2gh)", questionType:"numeric", type:"numeric", examWeight:0.30,
+    stem:`A small rock is dropped from a height of ${h} m. Find its speed just before reaching the ground. (g = 10 m/s&sup2;; ignore air resistance.)`,
+    correct: v, answerUnit:"m/s", tolerancePct:3.5,
+    explanation:`Energy conservation: &frac12;V&sup2; = gh &rArr; V = &radic;(2gh) = &radic;(20&middot;${h}) &asymp; ${v} m/s`,
+    misconception:"omitting the square root",
+    misconceptionTargeted:"omitting the square root",
+    given:{h}
+  };
+});
+
+regT("we_speed_to_height", () => {
+  const v = round(rand(4, 14), 1);
+  const h = round(v*v/(2*10), 2);
+  return {
+    templateId:"we_speed_to_height", unit:"work_energy", skill:"work_energy", subSkill:"speed_to_height",
+    formulaUsed:"h = V&sup2; / (2g)", questionType:"numeric", type:"numeric", examWeight:0.30,
+    stem:`A ball is launched straight up from the ground at ${v} m/s. Ignoring air resistance, find the maximum height it reaches. (g = 10 m/s&sup2;.)`,
+    correct: h, answerUnit:"m", tolerancePct:3.5,
+    explanation:`h = V&sup2;/(2g) = ${v}&sup2;/20 &asymp; ${h} m`,
+    misconception:"using V instead of V&sup2;",
+    misconceptionTargeted:"using V instead of V&sup2;",
+    given:{v}
+  };
+});
+
+regT("we_compare_KE_doubled_v", () => {
+  const m = round(rand(1, 5), 2);
+  const v = round(rand(2, 6), 1);
+  const KEnew = round(0.5*m*(2*v)*(2*v), 2);
+  return {
+    templateId:"we_compare_KE_doubled_v", unit:"work_energy", skill:"work_energy", subSkill:"KE_compare_v_doubled",
+    formulaUsed:"KE &prop; v&sup2;", questionType:"numeric", type:"numeric", examWeight:0.30,
+    stem:`A ${m} kg object at ${v} m/s is sped up to ${round(2*v,1)} m/s. Find its new kinetic energy.`,
+    correct: KEnew, answerUnit:"J", tolerancePct:3,
+    explanation:`KE<sub>new</sub> = &frac12;m(2V)&sup2; = &frac12;(${m})(${round(2*v,1)})&sup2; = ${KEnew} J (4&times; the original).`,
+    misconception:"doubling KE when v doubles",
+    misconceptionTargeted:"doubling KE when v doubles",
+    given:{m, v}
+  };
+});
+
+regT("we_KE_at_bottom_ramp_conservation", () => {
+  const m = round(rand(0.5, 4), 2);
+  const h = round(rand(1, 8), 1);
+  const KE = round(m*10*h, 2);
+  return {
+    templateId:"we_KE_at_bottom_ramp_conservation", unit:"work_energy", skill:"work_energy", subSkill:"PE_to_KE_conversion",
+    formulaUsed:"KE<sub>f</sub> = mgh (release from rest, no friction)", questionType:"numeric", type:"numeric", examWeight:0.30,
+    stem:`A ${m} kg cart is released from rest at the top of a smooth (frictionless) ramp ${h} m vertically above the ground. Find its KE at the bottom. (g = 10 m/s&sup2;.)`,
+    correct: KE, answerUnit:"J", tolerancePct:3,
+    explanation:`No friction &rArr; all initial PE<sub>g</sub> becomes KE: KE<sub>f</sub> = mgh = (${m})(10)(${h}) = ${KE} J`,
+    misconception:"using ramp length instead of vertical height",
+    misconceptionTargeted:"using ramp length instead of vertical height",
+    given:{m, h}
+  };
+});
+
+/* ====================================================================== */
+/* UNIT 3 - MOMENTUM (50%)   bank: 12 concept + 21 problem templates     */
+/* ====================================================================== */
+
+regT("mom_vector_tf", () => {
+  const isTrue = Math.random() < 0.5;
+  if (isTrue) return {
+    templateId:"mom_vector_tf", unit:"momentum", skill:"momentum", subSkill:"momentum_is_vector",
+    formulaUsed:"p = mv (vector)", questionType:"tf", type:"tf", examWeight:0.50,
+    stem:"A drone moving north has a momentum vector pointing north.",
+    correct:true,
+    explanation:"Momentum is a vector with the same direction as velocity.",
+    misconception:"momentum is a scalar",
+    misconceptionTargeted:"momentum is a scalar",
+    given:{}
+  };
+  return {
+    templateId:"mom_vector_tf", unit:"momentum", skill:"momentum", subSkill:"momentum_is_vector",
+    formulaUsed:"p = mv (vector)", questionType:"tf", type:"tf", examWeight:0.50,
+    stem:"Momentum has only magnitude, not direction.",
+    correct:false,
+    explanation:"Momentum IS a vector. It has both magnitude and direction.",
+    misconception:"momentum has no direction",
+    misconceptionTargeted:"momentum has no direction",
+    given:{}
+  };
+});
+
+regT("mom_sign_meaning_mcq", () => {
+  const opts = shuffle([
+    { txt:"The object is moving in the negative reference direction.", ok:true },
+    { txt:"The object has a smaller speed than something else.", ok:false },
+    { txt:"The object is losing mass.", ok:false },
+    { txt:"The object has stopped.", ok:false }
+  ]);
+  return {
+    templateId:"mom_sign_meaning_mcq", unit:"momentum", skill:"momentum", subSkill:"sign_meaning",
+    formulaUsed:"sign of p shows direction", questionType:"mcq", type:"mcq", examWeight:0.50,
+    stem:"An object has a momentum of &minus;5 kg&middot;m/s. What does the negative sign tell you?",
+    options:opts.map(o=>o.txt), correct:opts.findIndex(o=>o.ok),
+    explanation:"Negative p means the object is moving in the &minus; direction along the chosen axis.",
+    misconception:"negative momentum means a slower object",
+    misconceptionTargeted:"negative velocity means smaller speed",
+    given:{}
+  };
+});
+
+regT("mom_impulse_def_mcq", () => {
+  const opts = shuffle([
+    { txt:"Impulse equals the change in momentum.", ok:true },
+    { txt:"Impulse equals momentum.", ok:false },
+    { txt:"Impulse equals force times mass.", ok:false },
+    { txt:"Impulse equals mass times acceleration.", ok:false }
+  ]);
+  return {
+    templateId:"mom_impulse_def_mcq", unit:"momentum", skill:"momentum", subSkill:"impulse_definition",
+    formulaUsed:"J = &Delta;p = F&Delta;t", questionType:"mcq", type:"mcq", examWeight:0.50,
+    stem:"Which statement correctly defines impulse?",
+    options:opts.map(o=>o.txt), correct:opts.findIndex(o=>o.ok),
+    explanation:"Impulse J = &Delta;p = P<sub>f</sub> &minus; P<sub>i</sub>; equivalently J = F<sub>avg</sub>&Delta;t.",
+    misconception:"impulse equals momentum",
+    misconceptionTargeted:"impulse equals momentum",
+    given:{}
+  };
+});
+
+regT("mom_longer_dt_smaller_F_mcq", () => {
+  const safety = choice(["an airbag","a foam helmet liner","a padded gym mat","a catching glove","a crumple zone"]);
+  const opts = shuffle([
+    { txt:"It decreases the average force because the same impulse is spread over a longer time.", ok:true },
+    { txt:"It increases the average force because the impulse becomes larger.", ok:false },
+    { txt:"It has no effect on the force, only the impulse changes.", ok:false },
+    { txt:"It only changes the direction of the force, not the magnitude.", ok:false }
+  ]);
+  return {
+    templateId:"mom_longer_dt_smaller_F_mcq", unit:"momentum", skill:"momentum", subSkill:"longer_dt_smaller_F",
+    formulaUsed:"F<sub>avg</sub> = &Delta;p / &Delta;t", questionType:"mcq", type:"mcq", examWeight:0.50,
+    stem:`When ${safety} extends the collision time, what happens to the average force on the body?`,
+    options:opts.map(o=>o.txt), correct:opts.findIndex(o=>o.ok),
+    explanation:"&Delta;p is fixed by the change in motion. F<sub>avg</sub> = &Delta;p/&Delta;t, so larger &Delta;t &rarr; smaller F.",
+    misconception:"longer collision time increases the average force",
+    misconceptionTargeted:"longer collision time increases the average force",
+    given:{}
+  };
+});
+
+regT("mom_stop_vs_bounce_mcq", () => {
+  const opts = shuffle([
+    { txt:"Bouncing, because the change in momentum is larger when the ball reverses direction.", ok:true },
+    { txt:"Stopping, because all the motion is removed.", ok:false },
+    { txt:"They give the same impulse.", ok:false },
+    { txt:"Cannot be compared without the mass.", ok:false }
+  ]);
+  return {
+    templateId:"mom_stop_vs_bounce_mcq", unit:"momentum", skill:"momentum", subSkill:"stop_vs_bounce",
+    formulaUsed:"J = &Delta;p = P<sub>f</sub> &minus; P<sub>i</sub>", questionType:"mcq", type:"mcq", examWeight:0.50,
+    stem:"A ball hits a wall. Compared to stopping dead on the wall, which case requires a larger impulse on the ball: bouncing back at the same speed, or stopping?",
+    options:opts.map(o=>o.txt), correct:opts.findIndex(o=>o.ok),
+    explanation:"Stopping: &Delta;p = 0 &minus; mV<sub>i</sub>. Bouncing: &Delta;p = &minus;mV<sub>i</sub> &minus; mV<sub>i</sub> = &minus;2mV<sub>i</sub>. Bouncing requires twice the impulse magnitude.",
+    misconception:"stopping requires more impulse than bouncing",
+    misconceptionTargeted:"stopping requires more impulse than bouncing",
+    given:{}
+  };
+});
+
+regT("mom_conservation_condition_mcq", () => {
+  const opts = shuffle([
+    { txt:"There is no net external force on the system.", ok:true },
+    { txt:"No collisions occur in the system.", ok:false },
+    { txt:"The two objects must have equal masses.", ok:false },
+    { txt:"The collision must be elastic.", ok:false }
+  ]);
+  return {
+    templateId:"mom_conservation_condition_mcq", unit:"momentum", skill:"momentum", subSkill:"conservation_condition",
+    formulaUsed:"&Sigma;p<sub>before</sub> = &Sigma;p<sub>after</sub> if F<sub>ext,net</sub> = 0", questionType:"mcq", type:"mcq", examWeight:0.50,
+    stem:"Under what condition is the total momentum of a system conserved?",
+    options:opts.map(o=>o.txt), correct:opts.findIndex(o=>o.ok),
+    explanation:"Total momentum is conserved when the net external force on the system is zero.",
+    misconception:"momentum is only conserved in elastic collisions",
+    misconceptionTargeted:"momentum is only conserved in elastic collisions",
+    given:{}
+  };
+});
+
+regT("mom_inelastic_KE_tf", () => {
+  const isTrue = Math.random() < 0.5;
+  if (isTrue) return {
+    templateId:"mom_inelastic_KE_tf", unit:"momentum", skill:"momentum", subSkill:"inelastic_KE_not_conserved",
+    formulaUsed:"&Sigma;p conserved; &Sigma;KE not", questionType:"tf", type:"tf", examWeight:0.50,
+    stem:"In a perfectly inelastic collision, total momentum is conserved but total kinetic energy is not.",
+    correct:true,
+    explanation:"Momentum is conserved (no external net force). KE is not conserved &mdash; some converts to heat, sound, deformation.",
+    misconception:"KE is conserved in all collisions",
+    misconceptionTargeted:"KE is conserved in all collisions",
+    given:{}
+  };
+  return {
+    templateId:"mom_inelastic_KE_tf", unit:"momentum", skill:"momentum", subSkill:"inelastic_KE_not_conserved",
+    formulaUsed:"KE not conserved in perfectly inelastic", questionType:"tf", type:"tf", examWeight:0.50,
+    stem:"When two objects stick together after colliding, their total kinetic energy is conserved.",
+    correct:false,
+    explanation:"Perfectly inelastic (sticking) always loses some KE. Momentum is conserved, but KE is not.",
+    misconception:"sticking collisions conserve kinetic energy",
+    misconceptionTargeted:"sticking collisions conserve kinetic energy",
+    given:{}
+  };
+});
+
+regT("mom_recoil_concept_mcq", () => {
+  const opts = shuffle([
+    { txt:"They have equal magnitudes and opposite directions.", ok:true },
+    { txt:"The larger mass gets the larger momentum.", ok:false },
+    { txt:"Only the smaller mass gains momentum.", ok:false },
+    { txt:"Both objects get the same velocity.", ok:false }
+  ]);
+  return {
+    templateId:"mom_recoil_concept_mcq", unit:"momentum", skill:"momentum", subSkill:"recoil_equal_opposite_p",
+    formulaUsed:"&Sigma;p = 0 &rArr; p<sub>1</sub> = &minus;p<sub>2</sub>", questionType:"mcq", type:"mcq", examWeight:0.50,
+    stem:"Two skaters originally at rest push off each other. What can you say about their final momenta?",
+    options:opts.map(o=>o.txt), correct:opts.findIndex(o=>o.ok),
+    explanation:"Initial total p = 0, conserved &rArr; p<sub>1f</sub> + p<sub>2f</sub> = 0 &rArr; equal magnitudes, opposite signs.",
+    misconception:"the heavier skater gets the larger momentum",
+    misconceptionTargeted:"the heavier skater gets the larger momentum",
+    given:{}
+  };
+});
+
+regT("mom_more_speed_more_p_tf", () => {
+  const isTrue = Math.random() < 0.5;
+  if (isTrue) return {
+    templateId:"mom_more_speed_more_p_tf", unit:"momentum", skill:"momentum", subSkill:"p_proportional_to_v",
+    formulaUsed:"p = mv (linear)", questionType:"tf", type:"tf", examWeight:0.50,
+    stem:"For a fixed mass, doubling the speed doubles the momentum.",
+    correct:true,
+    explanation:"p = mv is linear in v.",
+    misconception:"p depends on v&sup2;",
+    misconceptionTargeted:"p depends on v&sup2;",
+    given:{}
+  };
+  return {
+    templateId:"mom_more_speed_more_p_tf", unit:"momentum", skill:"momentum", subSkill:"p_proportional_to_v",
+    formulaUsed:"p = mv", questionType:"tf", type:"tf", examWeight:0.50,
+    stem:"Two objects with the same mass but different velocities must have the same momentum.",
+    correct:false,
+    explanation:"p = mv depends on v as well; different v &rarr; different p.",
+    misconception:"momentum depends only on mass",
+    misconceptionTargeted:"momentum depends only on mass",
+    given:{}
+  };
+});
+
+regT("mom_J_equals_dp_tf", () => {
+  const isTrue = Math.random() < 0.5;
+  if (isTrue) return {
+    templateId:"mom_J_equals_dp_tf", unit:"momentum", skill:"momentum", subSkill:"J_equals_dp",
+    formulaUsed:"J = &Delta;p", questionType:"tf", type:"tf", examWeight:0.50,
+    stem:"The impulse delivered to an object is equal to its change in momentum.",
+    correct:true,
+    explanation:"This is the impulse-momentum relationship: J = &Delta;p = F<sub>avg</sub>&Delta;t.",
+    misconception:"impulse is unrelated to momentum change",
+    misconceptionTargeted:"impulse is unrelated to momentum change",
+    given:{}
+  };
+  return {
+    templateId:"mom_J_equals_dp_tf", unit:"momentum", skill:"momentum", subSkill:"J_equals_dp",
+    formulaUsed:"J = &Delta;p", questionType:"tf", type:"tf", examWeight:0.50,
+    stem:"Impulse and momentum are measured in different units and represent unrelated physical ideas.",
+    correct:false,
+    explanation:"J and &Delta;p both have units kg&middot;m/s = N&middot;s; they describe the same change.",
+    misconception:"impulse units differ from momentum units",
+    misconceptionTargeted:"impulse units differ from momentum units",
+    given:{}
+  };
+});
+
+regT("mom_inelastic_stick_mcq", () => {
+  const opts = shuffle([
+    { txt:"The two objects stick together and move with a common final velocity.", ok:true },
+    { txt:"The two objects bounce apart with their original speeds.", ok:false },
+    { txt:"All kinetic energy is conserved.", ok:false },
+    { txt:"Momentum is no longer conserved.", ok:false }
+  ]);
+  return {
+    templateId:"mom_inelastic_stick_mcq", unit:"momentum", skill:"momentum", subSkill:"inelastic_definition",
+    formulaUsed:"m<sub>1</sub>v<sub>1i</sub> + m<sub>2</sub>v<sub>2i</sub> = (m<sub>1</sub>+m<sub>2</sub>) v<sub>f</sub>", questionType:"mcq", type:"mcq", examWeight:0.50,
+    stem:"What characterizes a perfectly inelastic collision?",
+    options:opts.map(o=>o.txt), correct:opts.findIndex(o=>o.ok),
+    explanation:"Objects stick and share one final velocity. Momentum still conserved; KE is not.",
+    misconception:"perfectly inelastic means objects bounce off perfectly",
+    misconceptionTargeted:"perfectly inelastic means objects bounce off perfectly",
+    given:{}
+  };
+});
+
+regT("mom_external_force_tf", () => {
+  const isTrue = Math.random() < 0.5;
+  if (isTrue) return {
+    templateId:"mom_external_force_tf", unit:"momentum", skill:"momentum", subSkill:"external_force_breaks_conservation",
+    formulaUsed:"F<sub>ext,net</sub> &ne; 0 &rArr; &Sigma;p changes", questionType:"tf", type:"tf", examWeight:0.50,
+    stem:"If a strong external force pushes on a two-object system during a collision, the total momentum of the system can change.",
+    correct:true,
+    explanation:"A non-zero net external force changes the total momentum (J<sub>ext</sub> = &Delta;p<sub>system</sub>).",
+    misconception:"momentum is always conserved no matter what",
+    misconceptionTargeted:"momentum is always conserved no matter what",
+    given:{}
+  };
+  return {
+    templateId:"mom_external_force_tf", unit:"momentum", skill:"momentum", subSkill:"external_force_breaks_conservation",
+    formulaUsed:"conservation needs F<sub>ext,net</sub> = 0", questionType:"tf", type:"tf", examWeight:0.50,
+    stem:"Momentum conservation does not require any condition on external forces.",
+    correct:false,
+    explanation:"It requires the net external force on the system to be zero (or negligible during the interaction).",
+    misconception:"momentum is conserved with or without external forces",
+    misconceptionTargeted:"momentum is conserved with or without external forces",
+    given:{}
+  };
+});
+
+/* --- MOMENTUM PROBLEM-SOLVING (21) --- */
+
+regT("mom_find_p", () => {
+  const o = choice(MOM_OBJECTS);
+  const m = round(rand(o.mRange[0], o.mRange[1]), 3);
+  const v = round(rand(2, 14), 1);
+  const p = round(m*v, 3);
+  return {
+    templateId:"mom_find_p", unit:"momentum", skill:"momentum", subSkill:"find_p_from_m_v",
+    formulaUsed:"p = mv", questionType:"numeric", type:"numeric", examWeight:0.50,
+    stem:`A ${o.name} of mass ${m} kg moves at ${v} m/s. Find its momentum.`,
+    correct: p, answerUnit:"kg&middot;m/s", tolerancePct:3,
+    explanation:`p = mv = (${m})(${v}) = ${p} kg&middot;m/s`,
+    misconception:"momentum depends only on velocity",
+    misconceptionTargeted:"momentum depends only on velocity",
+    given:{m, v}
+  };
+});
+
+regT("mom_find_m", () => {
+  const o = choice(MOM_OBJECTS);
+  const v = round(rand(3, 12), 1);
+  const m = round(rand(o.mRange[0], o.mRange[1]), 3);
+  const p = round(m*v, 3);
+  return {
+    templateId:"mom_find_m", unit:"momentum", skill:"momentum", subSkill:"find_m_from_p_v",
+    formulaUsed:"m = p / v", questionType:"numeric", type:"numeric", examWeight:0.50,
+    stem:`A ${o.name} has momentum ${p} kg&middot;m/s while moving at ${v} m/s. Find its mass.`,
+    correct: round(p/v, 3), answerUnit:"kg", tolerancePct:3.5,
+    explanation:`From p = mv, m = p/v = ${p}/${v} &asymp; ${round(p/v,3)} kg`,
+    misconception:"only mass affects momentum",
+    misconceptionTargeted:"only mass affects momentum",
+    given:{p, v}
+  };
+});
+
+regT("mom_find_v", () => {
+  const o = choice(MOM_OBJECTS);
+  const m = round(rand(o.mRange[0], o.mRange[1]), 3);
+  const v = round(rand(2, 12), 1);
+  const p = round(m*v, 3);
+  return {
+    templateId:"mom_find_v", unit:"momentum", skill:"momentum", subSkill:"find_v_from_p_m",
+    formulaUsed:"v = p / m", questionType:"numeric", type:"numeric", examWeight:0.50,
+    stem:`A ${o.name} of mass ${m} kg has momentum ${p} kg&middot;m/s. Find its velocity.`,
+    correct: round(p/m, 2), answerUnit:"m/s", tolerancePct:3.5,
+    explanation:`v = p/m = ${p}/${m} &asymp; ${round(p/m,2)} m/s`,
+    misconception:"multiplying p by m instead of dividing",
+    misconceptionTargeted:"multiplying p by m instead of dividing",
+    given:{p, m}
+  };
+});
+
+regT("mom_find_J_FT", () => {
+  const F = round(rand(10, 200), 1);
+  const dt = round(rand(0.05, 1.5), 2);
+  const J = round(F*dt, 2);
+  return {
+    templateId:"mom_find_J_FT", unit:"momentum", skill:"momentum", subSkill:"find_J_from_F_dt",
+    formulaUsed:"J = F&Delta;t", questionType:"numeric", type:"numeric", examWeight:0.50,
+    stem:`An average force of ${F} N acts for ${dt} s on an object. Find the impulse delivered.`,
+    correct: J, answerUnit:"N&middot;s", tolerancePct:3,
+    explanation:`J = F&Delta;t = (${F})(${dt}) = ${J} N&middot;s`,
+    misconception:"adding F and &Delta;t instead of multiplying",
+    misconceptionTargeted:"adding F and &Delta;t instead of multiplying",
+    given:{F, dt}
+  };
+});
+
+regT("mom_find_F_from_J_dt", () => {
+  const F = round(rand(10, 150), 1);
+  const dt = round(rand(0.05, 1.0), 2);
+  const J = round(F*dt, 2);
+  return {
+    templateId:"mom_find_F_from_J_dt", unit:"momentum", skill:"momentum", subSkill:"find_F_from_J_dt",
+    formulaUsed:"F = J / &Delta;t", questionType:"numeric", type:"numeric", examWeight:0.50,
+    stem:`A ${J} N&middot;s impulse is delivered during a contact lasting ${dt} s. Find the average force.`,
+    correct: round(J/dt, 2), answerUnit:"N", tolerancePct:3.5,
+    explanation:`F = J/&Delta;t = ${J}/${dt} &asymp; ${round(J/dt,2)} N`,
+    misconception:"multiplying J by &Delta;t",
+    misconceptionTargeted:"multiplying J by &Delta;t",
+    given:{J, dt}
+  };
+});
+
+regT("mom_find_dt_from_J_F", () => {
+  const F = round(rand(20, 200), 1);
+  const dt = round(rand(0.05, 1.0), 2);
+  const J = round(F*dt, 2);
+  return {
+    templateId:"mom_find_dt_from_J_F", unit:"momentum", skill:"momentum", subSkill:"find_dt_from_J_F",
+    formulaUsed:"&Delta;t = J / F", questionType:"numeric", type:"numeric", examWeight:0.50,
+    stem:`An impulse of ${J} N&middot;s is produced by an average force of ${F} N. Find the contact time &Delta;t.`,
+    correct: round(J/F, 3), answerUnit:"s", tolerancePct:3.5,
+    explanation:`&Delta;t = J/F = ${J}/${F} &asymp; ${round(J/F,3)} s`,
+    misconception:"multiplying J by F",
+    misconceptionTargeted:"multiplying J by F",
+    given:{J, F}
+  };
+});
+
+regT("mom_find_dp_stop", () => {
+  const o = choice(MOM_OBJECTS);
+  const m = round(rand(o.mRange[0], o.mRange[1]), 2);
+  const vi = round(rand(3, 12), 1);
+  const dp = round(m*(0 - vi), 2);
+  return {
+    templateId:"mom_find_dp_stop", unit:"momentum", skill:"momentum", subSkill:"dp_when_stopping",
+    formulaUsed:"&Delta;p = m(V<sub>f</sub> &minus; V<sub>i</sub>)", questionType:"numeric", type:"numeric", examWeight:0.50,
+    stem:`A ${m} kg ${o.name} moving at +${vi} m/s is caught and stopped. Find &Delta;p (signed).`,
+    correct: dp, answerUnit:"kg&middot;m/s", tolerancePct:3.5,
+    explanation:`&Delta;p = m(V<sub>f</sub> &minus; V<sub>i</sub>) = ${m}(0 &minus; ${vi}) = ${dp} kg&middot;m/s`,
+    misconception:"forgetting the negative sign when the object stops",
+    misconceptionTargeted:"forgetting the negative sign when the object stops",
+    given:{m, vi}
+  };
+});
+
+regT("mom_find_dp_bounce", () => {
+  const o = choice(MOM_OBJECTS);
+  const m = round(rand(o.mRange[0], o.mRange[1]), 2);
+  const vi = round(rand(4, 14), 1);
+  const vf = -round(rand(2, vi-1), 1);
+  const dp = round(m*(vf - vi), 2);
+  return {
+    templateId:"mom_find_dp_bounce", unit:"momentum", skill:"momentum", subSkill:"dp_when_bouncing",
+    formulaUsed:"&Delta;p = m(V<sub>f</sub> &minus; V<sub>i</sub>)", questionType:"numeric", type:"numeric", examWeight:0.50,
+    stem:`A ${m} kg ${o.name} hits a wall at +${vi} m/s and rebounds at ${vf} m/s. Find &Delta;p (signed).`,
+    correct: dp, answerUnit:"kg&middot;m/s", tolerancePct:3.5,
+    explanation:`&Delta;p = m(V<sub>f</sub> &minus; V<sub>i</sub>) = ${m}(${vf} &minus; ${vi}) = ${dp} kg&middot;m/s`,
+    misconception:"adding speeds instead of doing V<sub>f</sub> &minus; V<sub>i</sub> with signs",
+    misconceptionTargeted:"adding speeds instead of subtracting signed velocities",
+    given:{m, vi, vf}
+  };
+});
+
+regT("mom_find_Pf_from_J_Pi", () => {
+  const o = choice(MOM_OBJECTS);
+  const m = round(rand(o.mRange[0], o.mRange[1]), 2);
+  const vi = round(rand(2, 8), 1);
+  const Pi = round(m*vi, 2);
+  const J = round(rand(-10, 10), 2);
+  const Pf = round(Pi + J, 2);
+  return {
+    templateId:"mom_find_Pf_from_J_Pi", unit:"momentum", skill:"momentum", subSkill:"find_Pf_from_J_Pi",
+    formulaUsed:"P<sub>f</sub> = P<sub>i</sub> + J", questionType:"numeric", type:"numeric", examWeight:0.50,
+    stem:`A ${o.name} has initial momentum P<sub>i</sub> = ${Pi} kg&middot;m/s. An impulse J = ${J} N&middot;s is delivered to it. Find P<sub>f</sub>.`,
+    correct: Pf, answerUnit:"kg&middot;m/s", tolerancePct:3.5,
+    explanation:`From J = &Delta;p, P<sub>f</sub> = P<sub>i</sub> + J = ${Pi} + (${J}) = ${Pf} kg&middot;m/s`,
+    misconception:"subtracting J instead of adding",
+    misconceptionTargeted:"subtracting J instead of adding",
+    given:{Pi, J}
+  };
+});
+
+regT("mom_find_Pi_from_J_Pf", () => {
+  const Pi = round(rand(-15, 15), 2);
+  const J = round(rand(-12, 12), 2);
+  const Pf = round(Pi + J, 2);
+  return {
+    templateId:"mom_find_Pi_from_J_Pf", unit:"momentum", skill:"momentum", subSkill:"find_Pi_from_J_Pf",
+    formulaUsed:"P<sub>i</sub> = P<sub>f</sub> &minus; J", questionType:"numeric", type:"numeric", examWeight:0.50,
+    stem:`After receiving an impulse J = ${J} N&middot;s, an object has P<sub>f</sub> = ${Pf} kg&middot;m/s. Find P<sub>i</sub>.`,
+    correct: Pi, answerUnit:"kg&middot;m/s", tolerancePct:3.5,
+    explanation:`P<sub>i</sub> = P<sub>f</sub> &minus; J = ${Pf} &minus; (${J}) = ${Pi} kg&middot;m/s`,
+    misconception:"adding J instead of subtracting",
+    misconceptionTargeted:"adding J instead of subtracting",
+    given:{Pf, J}
+  };
+});
+
+regT("mom_F_from_dp_dt", () => {
+  const o = choice(MOM_OBJECTS);
+  const m = round(rand(o.mRange[0], o.mRange[1]), 2);
+  const vi = round(rand(4, 12), 1);
+  const dt = round(rand(0.05, 0.5), 2);
+  const F = round(m*(0 - vi)/dt, 2);
+  return {
+    templateId:"mom_F_from_dp_dt", unit:"momentum", skill:"momentum", subSkill:"avg_force_collision",
+    formulaUsed:"F<sub>avg</sub> = &Delta;p / &Delta;t", questionType:"numeric", type:"numeric", examWeight:0.50,
+    stem:`A ${m} kg ${o.name} moving at +${vi} m/s is brought to rest in ${dt} s. Find the average force on the ${o.name} (signed).`,
+    correct: F, answerUnit:"N", tolerancePct:3.5,
+    explanation:`&Delta;p = m(V<sub>f</sub> &minus; V<sub>i</sub>) = ${round(m*(0-vi),2)} kg&middot;m/s. F<sub>avg</sub> = &Delta;p/&Delta;t = ${F} N (negative &rArr; opposite to motion).`,
+    misconception:"reporting a positive force when the object decelerates",
+    misconceptionTargeted:"reporting a positive force when the object decelerates",
+    given:{m, vi, dt}
+  };
+});
+
+regT("mom_dt_to_reduce_F", () => {
+  const o = choice(MOM_OBJECTS);
+  const m = round(rand(o.mRange[0], o.mRange[1]), 2);
+  const vi = round(rand(5, 12), 1);
+  const dt = round(rand(0.1, 0.6), 2);
+  const F = round(Math.abs(m*(0 - vi)/dt), 2);
+  return {
+    templateId:"mom_dt_to_reduce_F", unit:"momentum", skill:"momentum", subSkill:"avg_force_stopping",
+    formulaUsed:"|F<sub>avg</sub>| = |&Delta;p| / &Delta;t", questionType:"numeric", type:"numeric", examWeight:0.50,
+    stem:`A ${m} kg ${o.name} moving at ${vi} m/s comes to rest in ${dt} s. Find the magnitude of the average force.`,
+    correct: F, answerUnit:"N", tolerancePct:3.5,
+    explanation:`|&Delta;p| = m V<sub>i</sub> = (${m})(${vi}) = ${round(m*vi,2)} kg&middot;m/s. |F<sub>avg</sub>| = ${round(m*vi,2)}/${dt} = ${F} N.`,
+    misconception:"computing F from F = ma instead of F = &Delta;p/&Delta;t",
+    misconceptionTargeted:"computing F via a-loop instead of impulse",
+    given:{m, vi, dt}
+  };
+});
+
+regT("mom_stop_impulse_compare", () => {
+  const m = round(rand(0.2, 1.5), 2);
+  const v = round(rand(4, 12), 1);
+  const stop_J = round(Math.abs(m*v), 2);
+  const bounce_J = round(2*Math.abs(m*v), 2);
+  return {
+    templateId:"mom_stop_impulse_compare", unit:"momentum", skill:"momentum", subSkill:"stop_vs_bounce_numeric",
+    formulaUsed:"|J<sub>bounce</sub>| = 2 m V<sub>i</sub>", questionType:"numeric", type:"numeric", examWeight:0.50,
+    stem:`A ${m} kg ball hits a wall at ${v} m/s and rebounds at ${v} m/s the other way. Find the magnitude of the impulse delivered to the ball.`,
+    correct: bounce_J, answerUnit:"N&middot;s", tolerancePct:3,
+    explanation:`|&Delta;p| = m|V<sub>f</sub> &minus; V<sub>i</sub>| = ${m}|&minus;${v} &minus; ${v}| = 2 m V<sub>i</sub> = ${bounce_J} N&middot;s (twice the stopping impulse ${stop_J} N&middot;s).`,
+    misconception:"reporting m V<sub>i</sub> instead of 2 m V<sub>i</sub>",
+    misconceptionTargeted:"reporting m V<sub>i</sub> instead of 2 m V<sub>i</sub>",
+    given:{m, v}
+  };
+});
+
+regT("mom_inelastic_find_vf", () => {
+  const m1 = round(rand(0.5, 4), 2);
+  const m2 = round(rand(0.5, 4), 2);
+  const v1 = round(rand(2, 10), 1);
+  const vf = round((m1*v1)/(m1 + m2), 2);
+  return {
+    templateId:"mom_inelastic_find_vf", unit:"momentum", skill:"momentum", subSkill:"inelastic_find_vf",
+    formulaUsed:"m<sub>1</sub>v<sub>1i</sub> + m<sub>2</sub>v<sub>2i</sub> = (m<sub>1</sub>+m<sub>2</sub>) v<sub>f</sub>", questionType:"numeric", type:"numeric", examWeight:0.50,
+    stem:`A ${m1} kg cart moving at ${v1} m/s collides with a stationary ${m2} kg cart and they stick together. Find their common final velocity.`,
+    correct: vf, answerUnit:"m/s", tolerancePct:3.5,
+    explanation:`v<sub>f</sub> = (${m1}&middot;${v1} + 0)/(${m1}+${m2}) &asymp; ${vf} m/s`,
+    misconception:"averaging velocities ignoring mass",
+    misconceptionTargeted:"averaging velocities ignoring mass",
+    given:{m1, m2, v1}
+  };
+});
+
+regT("mom_inelastic_both_moving", () => {
+  const m1 = round(rand(0.5, 3), 2);
+  const m2 = round(rand(0.5, 3), 2);
+  const v1 = round(rand(2, 8), 1);
+  const v2 = -round(rand(1, 5), 1);
+  const vf = round((m1*v1 + m2*v2)/(m1 + m2), 2);
+  return {
+    templateId:"mom_inelastic_both_moving", unit:"momentum", skill:"momentum", subSkill:"inelastic_two_moving",
+    formulaUsed:"m<sub>1</sub>v<sub>1i</sub> + m<sub>2</sub>v<sub>2i</sub> = (m<sub>1</sub>+m<sub>2</sub>) v<sub>f</sub>", questionType:"numeric", type:"numeric", examWeight:0.50,
+    stem:`A ${m1} kg cart moves right at +${v1} m/s and meets a ${m2} kg cart moving left at ${v2} m/s. They stick together on impact. Find the common final velocity (signed).`,
+    correct: vf, answerUnit:"m/s", tolerancePct:5,
+    explanation:`v<sub>f</sub> = (${m1}&middot;${v1} + ${m2}&middot;${v2}) / (${m1}+${m2}) &asymp; ${vf} m/s`,
+    misconception:"ignoring sign of v<sub>2</sub>",
+    misconceptionTargeted:"ignoring sign of v<sub>2</sub>",
+    given:{m1, m2, v1, v2}
+  };
+});
+
+regT("mom_recoil_find_v", () => {
+  const m1 = round(rand(40, 80), 1);
+  const m2 = round(rand(40, 80), 1);
+  const v1 = round(rand(0.5, 3), 2);
+  const v2 = round(-(m1*v1)/m2, 2);
+  return {
+    templateId:"mom_recoil_find_v", unit:"momentum", skill:"momentum", subSkill:"recoil_find_v",
+    formulaUsed:"0 = m<sub>1</sub>v<sub>1f</sub> + m<sub>2</sub>v<sub>2f</sub>", questionType:"numeric", type:"numeric", examWeight:0.50,
+    stem:`Two skaters at rest on smooth ice push off each other. Skater 1 (${m1} kg) moves at +${v1} m/s. Skater 2 has mass ${m2} kg. Find skater 2's velocity (signed).`,
+    correct: v2, answerUnit:"m/s", tolerancePct:5,
+    explanation:`Total p<sub>i</sub> = 0, so m<sub>1</sub>v<sub>1f</sub> + m<sub>2</sub>v<sub>2f</sub> = 0 &rArr; v<sub>2f</sub> = &minus;m<sub>1</sub>v<sub>1f</sub>/m<sub>2</sub> &asymp; ${v2} m/s`,
+    misconception:"forgetting the negative sign for the recoil partner",
+    misconceptionTargeted:"forgetting the negative sign for the recoil partner",
+    given:{m1, m2, v1}
+  };
+});
+
+regT("mom_pushoff_find_v_small", () => {
+  const M = round(rand(50, 90), 1);
+  const m = round(rand(2, 10), 1);
+  const vM = round(rand(0.3, 1.0), 2);
+  const vm = round(M*vM/m, 2);
+  return {
+    templateId:"mom_pushoff_find_v_small", unit:"momentum", skill:"momentum", subSkill:"recoil_find_v_smaller_mass",
+    formulaUsed:"m<sub>1</sub>v<sub>1f</sub> = &minus;m<sub>2</sub>v<sub>2f</sub>", questionType:"numeric", type:"numeric", examWeight:0.50,
+    stem:`A ${M} kg person standing on smooth ice throws a ${m} kg ball forward. After the throw the person moves backward at ${vM} m/s. Find the ball's velocity (signed, with forward as +).`,
+    correct: vm, answerUnit:"m/s", tolerancePct:5,
+    explanation:`0 = M(&minus;v<sub>M</sub>) + m v<sub>m</sub> &rArr; v<sub>m</sub> = M v<sub>M</sub>/m = (${M})(${vM})/${m} &asymp; ${vm} m/s (forward).`,
+    misconception:"giving the ball a negative velocity",
+    misconceptionTargeted:"sign error on the ball's velocity",
+    given:{M, m, vM}
+  };
+});
+
+regT("mom_collision_find_v1i", () => {
+  const m1 = round(rand(0.5, 3), 2);
+  const m2 = round(rand(0.5, 3), 2);
+  const v1 = round(rand(2, 8), 1);
+  const vf = round((m1*v1)/(m1+m2), 3);
+  return {
+    templateId:"mom_collision_find_v1i", unit:"momentum", skill:"momentum", subSkill:"inelastic_solve_for_v1i",
+    formulaUsed:"v<sub>1i</sub> = (m<sub>1</sub>+m<sub>2</sub>) v<sub>f</sub> / m<sub>1</sub>", questionType:"numeric", type:"numeric", examWeight:0.50,
+    stem:`A ${m1} kg cart hits a stationary ${m2} kg cart; they stick. The combined cart moves at ${vf} m/s afterward. Find the initial velocity of the moving cart.`,
+    correct: v1, answerUnit:"m/s", tolerancePct:5,
+    explanation:`Rearrange: v<sub>1i</sub> = (${m1}+${m2})&middot;${vf}/${m1} &asymp; ${v1} m/s`,
+    misconception:"using v<sub>f</sub> as v<sub>1i</sub>",
+    misconceptionTargeted:"using v<sub>f</sub> as v<sub>1i</sub>",
+    given:{m1, m2, vf}
+  };
+});
+
+regT("mom_sign_compare_p", () => {
+  const m = round(rand(0.3, 2.5), 2);
+  const vi = round(rand(3, 10), 1);
+  const vf = -round(rand(2, vi-1), 1);
+  const pi = round(m*vi, 2);
+  const pf = round(m*vf, 2);
+  const dp = round(pf - pi, 2);
+  return {
+    templateId:"mom_sign_compare_p", unit:"momentum", skill:"momentum", subSkill:"sign_compare_p",
+    formulaUsed:"&Delta;p = P<sub>f</sub> &minus; P<sub>i</sub>", questionType:"numeric", type:"numeric", examWeight:0.50,
+    stem:`A ${m} kg ball has P<sub>i</sub> = ${pi} kg&middot;m/s (moving in +x). After bouncing off a wall it has P<sub>f</sub> = ${pf} kg&middot;m/s. Find &Delta;p (signed).`,
+    correct: dp, answerUnit:"kg&middot;m/s", tolerancePct:3.5,
+    explanation:`&Delta;p = P<sub>f</sub> &minus; P<sub>i</sub> = ${pf} &minus; ${pi} = ${dp} kg&middot;m/s`,
+    misconception:"adding magnitudes instead of subtracting signed momenta",
+    misconceptionTargeted:"adding magnitudes instead of subtracting signed momenta",
+    given:{m, vi, vf}
+  };
+});
+
+regT("mom_vehicle_inelastic", () => {
+  const o = choice(VEHICLES);
+  const m1 = round(rand(o.mRange[0], o.mRange[1]), 0);
+  const m2 = round(rand(800, 1500), 0);
+  const v1 = round(rand(5, 15), 1);
+  const vf = round((m1*v1)/(m1+m2), 2);
+  return {
+    templateId:"mom_vehicle_inelastic", unit:"momentum", skill:"momentum", subSkill:"inelastic_vehicle",
+    formulaUsed:"v<sub>f</sub> = m<sub>1</sub>v<sub>1i</sub> / (m<sub>1</sub>+m<sub>2</sub>)", questionType:"numeric", type:"numeric", examWeight:0.50,
+    stem:`A ${m1} kg ${o.name} moving at ${v1} m/s collides with a stationary ${m2} kg vehicle. The vehicles lock together. Find their common final velocity.`,
+    correct: vf, answerUnit:"m/s", tolerancePct:4,
+    explanation:`v<sub>f</sub> = ${m1}&middot;${v1} / (${m1}+${m2}) &asymp; ${vf} m/s`,
+    misconception:"using only m<sub>1</sub> in the denominator",
+    misconceptionTargeted:"using only m<sub>1</sub> in the denominator",
+    given:{m1, m2, v1}
+  };
+});
+
+regT("mom_total_p_two_objects", () => {
+  const m1 = round(rand(1, 5), 2);
+  const m2 = round(rand(1, 5), 2);
+  const v1 = round(rand(2, 8), 1);
+  const v2 = round(rand(-6, 6), 1);
+  const ptot = round(m1*v1 + m2*v2, 2);
+  return {
+    templateId:"mom_total_p_two_objects", unit:"momentum", skill:"momentum", subSkill:"total_p_system",
+    formulaUsed:"&Sigma;p = m<sub>1</sub>v<sub>1</sub> + m<sub>2</sub>v<sub>2</sub>", questionType:"numeric", type:"numeric", examWeight:0.50,
+    stem:`Two carts have m<sub>1</sub> = ${m1} kg at v<sub>1</sub> = ${v1} m/s and m<sub>2</sub> = ${m2} kg at v<sub>2</sub> = ${v2} m/s. Find the total momentum of the system (signed).`,
+    correct: ptot, answerUnit:"kg&middot;m/s", tolerancePct:3.5,
+    explanation:`&Sigma;p = ${m1}&middot;${v1} + ${m2}&middot;${v2} = ${ptot} kg&middot;m/s`,
+    misconception:"ignoring sign of v<sub>2</sub>",
+    misconceptionTargeted:"ignoring sign of v<sub>2</sub>",
+    given:{m1, m2, v1, v2}
+  };
+});
+
+
+/* ===== MAPS ===== */
+/* ============================================================================
+   UNIT -> TEMPLATE MAPS  (locked blueprint)
+============================================================================ */
+
+const UNIT_CONCEPT_TEMPLATES = {
+  forces: [
+    "frc_newton2_tf","frc_balanced_mcq","frc_direction_a_mcq","frc_fbd_normal_tf",
+    "frc_unbalanced_mcq","frc_newton1_tf","frc_mass_vs_weight_mcq","frc_friction_concept_mcq"
+  ],
+  work_energy: [
+    "we_sign_of_work_mcq","we_zero_work_tf","we_ke_velocity_mcq","we_pe_height_tf",
+    "we_wnet_ke_mcq","we_conservation_tf","we_falling_transformation_mcq",
+    "we_rising_transformation_tf","we_compare_ke_mcq"
+  ],
+  momentum: [
+    "mom_vector_tf","mom_sign_meaning_mcq","mom_impulse_def_mcq","mom_longer_dt_smaller_F_mcq",
+    "mom_stop_vs_bounce_mcq","mom_conservation_condition_mcq","mom_inelastic_KE_tf",
+    "mom_recoil_concept_mcq","mom_more_speed_more_p_tf","mom_J_equals_dp_tf",
+    "mom_inelastic_stick_mcq","mom_external_force_tf"
+  ]
+};
+
+const UNIT_PROBLEM_TEMPLATES = {
+  forces: [
+    "frc_fnet_find_F","frc_fnet_find_m","frc_fnet_find_a","frc_two_forces_find_Fnet",
+    "frc_weight_find_Fg","frc_weight_find_m","frc_normal_level_find_N","frc_tension_hanging_find_T",
+    "frc_friction_net_find_a","frc_three_forces_find_Fnet","frc_equilibrium_find_F",
+    "frc_two_unequal_find_a","frc_find_F_from_a_only"
+  ],
+  work_energy: [
+    "we_find_W_simple","we_find_W_angle","we_find_W_negative_friction","we_find_KE",
+    "we_find_v_from_KE","we_find_m_from_KE","we_find_PEg","we_find_h_from_PE","we_find_m_from_PE",
+    "we_wnet_find_dKE","we_wnet_find_vf","we_conservation_find_vf","we_conservation_find_h",
+    "we_gravity_work_falling","we_gravity_work_rising","we_height_to_speed","we_speed_to_height",
+    "we_compare_KE_doubled_v","we_KE_at_bottom_ramp_conservation"
+  ],
+  momentum: [
+    "mom_find_p","mom_find_m","mom_find_v","mom_find_J_FT","mom_find_F_from_J_dt",
+    "mom_find_dt_from_J_F","mom_find_dp_stop","mom_find_dp_bounce","mom_find_Pf_from_J_Pi",
+    "mom_find_Pi_from_J_Pf","mom_F_from_dp_dt","mom_dt_to_reduce_F","mom_stop_impulse_compare",
+    "mom_inelastic_find_vf","mom_inelastic_both_moving","mom_recoil_find_v","mom_pushoff_find_v_small",
+    "mom_collision_find_v1i","mom_sign_compare_p","mom_vehicle_inelastic","mom_total_p_two_objects"
+  ]
+};
+
+// Combined unit -> all templates
+const UNIT_ALL_TEMPLATES = {
+  forces:      [...UNIT_CONCEPT_TEMPLATES.forces,      ...UNIT_PROBLEM_TEMPLATES.forces],
+  work_energy: [...UNIT_CONCEPT_TEMPLATES.work_energy, ...UNIT_PROBLEM_TEMPLATES.work_energy],
+  momentum:    [...UNIT_CONCEPT_TEMPLATES.momentum,    ...UNIT_PROBLEM_TEMPLATES.momentum]
+};
+
+// Legacy maps that the original template engine expects (skill = unit here)
+const SKILL_TEMPLATES = {
+  forces:      UNIT_ALL_TEMPLATES.forces,
+  work_energy: UNIT_ALL_TEMPLATES.work_energy,
+  momentum:    UNIT_ALL_TEMPLATES.momentum
+};
+const CONCEPT_TEMPLATES_BY_SKILL = UNIT_CONCEPT_TEMPLATES;
+const PROBLEM_TEMPLATES_BY_SKILL = UNIT_PROBLEM_TEMPLATES;
+
+// Derive subskills per unit
+const SKILL_SUBSKILLS = {};
+Object.entries(SKILL_TEMPLATES).forEach(([unit, ids])=>{
+  SKILL_SUBSKILLS[unit] = Array.from(new Set(ids.map(id => {
+    try { return TEMPLATES[id]().subSkill; } catch(e){ return null; }
+  }).filter(Boolean)));
+});
+
+/* ============================================================================
+   QUESTION GENERATION  — weighted per locked spec
+============================================================================ */
+
+function generateFromTemplate(templateId){
+  const fn = TEMPLATES[templateId];
+  if(!fn) throw new Error("Unknown template: "+templateId);
+  let q, tries = 0;
+  do { q = fn(); tries++; } while(!avoidRepeat(q) && tries < 8);
+  return q;
+}
+
+function weightedPick(items, weights){
+  const total = weights.reduce((a,b)=>a+b,0);
+  let r = Math.random() * total;
+  for(let i=0;i<items.length;i++){
+    r -= weights[i];
+    if(r <= 0) return items[i];
+  }
+  return items[items.length-1];
+}
+
+// Diagnostic: 2c+2p (Forces), 3c+3p (W&E), 5c+5p (Momentum)
+function generateDiagnostic(unitId){
+  if (unitId === "mixed_review") return generateMixed();
+  const cN = CONFIG.diagnosticConceptPerUnit[unitId] || 3;
+  const pN = CONFIG.diagnosticProblemPerUnit[unitId] || 3;
+  const conceptIds = UNIT_CONCEPT_TEMPLATES[unitId] || [];
+  const problemIds = UNIT_PROBLEM_TEMPLATES[unitId] || [];
+
+  function pickN(pool, n, fallback){
+    const out = [];
+    const used = [];
+    let tries = 0;
+    while (out.length < n && tries < 60){
+      tries++;
+      const src = pool.length ? pool : fallback;
+      let id = choice(src);
+      // Try to avoid the most recent template id
+      if (used.length && used[used.length-1] === id && src.length > 1) continue;
+      out.push(generateFromTemplate(id));
+      used.push(id);
+    }
+    return out;
+  }
+  const conceptSet = pickN(conceptIds, cN, problemIds.length ? problemIds : UNIT_ALL_TEMPLATES[unitId]);
+  const problemSet = pickN(problemIds, pN, conceptIds.length ? conceptIds : UNIT_ALL_TEMPLATES[unitId]);
+  return [...conceptSet, ...problemSet];
+}
+
+// Adaptive mastery for a single unit — weighted by miss count of sub-skill
+function generateMastery(unitId){
+  if (unitId === "mixed_review") return generateMixed();
+  const pool = UNIT_ALL_TEMPLATES[unitId];
+  if(!pool || pool.length === 0) return [];
+  const N = (CONFIG.masteryQuestionsPerUnit && CONFIG.masteryQuestionsPerUnit[unitId]) || 6;
+  const weights = pool.map(tid=>{
+    try {
+      const sub = TEMPLATES[tid]().subSkill;
+      const stat = state.subSkillStats[sub];
+      const missCount = stat ? stat.missCount : 0;
+      return 1 + missCount * CONFIG.weakSubSkillMultiplier;
+    } catch(e){ return 1; }
+  });
+  const out = [];
+  const usedTemplates = [];
+  let safety = 0;
+  while (out.length < N && safety < 80){
+    safety++;
+    const tid = weightedPick(pool, weights);
+    if (out.length && usedTemplates[usedTemplates.length-1] === tid && pool.length > 1) continue;
+    const q = generateFromTemplate(tid);
+    out.push(q);
+    pushRecent(q);
+    usedTemplates.push(tid);
+  }
+  return out;
+}
+
+// MIXED REVIEW — enforces exact 2:3:5 distribution per 10 questions
+// (4:6:10 per 20). The adaptive part: within each unit's quota, sub-skill
+// miss-count still drives template selection.
+function generateMixed(){
+  const N = CONFIG.mixedReviewQuestions || 10;
+  // Compute required counts using exact 20%/30%/50% with rounding
+  const reqF  = Math.round(N * 0.20);
+  const reqWE = Math.round(N * 0.30);
+  const reqM  = N - reqF - reqWE; // residual → guarantees 50% gets the largest share
+  const plan = [];
+  for (let i=0;i<reqF;  i++) plan.push("forces");
+  for (let i=0;i<reqWE; i++) plan.push("work_energy");
+  for (let i=0;i<reqM;  i++) plan.push("momentum");
+  shuffle(plan); // randomize order within the round
+
+  const out = [];
+  const usedTemplates = [];
+  for (const unitId of plan){
+    const pool = UNIT_ALL_TEMPLATES[unitId];
+    const weights = pool.map(tid=>{
+      try {
+        const sub = TEMPLATES[tid]().subSkill;
+        const stat = state.subSkillStats[sub];
+        const miss = stat ? stat.missCount : 0;
+        return 1 + miss * CONFIG.weakSubSkillMultiplier;
+      } catch(e){ return 1; }
+    });
+    let safety = 0;
+    let q = null;
+    while (safety < 30){
+      safety++;
+      const tid = weightedPick(pool, weights);
+      if (out.length && usedTemplates[usedTemplates.length-1] === tid && pool.length > 1) continue;
+      q = generateFromTemplate(tid);
+      usedTemplates.push(tid);
+      break;
+    }
+    if (q){
+      out.push(q);
+      pushRecent(q);
+    }
+  }
+  return out;
+}
+
+/* ============================================================================
+   ANSWER CHECKING
+============================================================================ */
+function checkNumeric(student, correct){
+  if(student === null || student === undefined || student === "") return { ok:false, reason:"empty" };
+  const s = String(student).trim().replace(/[, ]+$/,"");
+  const num = parseFloat(s);
+  if(isNaN(num)) return { ok:false, reason:"invalid" };
+  const rel = Math.abs(correct) < 1e-9 ? Math.abs(num) : Math.abs((num - correct)/correct)*100;
+  const abs = Math.abs(num - correct);
+  if(rel <= CONFIG.numericTolerancePercent || abs <= CONFIG.numericToleranceAbsolute){
+    return { ok:true };
+  }
+  return { ok:false, reason:"value", parsed:num };
+}
+function checkMCQ(idx, cor){ return { ok: idx === cor }; }
+function checkTF(b, cor){ return { ok: b === cor }; }
+
+/* ============================================================================
+   SESSION ENGINE
+============================================================================ */
+function startDiagnostic(unitId){
+  state.currentSession = {
+    mode:"diagnostic", skillId:unitId,
+    questions: generateDiagnostic(unitId),
+    idx:0, attempts:[], perQResults:[], startedAt:Date.now()
+  };
+  renderQuestion();
+}
+function startMastery(unitId){
+  state.currentSession = {
+    mode:"mastery", skillId:unitId,
+    questions: generateMastery(unitId),
+    idx:0, attempts:[], perQResults:[], streak:0, startedAt:Date.now()
+  };
+  renderQuestion();
+}
+function startMixedReview(){
+  state.currentSession = {
+    mode:"mixed", skillId:"mixed_review",
+    questions: generateMixed(),
+    idx:0, attempts:[], perQResults:[], streak:0, startedAt:Date.now()
+  };
+  renderQuestion();
+}
+function currentQ(){
+  if(!state.currentSession) return null;
+  return state.currentSession.questions[state.currentSession.idx];
+}
+
+function submitAnswer(value){
+  const sess = state.currentSession;
+  const q = currentQ();
+  if(!sess || !q) return;
+  if(!sess.attempts[sess.idx]) sess.attempts[sess.idx] = 0;
+  sess.attempts[sess.idx]++;
+
+  let result;
+  if(q.type === "numeric") result = checkNumeric(value, q.correct);
+  else if(q.type === "mcq") result = checkMCQ(value, q.correct);
+  else if(q.type === "tf") result = checkTF(value, q.correct);
+
+  if(sess.attempts[sess.idx] === 1){
+    recordSubSkillResult(q.subSkill, result.ok);
+    // Record progress into the QUESTION'S unit (so mixed review still updates unit stats)
+    const unitForStats = (sess.mode === "mixed") ? (q.unit || sess.skillId) : sess.skillId;
+    const p = (unitForStats === "mixed_review") ? null : state.skillProgress[unitForStats];
+    if (p){
+      if (sess.mode === "diagnostic"){
+        p.diagAttempts++; if(result.ok) p.diagCorrect++;
+      } else {
+        p.masteryAttempts++; if(result.ok) p.masteryCorrect++;
+      }
+      p.lastPracticed = Date.now();
+    }
+  }
+
+  if(result.ok){
+    sess.perQResults[sess.idx] = true;
+    if(sess.streak !== undefined) sess.streak++;
+    renderFeedback({ kind:"correct", q, sess });
+  } else {
+    sess.perQResults[sess.idx] = false;
+    if(sess.streak !== undefined) sess.streak = 0;
+    if(sess.attempts[sess.idx] >= CONFIG.attemptsBeforeFullSolution){
+      renderFeedback({ kind:"solution", q, sess, parsed:result.parsed });
+    } else {
+      renderFeedback({ kind:"hint", q, sess, reason:result.reason });
+    }
+  }
+  saveState();
+}
+
+function nextQuestion(){
+  const sess = state.currentSession;
+  if(!sess) return;
+  sess.idx++;
+  if(sess.idx >= sess.questions.length){
+    finishSession();
+  } else {
+    renderQuestion();
+  }
+}
+
+function finishSession(){
+  const sess = state.currentSession;
+  const unitId = sess.skillId;
+  if (sess.mode === "diagnostic" && unitId !== "mixed_review"){
+    state.skillProgress[unitId].diagDone = true;
+    const subs = SKILL_SUBSKILLS[unitId] || [];
+    let weakest=null, strongest=null, weakMiss=-1, strongHit=-1;
+    subs.forEach(s=>{
+      const st = state.subSkillStats[s];
+      if(!st) return;
+      if(st.missCount > weakMiss){ weakMiss = st.missCount; weakest = s; }
+      const hits = st.attempts - st.missCount;
+      if(hits > strongHit){ strongHit = hits; strongest = s; }
+    });
+    state.skillProgress[unitId].weakSubSkills = weakest ? [weakest] : [];
+    state.skillProgress[unitId].strongSubSkills = strongest ? [strongest] : [];
+  }
+  saveState();
+  renderCompletion();
+}
+
+/* ============================================================================
+   WEIGHTED DASHBOARD  — locked spec
+============================================================================ */
+function weightedOverallReadiness(){
+  const f  = skillAccuracy("forces");
+  const we = skillAccuracy("work_energy");
+  const m  = skillAccuracy("momentum");
+  const w = CONFIG.unitWeights;
+  return Math.round(f*w.forces + we*w.work_energy + m*w.momentum);
+}
+function priorityScore(unitId){
+  // weakness × exam weight — higher = recommend first
+  const acc = skillAccuracy(unitId);
+  const weakness = 100 - acc;
+  return weakness * (CONFIG.unitWeights[unitId] || 0);
+}
+function recommendedNext(){
+  // Recommend the unit with the largest weakness × weight, among non-mastered units
+  const candidates = ["forces","work_energy","momentum"].filter(u=>{
+    const p = state.skillProgress[u];
+    if (!p) return true;
+    return skillAccuracy(u) < CONFIG.masteryThreshold;
+  });
+  if (candidates.length === 0) return null;
+  candidates.sort((a,b)=> priorityScore(b) - priorityScore(a));
+  return UNITS.find(u=>u.id === candidates[0]);
+}
+
+function renderDashboard(){
+  state.currentSession = null;
+  const screen = document.getElementById("screen");
+  const f  = skillAccuracy("forces");
+  const we = skillAccuracy("work_energy");
+  const m  = skillAccuracy("momentum");
+  const overall = weightedOverallReadiness();
+  const masteredCount = ["forces","work_energy","momentum"].filter(u=>skillAccuracy(u) >= CONFIG.masteryThreshold).length;
+
+  // Weakest by raw accuracy (only count units with some attempts)
+  let weakestUnit = null, weakestAcc = 101;
+  ["forces","work_energy","momentum"].forEach(u=>{
+    const p = state.skillProgress[u];
+    if (!p || (p.diagAttempts + p.masteryAttempts) === 0) return;
+    const a = skillAccuracy(u);
+    if (a < weakestAcc){ weakestAcc = a; weakestUnit = u; }
+  });
+  // Highest-priority unit (weakness × weight)
+  let highestPriorityUnit = null, highestScore = -1;
+  ["forces","work_energy","momentum"].forEach(u=>{
+    const sc = priorityScore(u);
+    if (sc > highestScore){ highestScore = sc; highestPriorityUnit = u; }
+  });
+  const rec = recommendedNext();
+
+  // Weakest sub-skill across all three units
+  let weakestSubSkill=null, weakestSubMiss=0;
+  Object.entries(state.subSkillStats).forEach(([sub, st])=>{
+    if(st.missCount > weakestSubMiss){ weakestSubMiss = st.missCount; weakestSubSkill = sub; }
+  });
+
+  // Compose the dashboard
+  let html = `
+    <div class="weight-banner">
+      <strong>Final Exam Weighting</strong> &mdash; Forces 20% &middot; Work &amp; Energy 30% &middot; Momentum &amp; Conservation 50%.
+      Momentum receives the strongest emphasis.
+    </div>
+    <div class="card accent">
+      <h2>Weighted Readiness Dashboard</h2>
+      <p class="muted">Diagnostic first &rarr; then adaptive mastery. Aim for ${CONFIG.masteryThreshold}%+ on each unit. The overall score is weighted by exam %.</p>
+      <div class="stats-row" style="margin-top:10px;">
+        <div class="stat"><div class="val">${overall}%</div><div class="lbl">Overall (weighted)</div></div>
+        <div class="stat"><div class="val">${masteredCount}/3</div><div class="lbl">Units mastered</div></div>
+        <div class="stat"><div class="val">${f}%</div><div class="lbl">Forces (20%)</div></div>
+        <div class="stat"><div class="val">${we}%</div><div class="lbl">W &amp; E (30%)</div></div>
+        <div class="stat"><div class="val">${m}%</div><div class="lbl">Momentum (50%)</div></div>
+      </div>
+      <div class="weighted-bar" title="Each segment shows that unit's contribution to the weighted overall.">
+        <div class="seg forces" style="width:${20}%;">F ${f}%</div>
+        <div class="seg we"     style="width:${30}%;">W&amp;E ${we}%</div>
+        <div class="seg mom"    style="width:${50}%;">Mom ${m}%</div>
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;">
+        ${weakestUnit ? `<span class="tag weak">Weakest unit (raw)</span> ${UNITS.find(u=>u.id===weakestUnit).name.replace(/^\d+\.\s*/,"")} &mdash; ${weakestAcc}%` : ""}
+      </div>
+      ${weakestSubSkill ? `<div style="margin-top:6px;"><span class="tag weak">Weakest sub-skill</span> <code>${prettySubSkill(weakestSubSkill)}</code></div>` : ""}
+      ${rec ? `<div style="margin-top:6px;"><span class="tag indigo">Recommended next (weakness &times; weight)</span> ${rec.name.replace(/^\d+\.\s*/,"")}</div>` : (masteredCount===3 ? `<div style="margin-top:6px;"><span class="tag ok">All three units mastered 🎓</span></div>` : "")}
+    </div>
+    <h3>Units</h3>
+    <div class="skill-grid">`;
+
+  UNITS.forEach(u=>{
+    const isMixed = (u.id === "mixed_review");
+    const p = isMixed ? null : state.skillProgress[u.id];
+    const acc = isMixed ? overall : skillAccuracy(u.id);
+    const level = masteryLevel(acc);
+    const diagDone = isMixed ? null : (p && p.diagDone);
+    const weightLabel = u.id==="forces" ? "20% of exam" : u.id==="work_energy" ? "30% of exam" : u.id==="momentum" ? "50% of exam" : "Weighted 2:3:5 mix";
+    const weightTag = u.id==="forces" ? "weight20" : u.id==="work_energy" ? "weight30" : u.id==="momentum" ? "weight50" : "indigo";
+    html += `
+      <div class="skill-tile">
+        <h4>${u.name}</h4>
+        <div class="muted">${u.blurb}</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px;">
+          <span class="tag ${weightTag}">${weightLabel}</span>
+          ${isMixed ? `<span class="tag indigo">Adaptive 2:3:5</span>` :
+              (diagDone ? `<span class="tag ok">Diagnostic ✓</span>` : `<span class="tag">Diagnostic pending</span>`)}
+          ${!isMixed ? `<span class="tag level-${level}" style="background:#eef0f4;">${level}</span>` : ""}
+          ${!isMixed ? `<span class="tag">${acc}%</span>` : ""}
+        </div>
+        ${!isMixed ? `<div class="mastery-bar"><div style="width:${Math.min(acc,100)}%"></div></div>` : ""}
+        <div style="display:flex;gap:6px;margin-top:8px;">
+          ${isMixed
+            ? `<button class="btn small" style="flex:1;" ${CONFIG.enableMixedReview?'':'disabled'} onclick="startMixedReview()">Start Weighted Mixed Review</button>`
+            : `<button class="btn small ${diagDone?'secondary':''}" style="flex:1;" onclick="startDiagnostic('${u.id}')">${diagDone?'Re-diagnose':'Diagnostic'}</button>
+               <button class="btn small" style="flex:1;" ${diagDone?'':'disabled'} onclick="startMastery('${u.id}')">Mastery</button>`}
+        </div>
+      </div>`;
+  });
+  html += `</div>`;
+
+  if (CONFIG.enableResetButton || CONFIG.showTeacherPreview){
+    html += `<div class="divider"></div><div style="display:flex;gap:8px;flex-wrap:wrap;">`;
+    if (CONFIG.showTeacherPreview)
+      html += `<button class="btn small secondary" onclick="renderTeacherPreview()">Teacher Preview Mode</button>`;
+    if (CONFIG.enableResetButton)
+      html += `<button class="btn small danger" onclick="resetProgress()">Reset Progress</button>`;
+    html += `</div>`;
+  }
+  screen.innerHTML = html;
+}
+
+/* ============================================================================
+   QUESTION VIEW
+============================================================================ */
+function renderQuestion(){
+  const sess = state.currentSession;
+  const q = currentQ();
+  const screen = document.getElementById("screen");
+  const unit = UNITS.find(u=>u.id === sess.skillId);
+  const unitName = unit ? unit.name : "Mixed Review";
+  const modeLabel = sess.mode === "diagnostic" ? "Diagnostic" : sess.mode === "mastery" ? "Mastery" : "Weighted Mixed Review";
+  // Per-question unit tag (matters in mixed review)
+  const qUnitTag = q.unit === "forces" ? `<span class="tag weight20">Forces (20%)</span>`
+                 : q.unit === "work_energy" ? `<span class="tag weight30">W&amp;E (30%)</span>`
+                 : q.unit === "momentum" ? `<span class="tag weight50">Momentum (50%)</span>` : "";
+  let html = `
+    <div class="qnav">
+      <div>
+        <span class="mode-pill ${sess.mode}">${modeLabel}</span>
+        <span class="muted" style="margin-left:8px;">${unitName}</span>
+      </div>
+      <div class="meta">Q ${sess.idx+1} / ${sess.questions.length}${sess.streak ? ` &nbsp;<span class="streak">🔥 ${sess.streak}</span>` : ""}</div>
+    </div>
+    <div class="card">
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;">
+        ${qUnitTag}
+        <span class="tag">${q.formulaUsed}</span>
+        <span class="tag indigo">${prettySubSkill(q.subSkill)}</span>
+      </div>
+      <div class="q-text">${q.stem}</div>
+      <div id="qInputArea"></div>
+      <div id="qFeedback"></div>
+    </div>
+    <div class="footer-bar">
+      <button class="btn small ghost" style="flex:1;" onclick="confirmExitSession()">Exit to Dashboard</button>
+      <button class="btn small" style="flex:1;display:none;" id="btnNext" onclick="nextQuestion()">Next →</button>
+    </div>`;
+  screen.innerHTML = html;
+  renderInputArea(q);
+}
+
+function renderInputArea(q){
+  const area = document.getElementById("qInputArea");
+  if(q.type === "numeric"){
+    area.innerHTML = `
+      <input type="text" inputmode="decimal" id="numInput" placeholder="Type your numerical answer (negatives allowed)" autocomplete="off" />
+      <span class="unit-hint">Expected unit: ${q.answerUnit||""}. Decimals and negatives are OK; you don't need to type the unit.</span>
+      <button class="btn" onclick="onSubmitNumeric()">Submit</button>`;
+    setTimeout(()=>{ const i = document.getElementById("numInput"); if(i){ i.focus(); i.addEventListener("keydown", e=>{ if(e.key==="Enter"){ e.preventDefault(); onSubmitNumeric(); } }); } }, 50);
+  } else if(q.type === "mcq"){
+    area.innerHTML = `<div class="choices">${
+      q.options.map((opt, idx)=>`<button class="choice" onclick="onSubmitMCQ(${idx})">${String.fromCharCode(65+idx)}. ${opt}</button>`).join("")
+    }</div>`;
+  } else if(q.type === "tf"){
+    area.innerHTML = `<div class="choices">
+      <button class="choice" onclick="onSubmitTF(true)">TRUE</button>
+      <button class="choice" onclick="onSubmitTF(false)">FALSE</button>
+    </div>`;
+  }
+}
+
+function onSubmitNumeric(){
+  const inp = document.getElementById("numInput");
+  if(!inp) return;
+  const val = inp.value.trim();
+  if(val === ""){ showInlineMsg("Please type a numerical answer first."); return; }
+  if(isNaN(parseFloat(val)) || !/^-?\d*\.?\d+(?:[eE]-?\d+)?$/.test(val.replace(/\s/g,""))){
+    showInlineMsg("Please enter a valid number (e.g. 12, -3.5, 0.045)."); return;
+  }
+  submitAnswer(val);
+}
+function onSubmitMCQ(idx){ submitAnswer(idx); }
+function onSubmitTF(b){ submitAnswer(b); }
+function showInlineMsg(msg){ document.getElementById("qFeedback").innerHTML = `<div class="feedback hint">${msg}</div>`; }
+
+/* ============================================================================
+   FEEDBACK
+============================================================================ */
+function renderFeedback({ kind, q, sess }){
+  const fb = document.getElementById("qFeedback");
+  const btnNext = document.getElementById("btnNext");
+  const lockAll = (kind === "correct" || kind === "solution");
+
+  if(kind === "correct"){
+    const msgs = ["Correct.","Well done.","Yes, that matches the calculation.","Correct — your reasoning is solid.","Good. You used the correct relationship."];
+    fb.innerHTML = `<div class="feedback correct">✓ ${choice(msgs)}</div>`;
+  } else if(kind === "hint"){
+    fb.innerHTML = `<div class="feedback incorrect">✗ Not quite. Try once more.</div>
+                    <div class="feedback hint"><strong>Hint:</strong> ${generateHint(q)}</div>`;
+  } else if(kind === "solution"){
+    fb.innerHTML = `<div class="feedback incorrect">✗ Let's walk through it.</div>
+                    <div class="feedback solution">
+                      <strong>Worked solution</strong>
+                      <div class="solution-block">${buildWorkedSolution(q)}</div>
+                      <div style="margin-top:8px;"><strong>Why it matters:</strong> ${q.explanation}</div>
+                      <div style="margin-top:6px;"><em>Common misconception: ${q.misconception}.</em></div>
+                    </div>`;
+  }
+
+  if(lockAll){
+    document.querySelectorAll(".choice").forEach((b, i)=>{
+      b.disabled = true;
+      if(q.type === "mcq" && i === q.correct) b.classList.add("correct");
+      if(q.type === "tf"){
+        if(i === 0 && q.correct === true) b.classList.add("correct");
+        if(i === 1 && q.correct === false) b.classList.add("correct");
+      }
+    });
+    const numI = document.getElementById("numInput");
+    if(numI) numI.disabled = true;
+    const sub = document.querySelector("#qInputArea > button.btn");
+    if(sub) sub.style.display = "none";
+    setTimeout(()=>{ if(btnNext) btnNext.style.display = "block"; }, CONFIG.feedbackDelayMs);
+  }
+}
+
+function generateHint(q){
+  if(q.hint) return q.hint;
+  return `Recall the formula: ${q.formulaUsed}. Identify what's given and what's unknown, isolate the unknown, then substitute carefully. Watch signs and units.`;
+}
+function buildWorkedSolution(q){
+  if(q.workedSolution) return q.workedSolution;
+  let s = `Formula: ${stripHtml(q.formulaUsed)}\n`;
+  if(q.given && Object.keys(q.given).length){
+    s += `Given: ` + Object.entries(q.given).map(([k,v])=>`${k} = ${v}`).join(", ") + `\n`;
+  }
+  if(q.type === "numeric") s += `Answer: ${q.correct}${q.answerUnit ? " " + stripHtml(q.answerUnit) : ""}\n`;
+  else if(q.type === "mcq") s += `Correct choice: ${String.fromCharCode(65+q.correct)}. ${stripHtml(q.options[q.correct])}\n`;
+  else if(q.type === "tf") s += `Correct: ${q.correct ? "TRUE" : "FALSE"}\n`;
+  return s;
+}
+
+/* ============================================================================
+   COMPLETION
+============================================================================ */
+function renderCompletion(){
+  const sess = state.currentSession;
+  if(!sess) return renderDashboard();
+  const correct = sess.perQResults.filter(x=>x===true).length;
+  const total = sess.questions.length;
+  const acc = Math.round((correct/total)*100);
+  const screen = document.getElementById("screen");
+  const unit = UNITS.find(u=>u.id === sess.skillId);
+  const unitName = unit ? unit.name : "Weighted Mixed Review";
+  const level = masteryLevel(acc);
+  const p = state.skillProgress[sess.skillId];
+
+  let html = `
+    <div class="card accent">
+      <h2>${sess.mode === "diagnostic" ? "Diagnostic complete" : sess.mode === "mastery" ? "Mastery session complete" : "Mixed review complete"}</h2>
+      <div class="muted">${unitName}</div>
+      <div class="stats-row" style="margin-top:10px;">
+        <div class="stat"><div class="val">${correct}/${total}</div><div class="lbl">Correct</div></div>
+        <div class="stat"><div class="val">${acc}%</div><div class="lbl">This session</div></div>
+        <div class="stat"><div class="val level-${level}">${level}</div><div class="lbl">Level</div></div>
+      </div>`;
+
+  if (sess.mode === "diagnostic" && p && sess.skillId !== "mixed_review"){
+    const cN = CONFIG.diagnosticConceptPerUnit[sess.skillId] || 3;
+    const conceptResults = sess.perQResults.slice(0, cN);
+    const problemResults = sess.perQResults.slice(cN);
+    const cC = conceptResults.filter(x=>x).length;
+    const pC = problemResults.filter(x=>x).length;
+    const weak = p.weakSubSkills[0];
+    const strong = p.strongSubSkills[0];
+    html += `
+      <div class="divider"></div>
+      <div><strong>Concept questions:</strong> ${cC}/${cN}</div>
+      <div><strong>Problem-solving:</strong> ${pC}/${problemResults.length}</div>
+      ${strong ? `<div style="margin-top:8px;"><span class="tag ok">Strongest area</span> ${prettySubSkill(strong)}</div>` : ""}
+      ${weak ? `<div style="margin-top:6px;"><span class="tag weak">Focus next</span> ${prettySubSkill(weak)}</div>` : ""}
+      <p class="muted" style="margin-top:10px;">Mastery practice will now emphasize your weakest sub-skill${weak ? ` &mdash; ${prettySubSkill(weak)}.` : "."}</p>`;
+  } else if (sess.skillId === "mixed_review") {
+    html += `<div class="divider"></div>
+      <div><strong>Weighted overall readiness:</strong> ${weightedOverallReadiness()}%</div>
+      <p class="muted" style="margin-top:6px;">This round followed the 2:3:5 exam weighting (Forces : W&amp;E : Momentum).</p>`;
+  } else {
+    const unitAcc = skillAccuracy(sess.skillId);
+    html += `<div class="divider"></div>
+      <div><strong>Overall accuracy on this unit:</strong> ${unitAcc}% &mdash; ${masteryLevel(unitAcc)}</div>`;
+    if (unitAcc >= CONFIG.masteryThreshold){
+      html += `<div class="feedback correct" style="margin-top:10px;">🎓 You've reached mastery on this unit.</div>`;
+    } else if (unitAcc >= 70){
+      html += `<div class="feedback hint" style="margin-top:10px;">Almost there. One more focused session should push you over ${CONFIG.masteryThreshold}%.</div>`;
+    } else {
+      html += `<div class="feedback hint" style="margin-top:10px;">Keep going &mdash; practice your weak sub-skill again to see steady improvement.</div>`;
+    }
+  }
+
+  html += `<div style="display:flex;flex-direction:column;gap:6px;margin-top:14px;">`;
+  if (sess.mode === "diagnostic" && sess.skillId !== "mixed_review"){
+    html += `<button class="btn" onclick="startMastery('${sess.skillId}')">Start adaptive mastery →</button>`;
+  } else if (sess.mode === "mastery"){
+    html += `<button class="btn" onclick="startMastery('${sess.skillId}')">Practice this unit again</button>`;
+    const rec = recommendedNext();
+    if (rec && rec.id !== sess.skillId){
+      html += `<button class="btn secondary" onclick="startDiagnostic('${rec.id}')">Recommended next: ${rec.name.replace(/^\d+\.\s*/,"")}</button>`;
+    }
+  } else {
+    html += `<button class="btn" onclick="startMixedReview()">Another weighted mixed-review round</button>`;
+    const rec = recommendedNext();
+    if (rec){
+      html += `<button class="btn secondary" onclick="startMastery('${rec.id}')">Focus on weak: ${rec.name.replace(/^\d+\.\s*/,"")}</button>`;
+    }
+  }
+  html += `<button class="btn secondary" onclick="renderDashboard()">Back to dashboard</button></div></div>`;
+  screen.innerHTML = html;
+}
+
+/* ============================================================================
+   TEACHER PREVIEW
+============================================================================ */
+function renderTeacherPreview(){
+  const screen = document.getElementById("screen");
+  let html = `<div class="card accent"><h2>Teacher Preview Mode</h2>
+    <p class="muted">Sample concept + problem question per unit. Refresh to re-roll.</p></div>`;
+  UNITS.filter(u=>u.id!=="mixed_review").forEach(u=>{
+    const tIds = UNIT_ALL_TEMPLATES[u.id] || [];
+    if (tIds.length === 0) return;
+    const conceptId = (UNIT_CONCEPT_TEMPLATES[u.id]||tIds)[0];
+    const problemId = (UNIT_PROBLEM_TEMPLATES[u.id]||tIds)[0];
+    html += `<div class="preview-section"><h4>${u.name} &mdash; exam weight ${Math.round((CONFIG.unitWeights[u.id]||0)*100)}%</h4>
+      <div class="muted">Templates: ${tIds.length} &middot; Concept: ${(UNIT_CONCEPT_TEMPLATES[u.id]||[]).length} &middot; Problem: ${(UNIT_PROBLEM_TEMPLATES[u.id]||[]).length}</div>
+      <div class="divider" style="margin:8px 0;"></div>`;
+    try {
+      const cQ = TEMPLATES[conceptId]();
+      html += `<strong>Sample concept question:</strong>
+        <div class="solution-block">Template: ${cQ.templateId}\nUnit: ${cQ.unit}\nSub-skill: ${cQ.subSkill}\nFormula: ${stripHtml(cQ.formulaUsed)}\nType: ${cQ.type}\nExamWeight: ${cQ.examWeight}\nStem: ${stripHtml(cQ.stem)}\nAnswer: ${cQ.type==='mcq' ? `[${cQ.correct}] ${stripHtml(cQ.options[cQ.correct])}` : (cQ.type==='tf' ? cQ.correct : `${cQ.correct} ${stripHtml(cQ.answerUnit||"")}`)}\nMisconception: ${cQ.misconception}</div>`;
+    } catch(e){ html += `<em>Error generating concept sample: ${e.message}</em>`; }
+    try {
+      const pQ = TEMPLATES[problemId]();
+      html += `<strong>Sample problem-solving question:</strong>
+        <div class="solution-block">Template: ${pQ.templateId}\nUnit: ${pQ.unit}\nSub-skill: ${pQ.subSkill}\nFormula: ${stripHtml(pQ.formulaUsed)}\nType: ${pQ.type}\nExamWeight: ${pQ.examWeight}\nStem: ${stripHtml(pQ.stem)}\nAnswer: ${pQ.type==='mcq' ? `[${pQ.correct}] ${stripHtml(pQ.options[pQ.correct])}` : (pQ.type==='tf' ? pQ.correct : `${pQ.correct} ${stripHtml(pQ.answerUnit||"")}`)}\nMisconception: ${pQ.misconception}</div>`;
+    } catch(e){ html += `<em>Error generating problem sample: ${e.message}</em>`; }
+    html += `</div>`;
+  });
+  html += `<button class="btn secondary" onclick="renderDashboard()">← Back to dashboard</button>`;
+  screen.innerHTML = html;
+}
+
+/* ============================================================================
+   NAV
+============================================================================ */
+function confirmExitSession(){
+  if(confirm("Exit this session? Your progress on individual questions has been recorded.")){
+    renderDashboard();
+  }
+}
+document.getElementById("btnHome").addEventListener("click", ()=>{
+  if(state.currentSession){ if(!confirm("Leave this session and return to the dashboard?")) return; }
+  renderDashboard();
+});
+
+
+/* ===== BOOT ===== */
+loadState();
+renderDashboard();
+</script>
+</body>
+</html>

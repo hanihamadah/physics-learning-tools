@@ -1,0 +1,1461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Assessment 2 Mastery Trainer — Grade 12 Physics</title>
+<style>
+  /* ============================================================
+     AMK COLOR PALETTE — palette-locked
+     Claret #7B1034 · Crimson #DC143C · Medium Blue #0047AB
+     Yale Blue #00356B · Indigo #4B0082 · Black · White
+  ============================================================ */
+  :root {
+    --claret:   #7B1034;
+    --crimson:  #DC143C;
+    --mblue:    #0047AB;
+    --yale:     #00356B;
+    --indigo:   #4B0082;
+    --ink:      #111111;
+    --bg:       #ffffff;
+    --soft:     #f5f5f7;
+    --border:   #d8d8df;
+    --ok-bg:    #e9f5ec;
+    --ok-fg:    #14532d;
+    --bad-bg:   #fdecec;
+    --bad-fg:   #7B1034;
+    --warn-bg:  #fff7e6;
+    --warn-fg:  #8a5a00;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    font-family: "Segoe UI", system-ui, -apple-system, Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.5;
+    -webkit-text-size-adjust: 100%;
+  }
+  .app {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 16px 14px 60px 14px;
+  }
+  header.banner {
+    border-top: 6px solid var(--claret);
+    background: var(--soft);
+    padding: 14px 14px 10px 14px;
+    border-radius: 0 0 14px 14px;
+    margin-bottom: 16px;
+  }
+  header.banner h1 {
+    margin: 0;
+    font-size: 1.25rem;
+    color: var(--claret);
+    letter-spacing: 0.2px;
+  }
+  header.banner p {
+    margin: 4px 0 0 0;
+    font-size: 0.92rem;
+    color: var(--yale);
+  }
+  .pill {
+    display: inline-block;
+    background: var(--yale);
+    color: #fff;
+    border-radius: 999px;
+    padding: 2px 10px;
+    font-size: 0.78rem;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+
+  /* Buttons */
+  button {
+    font-family: inherit;
+    font-size: 1rem;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 16px;
+    cursor: pointer;
+    background: var(--mblue);
+    color: #fff;
+    min-height: 48px;
+    transition: transform 0.05s ease, opacity 0.15s ease;
+  }
+  button:active { transform: scale(0.98); }
+  button.secondary { background: var(--yale); }
+  button.ghost { background: #fff; color: var(--yale); border: 1.5px solid var(--yale); }
+  button.danger  { background: var(--crimson); }
+  button.indigo  { background: var(--indigo); }
+  button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .row > * { flex: 1 1 auto; }
+
+  /* Dashboard skill cards */
+  .card {
+    background: #fff;
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    padding: 14px;
+    margin-bottom: 12px;
+  }
+  .card h2 {
+    margin: 0 0 6px 0;
+    font-size: 1.05rem;
+    color: var(--claret);
+  }
+  .card p { margin: 4px 0; font-size: 0.95rem; }
+
+  .skill-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  @media (min-width: 600px) {
+    .skill-grid { grid-template-columns: 1fr 1fr; }
+  }
+
+  .mastery-tag {
+    display: inline-block;
+    border-radius: 999px;
+    padding: 2px 10px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #fff;
+    margin-left: 6px;
+  }
+  .m-beginner   { background: #777; }
+  .m-developing { background: var(--indigo); }
+  .m-almost     { background: var(--mblue); }
+  .m-mastered   { background: var(--ok-fg); }
+
+  .bar {
+    height: 10px;
+    background: #ececf2;
+    border-radius: 999px;
+    overflow: hidden;
+    margin-top: 6px;
+  }
+  .bar > span {
+    display: block;
+    height: 100%;
+    background: linear-gradient(90deg, var(--yale), var(--mblue));
+    width: 0%;
+    transition: width 0.4s ease;
+  }
+
+  /* Question screen */
+  .qmeta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 6px;
+    font-size: 0.85rem;
+    color: var(--yale);
+  }
+  .qstem {
+    background: var(--soft);
+    border-left: 4px solid var(--mblue);
+    padding: 12px 14px;
+    border-radius: 10px;
+    font-size: 1.02rem;
+    margin: 8px 0 12px 0;
+  }
+  .qstem .ctx {
+    display: block;
+    color: var(--indigo);
+    font-size: 0.84rem;
+    margin-bottom: 6px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+  }
+
+  /* MCQ choices */
+  .choices { display: grid; gap: 8px; }
+  .choice {
+    text-align: left;
+    background: #fff;
+    color: var(--ink);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-size: 0.98rem;
+    min-height: 48px;
+  }
+  .choice.selected {
+    border-color: var(--mblue);
+    background: #eef3fc;
+  }
+  .choice.correct {
+    border-color: var(--ok-fg);
+    background: var(--ok-bg);
+  }
+  .choice.wrong {
+    border-color: var(--crimson);
+    background: var(--bad-bg);
+  }
+
+  /* TF buttons */
+  .tf-row { display: flex; gap: 10px; }
+  .tf-row button { flex: 1; }
+
+  /* Numerical input */
+  .num-wrap { display: flex; gap: 8px; flex-wrap: wrap; }
+  .num-input {
+    font-family: inherit;
+    font-size: 1.1rem;
+    padding: 12px;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    flex: 1 1 160px;
+    min-width: 120px;
+    background: #fff;
+    color: var(--ink);
+  }
+  .num-input:focus { outline: 2px solid var(--mblue); border-color: var(--mblue); }
+  .unit-hint {
+    align-self: center;
+    color: var(--yale);
+    font-weight: 600;
+    font-size: 0.92rem;
+  }
+
+  /* Feedback */
+  .feedback {
+    margin-top: 12px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    font-size: 0.96rem;
+    display: none;
+  }
+  .feedback.show { display: block; }
+  .feedback.ok  { background: var(--ok-bg);  color: var(--ok-fg);  border: 1.5px solid var(--ok-fg); }
+  .feedback.bad { background: var(--bad-bg); color: var(--bad-fg); border: 1.5px solid var(--crimson); }
+  .feedback.warn{ background: var(--warn-bg);color: var(--warn-fg);border: 1.5px solid #c89000; }
+  .feedback details { margin-top: 6px; }
+  .feedback summary { cursor: pointer; font-weight: 600; }
+  .solution { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.92rem; white-space: pre-wrap; }
+
+  /* Footer / privacy */
+  footer.privacy {
+    margin-top: 24px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+    font-size: 0.82rem;
+    color: #666;
+    text-align: center;
+  }
+
+  /* Completion screen */
+  .completion {
+    text-align: center;
+    padding: 22px 14px;
+  }
+  .completion .big {
+    font-size: 2.4rem;
+    color: var(--claret);
+    font-weight: 700;
+    margin: 4px 0;
+  }
+  .completion .stat {
+    font-size: 1.02rem;
+    color: var(--yale);
+    margin: 2px 0;
+  }
+
+  .hidden { display: none !important; }
+
+  /* Teacher preview */
+  .preview-block {
+    border-left: 4px solid var(--indigo);
+    background: #f6f1fb;
+    padding: 10px 12px;
+    margin: 8px 0;
+    border-radius: 8px;
+    font-size: 0.9rem;
+  }
+  .preview-block code {
+    font-size: 0.85rem;
+    color: var(--indigo);
+  }
+
+  /* Streak chip */
+  .streak {
+    display: inline-block;
+    background: var(--crimson);
+    color: #fff;
+    border-radius: 999px;
+    padding: 2px 10px;
+    font-size: 0.78rem;
+    font-weight: 700;
+  }
+
+  /* No horizontal scroll */
+  body { overflow-x: hidden; }
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <header class="banner">
+    <h1>Assessment 2 Mastery Trainer<span class="pill">Momentum &amp; Impulse</span></h1>
+    <p>Grade 12 Physics · AMK · Assessment date: Tuesday 19 May 2026</p>
+  </header>
+
+  <main id="main"></main>
+
+  <footer class="privacy">
+    No names, emails, or IDs are collected. Progress is stored only in this browser.
+  </footer>
+</div>
+
+<script>
+/* ==========================================================================
+   CONFIG — Teacher-editable
+   ========================================================================== */
+const CONFIG = {
+  QUESTIONS_PER_SKILL:    6,        // 5–8 recommended
+  MIXED_REVIEW_COUNT:     8,
+  MASTERY_THRESHOLD:      0.85,     // Mastered at ≥85%
+  ALMOST_THRESHOLD:       0.70,
+  DEVELOPING_THRESHOLD:   0.50,
+  ANSWER_TOLERANCE_REL:   0.01,     // ±1% relative tolerance
+  ANSWER_TOLERANCE_ABS:   0.1,      // OR ±0.1 absolute (whichever larger)
+  FEEDBACK_DELAY_OK_MS:   1000,     // pause after correct
+  FEEDBACK_DELAY_BAD_MS:  0,        // student dismisses by clicking Continue
+  ATTEMPTS_BEFORE_FULL:   2,        // show full solution after this many wrong attempts
+  STORAGE_KEY:            "amk_assess2_trainer_v1",
+  TEACHER_PREVIEW:        false,    // set true to enable preview mode
+  SKILL_NAMES: {
+    s1: "Skill 1 — Momentum Basics",
+    s2: "Skill 2 — Impulse &amp; Δp",
+    s3: "Skill 3 — Average Force from Impulse",
+    s4: "Skill 4 — Stopping vs Bouncing",
+    s5: "Skill 5 — Conservation of Momentum",
+    s6: "Skill 6 — Perfectly Inelastic Collisions",
+    s7: "Skill 7 — Direction &amp; Sign Reasoning",
+    s8: "Skill 8 — Mixed Assessment 2 Review"
+  }
+};
+
+/* ==========================================================================
+   STATE  &  STORAGE
+   ========================================================================== */
+const SKILLS = ["s1","s2","s3","s4","s5","s6","s7","s8"];
+
+const defaultProgress = () => {
+  const obj = {};
+  SKILLS.forEach(s => {
+    obj[s] = { attempts: 0, correct: 0, lastPracticed: null, recent: [] };
+  });
+  return obj;
+};
+
+let progress = loadProgress();
+
+function loadProgress() {
+  try {
+    const raw = localStorage.getItem(CONFIG.STORAGE_KEY);
+    if (!raw) return defaultProgress();
+    const parsed = JSON.parse(raw);
+    // sanity check
+    SKILLS.forEach(s => {
+      if (!parsed[s]) parsed[s] = { attempts: 0, correct: 0, lastPracticed: null, recent: [] };
+      if (!Array.isArray(parsed[s].recent)) parsed[s].recent = [];
+    });
+    return parsed;
+  } catch(e) {
+    return defaultProgress();
+  }
+}
+function saveProgress() {
+  try { localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(progress)); } catch(e) {}
+}
+
+function masteryOf(skillKey) {
+  const s = progress[skillKey];
+  if (!s || s.attempts === 0) return { level: "Beginner", acc: 0 };
+  const acc = s.correct / s.attempts;
+  let level = "Beginner";
+  if (acc >= CONFIG.MASTERY_THRESHOLD)      level = "Mastered";
+  else if (acc >= CONFIG.ALMOST_THRESHOLD)  level = "Almost";
+  else if (acc >= CONFIG.DEVELOPING_THRESHOLD) level = "Developing";
+  return { level, acc };
+}
+
+function weakestSkill() {
+  // Exclude s8 (mixed); recommend weakest non-mastered s1..s7; ties broken by least attempts
+  let best = null;
+  for (let i = 0; i < 7; i++) {
+    const k = SKILLS[i];
+    const m = masteryOf(k);
+    if (m.level === "Mastered") continue;
+    const score = m.acc + (progress[k].attempts === 0 ? -1 : 0); // unattempted first
+    if (best === null || score < best.score) best = { key: k, score, m };
+  }
+  return best;
+}
+
+/* ==========================================================================
+   QUESTION GENERATOR ENGINE
+   Each template returns:
+   { type, skill, context, stem, choices?, correct?, answer?, unit?,
+     tolerance?, hint, solution, misconception, template, signature }
+   ========================================================================== */
+const rng = {
+  int:   (a,b) => Math.floor(Math.random() * (b - a + 1)) + a,
+  pick:  arr  => arr[Math.floor(Math.random() * arr.length)],
+  sign:  ()   => Math.random() < 0.5 ? -1 : 1,
+  round: (x,d=2) => Math.round(x * 10**d) / 10**d
+};
+
+// Diverse physical contexts — NONE of these appear in the source assessments
+const CONTEXTS = {
+  generic:    ["a curling stone", "a hockey puck", "a bowling ball", "a medicine ball",
+               "a basketball", "a tennis racket", "a rugby ball", "a yoga ball",
+               "a wooden mallet", "a steel boule"],
+  vehicle:    ["a go-kart", "a delivery scooter", "a tram", "a forklift", "a jet ski",
+               "an electric skateboard", "an ATV"],
+  athlete:    ["a sprinter", "a long jumper", "a speed skater", "a kayaker", "an archer"],
+  ballSport:  ["a squash ball", "a cricket ball", "a softball", "a handball", "a lacrosse ball"]
+};
+
+// Recently used signatures per skill (across this session) to prevent repeats
+const sessionRecent = {};
+SKILLS.forEach(s => { sessionRecent[s] = []; });
+const RECENT_WINDOW = 4;
+
+function notRecent(skill, signature) {
+  return !sessionRecent[skill].includes(signature);
+}
+function pushRecent(skill, signature) {
+  sessionRecent[skill].push(signature);
+  if (sessionRecent[skill].length > RECENT_WINDOW) sessionRecent[skill].shift();
+}
+
+/* ----- Skill 1: Momentum Basics ----- */
+const S1_TEMPLATES = [
+  // T1: compute p = mv
+  function s1_compute() {
+    const m  = rng.pick([0.25, 0.4, 0.8, 1.5, 2.5, 3.0, 4.5, 7.0, 12.0]);
+    const v  = rng.pick([2, 3.5, 5, 6, 8, 9.5, 12, 15]) * rng.sign();
+    const ctx = rng.pick(CONTEXTS.generic);
+    const ans = rng.round(m * v, 2);
+    return {
+      type:"numeric", skill:"s1", template:"S1-T1",
+      context: "Compute momentum",
+      stem: `${ctx[0].toUpperCase()+ctx.slice(1)} of mass ${m} kg moves with velocity ${v} m/s along a chosen positive direction. Calculate its momentum, including sign.`,
+      answer: ans, unit:"kg·m/s",
+      hint: "Use p = m·v. Keep the sign of v — momentum is a vector.",
+      solution: `p = m × v\np = (${m}) × (${v})\np = ${ans} kg·m/s`,
+      misconception: "Momentum depends only on velocity / sign is optional",
+      signature: `s1t1-${m}-${v}`
+    };
+  },
+  // T2: compare two momenta (MCQ)
+  function s1_compare() {
+    let m1 = rng.pick([2,3,5,8,10,12]);
+    let v1 = rng.pick([2,3,4,5,6]);
+    let m2 = rng.pick([0.5, 0.8, 1.2, 1.5, 2]);
+    let v2 = rng.pick([10,12,15,18,20,25]);
+    while (m1*v1 === m2*v2) v2 += 1;
+    const p1 = m1*v1, p2 = m2*v2;
+    const objA = rng.pick(CONTEXTS.vehicle);
+    const objB = rng.pick(CONTEXTS.athlete);
+    const correctIdx = (Math.abs(p1) > Math.abs(p2)) ? 0 : 1;
+    const choices = [
+      `${objA} (m = ${m1} kg, v = ${v1} m/s)`,
+      `${objB} (m = ${m2} kg, v = ${v2} m/s)`,
+      "Both have the same momentum because momentum depends only on speed.",
+      "Neither has momentum until they collide with something."
+    ];
+    return {
+      type:"mcq", skill:"s1", template:"S1-T2",
+      context: "Compare momenta",
+      stem: "Which object has the larger magnitude of momentum?",
+      choices,
+      correct: correctIdx,
+      hint: "Compute |p| = m × |v| for each. The bigger product wins.",
+      solution: `|p₁| = ${m1}×${v1} = ${p1} kg·m/s\n|p₂| = ${m2}×${v2} = ${p2} kg·m/s\nLarger: ${correctIdx===0 ? objA : objB}`,
+      misconception: "Heavier always wins, OR fastest always wins",
+      signature: `s1t2-${m1}-${v1}-${m2}-${v2}`
+    };
+  },
+  // T3: TF — momentum vector nature
+  function s1_tf_vector() {
+    const variant = rng.pick([
+      { stmt:"Two objects with the same speed but moving in opposite directions can have momenta that add to zero.", ans:true,
+        why:"Momentum is a vector. Equal and opposite momenta cancel when added." },
+      { stmt:"If an object's velocity is negative, its momentum must also be negative (assuming positive mass).", ans:true,
+        why:"p = m·v and m > 0, so the sign of p matches the sign of v." },
+      { stmt:"Two objects with the same mass must have the same momentum if they move at the same speed, regardless of direction.", ans:false,
+        why:"Same speed but opposite directions → opposite signs → different momenta." },
+      { stmt:"Momentum is a scalar quantity, so direction is not part of its description.", ans:false,
+        why:"Momentum is a vector. Direction matters." }
+    ]);
+    return {
+      type:"tf", skill:"s1", template:"S1-T3",
+      context: "True or false",
+      stem: variant.stmt,
+      correct: variant.ans,
+      hint: "Recall: p = m·v, and momentum is a vector.",
+      solution: variant.why,
+      misconception: "Momentum is a scalar / sign is unimportant",
+      signature: `s1t3-${variant.stmt.slice(0,18)}`
+    };
+  },
+  // T4: MCQ — definition trap
+  function s1_def() {
+    const variants = [
+      {
+        stem:"Which statement about momentum is most correct?",
+        choices:[
+          "Momentum depends on speed only and not on direction.",
+          "Momentum depends on mass and velocity, and points in the direction of motion.",
+          "Momentum is the same as kinetic energy.",
+          "Only moving objects with positive velocity have momentum."
+        ],
+        correct:1,
+        why:"p = m·v is a vector; it has both magnitude and direction."
+      },
+      {
+        stem:"Two trolleys of equal mass roll on a frictionless track. Trolley P moves at +6 m/s; Trolley Q moves at −6 m/s. Which is true?",
+        choices:[
+          "They have the same momentum because their speeds are equal.",
+          "They have momenta of equal magnitude but opposite directions.",
+          "Trolley P has momentum but Trolley Q does not, because negative momentum is impossible.",
+          "Trolley Q has more momentum because negative means smaller."
+        ],
+        correct:1,
+        why:"Equal masses, opposite velocities → equal-magnitude, opposite-direction momenta."
+      }
+    ];
+    const v = rng.pick(variants);
+    return {
+      type:"mcq", skill:"s1", template:"S1-T4",
+      context: "Concept check", stem: v.stem,
+      choices: v.choices, correct: v.correct,
+      hint: "Momentum is a vector: magnitude AND direction.",
+      solution: v.why,
+      misconception: "Negative velocity = smaller speed",
+      signature: `s1t4-${v.stem.slice(0,18)}`
+    };
+  }
+];
+
+/* ----- Skill 2: Impulse & Δp ----- */
+const S2_TEMPLATES = [
+  // T1: Δp from vi → vf
+  function s2_dp() {
+    const m  = rng.pick([0.15, 0.25, 0.35, 0.5, 0.75, 1.2, 2.0]);
+    const vi = rng.pick([4, 6, 8, 10, 14, 18]) * rng.sign();
+    let vf = rng.pick([0, 2, 4, -3, -5, -8]);
+    if (vf === vi) vf += 2;
+    const dp = rng.round(m * (vf - vi), 3);
+    const ctx = rng.pick(CONTEXTS.ballSport);
+    return {
+      type:"numeric", skill:"s2", template:"S2-T1",
+      context:"Change in momentum",
+      stem:`${ctx[0].toUpperCase()+ctx.slice(1)} of mass ${m} kg has initial velocity ${vi} m/s and final velocity ${vf} m/s. Calculate the change in momentum Δp, including sign.`,
+      answer: dp, unit:"kg·m/s",
+      hint: "Δp = m(vf − vi). Be careful with signs.",
+      solution: `Δp = m × (vf − vi)\nΔp = ${m} × (${vf} − (${vi}))\nΔp = ${m} × ${rng.round(vf-vi,3)}\nΔp = ${dp} kg·m/s`,
+      misconception: "Δp = m(vi − vf) sign error",
+      signature: `s2t1-${m}-${vi}-${vf}`
+    };
+  },
+  // T2: Impulse equals Δp (numeric)
+  function s2_impulse_eq() {
+    const m  = rng.pick([0.08, 0.12, 0.2, 0.45, 0.6]);
+    const vi = rng.pick([8, 12, 16, 22]) * (Math.random()<0.5 ? -1 : 1);
+    const vf = 0;
+    const J  = rng.round(m * (vf - vi), 3);
+    const ctx = rng.pick(CONTEXTS.ballSport);
+    return {
+      type:"numeric", skill:"s2", template:"S2-T2",
+      context:"Impulse on a caught object",
+      stem:`A glove brings ${ctx} of mass ${m} kg to rest from an initial velocity of ${vi} m/s. Find the impulse delivered by the glove on the ball, including sign.`,
+      answer: J, unit:"N·s",
+      hint:"J = Δp = m(vf − vi), with vf = 0.",
+      solution:`J = Δp = m(vf − vi)\nJ = ${m} × (0 − (${vi}))\nJ = ${J} N·s`,
+      misconception:"Impulse acts in same direction as motion",
+      signature:`s2t2-${m}-${vi}`
+    };
+  },
+  // T3: Unit equivalence MCQ
+  function s2_units() {
+    const variants = [
+      {stem:"Which pair of units is equivalent?",
+        choices:["N · s and kg · m/s²","N · s and kg · m/s","N · s and J","N · s and W"],
+        correct:1,
+        why:"Impulse (N·s) equals change in momentum (kg·m/s) — same physical quantity."},
+      {stem:"A student writes Δp in newton-seconds. Is this acceptable?",
+        choices:["No — momentum must always be in kg·m/s.","Yes — N·s and kg·m/s describe the same quantity.","Only if the time interval is exactly 1 s.","Only if the force is constant."],
+        correct:1,
+        why:"1 N·s = 1 (kg·m/s²)·s = 1 kg·m/s. They are equivalent."}
+    ];
+    const v = rng.pick(variants);
+    return {
+      type:"mcq", skill:"s2", template:"S2-T3",
+      context:"Units check",
+      stem:v.stem, choices:v.choices, correct:v.correct,
+      hint:"Use F = ma → N = kg·m/s², then multiply by s.",
+      solution:v.why,
+      misconception:"Impulse and momentum have different units",
+      signature:`s2t3-${v.stem.slice(0,18)}`
+    };
+  },
+  // T4: TF: J = Δp
+  function s2_tf() {
+    const variant = rng.pick([
+      {stmt:"Impulse on an object equals the change in its momentum.",ans:true,
+        why:"Impulse–momentum theorem: J = Δp."},
+      {stmt:"Impulse and force are the same physical quantity.",ans:false,
+        why:"Force has units of N; impulse has units of N·s (force × time)."},
+      {stmt:"If an object's velocity does not change, the impulse on it must be zero.",ans:true,
+        why:"Δv = 0 → Δp = 0 → J = 0."},
+      {stmt:"Impulse is always positive.",ans:false,
+        why:"Impulse is a vector; its sign matches the direction of Δp."}
+    ]);
+    return {
+      type:"tf", skill:"s2", template:"S2-T4",
+      context:"True or false", stem:variant.stmt,
+      correct:variant.ans,
+      hint:"Impulse = change in momentum. It is a vector.",
+      solution:variant.why,
+      misconception:"Impulse = force",
+      signature:`s2t4-${variant.stmt.slice(0,18)}`
+    };
+  }
+];
+
+/* ----- Skill 3: Average Force from Impulse ----- */
+const S3_TEMPLATES = [
+  // T1: F from Δp/Δt
+  function s3_force() {
+    const m  = rng.pick([0.2, 0.45, 0.6, 1.2, 2.5]);
+    const vi = rng.pick([8, 12, 15, 18, 22]);
+    const vf = 0;
+    const dt = rng.pick([0.05, 0.08, 0.12, 0.25, 0.4]);
+    const F  = rng.round(m * (vf - vi) / dt, 2);
+    const ctx = rng.pick(CONTEXTS.ballSport);
+    return {
+      type:"numeric", skill:"s3", template:"S3-T1",
+      context:"Average force",
+      stem:`A wall stops ${ctx} of mass ${m} kg moving at ${vi} m/s. The contact lasts ${dt} s. Find the average force exerted by the wall on the ball, including sign.`,
+      answer: F, unit:"N",
+      hint:"F = Δp / Δt = m(vf − vi)/Δt.",
+      solution:`Δp = m(vf − vi) = ${m}(0 − ${vi}) = ${rng.round(m*(vf-vi),3)} kg·m/s\nF = Δp / Δt = ${rng.round(m*(vf-vi),3)} / ${dt}\nF = ${F} N`,
+      misconception:"F = Δp × Δt instead of Δp / Δt",
+      signature:`s3t1-${m}-${vi}-${dt}`
+    };
+  },
+  // T2: longer time → smaller force MCQ
+  function s3_time() {
+    const variants = [
+      {stem:"A car has airbags that increase the time over which a passenger decelerates during a crash. Why does this help?",
+        choices:[
+          "It reduces the passenger's change in momentum.",
+          "It increases the average force on the passenger.",
+          "For the same Δp, a longer Δt gives a smaller average force.",
+          "Airbags add momentum to cancel the crash."
+        ], correct:2,
+        why:"From F = Δp/Δt, increasing Δt for the same Δp decreases F."},
+      {stem:"A high jumper lands on a thick foam mat instead of bare floor. The foam helps by:",
+        choices:[
+          "Reducing the jumper's change in momentum on landing.",
+          "Increasing the landing time, which reduces the average force.",
+          "Increasing the impulse delivered.",
+          "Eliminating gravity for an instant."
+        ], correct:1,
+        why:"Δp is the same; longer Δt → smaller average F."}
+    ];
+    const v = rng.pick(variants);
+    return {
+      type:"mcq", skill:"s3", template:"S3-T2",
+      context:"Why time matters", stem:v.stem,
+      choices:v.choices, correct:v.correct,
+      hint:"Same Δp, longer Δt → smaller F. The momentum change is the same.",
+      solution:v.why,
+      misconception:"Longer collision time increases force",
+      signature:`s3t2-${v.stem.slice(0,18)}`
+    };
+  },
+  // T3: error analysis (TF)
+  function s3_error() {
+    const variant = rng.pick([
+      {stmt:"For the same change in momentum, doubling the contact time doubles the average force.",ans:false,
+        why:"Doubling Δt halves F, since F = Δp/Δt."},
+      {stmt:"If two collisions produce the same Δp, the one with the longer contact time exerts the smaller average force.",ans:true,
+        why:"F is inversely proportional to Δt for the same Δp."}
+    ]);
+    return {
+      type:"tf", skill:"s3", template:"S3-T3",
+      context:"True or false",
+      stem:variant.stmt, correct:variant.ans,
+      hint:"F = Δp / Δt — inverse relationship between F and Δt.",
+      solution:variant.why,
+      misconception:"F and Δt are directly proportional",
+      signature:`s3t3-${variant.stmt.slice(0,18)}`
+    };
+  },
+  // T4: find Δt given F and Δp
+  function s3_findDt() {
+    const m  = rng.pick([0.3, 0.5, 0.8, 1.5]);
+    const vi = rng.pick([5, 8, 12, 16]);
+    const F  = rng.pick([40, 60, 80, 120, 200]) * -1; // opposing
+    const dp = m * (0 - vi);
+    const dt = rng.round(dp / F, 3);
+    return {
+      type:"numeric", skill:"s3", template:"S3-T4",
+      context:"Find Δt",
+      stem:`An object of mass ${m} kg slows from ${vi} m/s to rest under an average force of ${F} N. How long does the deceleration take?`,
+      answer: dt, unit:"s",
+      hint:"Rearrange F = Δp/Δt → Δt = Δp/F.",
+      solution:`Δp = m(vf − vi) = ${m}(0 − ${vi}) = ${rng.round(dp,3)} kg·m/s\nΔt = Δp / F = ${rng.round(dp,3)} / ${F}\nΔt = ${dt} s`,
+      misconception:"Forgetting sign cancellation",
+      signature:`s3t4-${m}-${vi}-${F}`
+    };
+  }
+];
+
+/* ----- Skill 4: Stopping vs Bouncing ----- */
+const S4_TEMPLATES = [
+  // T1: compute both |Δp|
+  function s4_both() {
+    const m  = rng.pick([0.1, 0.15, 0.2, 0.3, 0.5]);
+    const vi = rng.pick([6, 8, 10, 12, 15]);
+    const dpStop  = rng.round(m * (0 - vi), 3);          // negative
+    const e = rng.pick([0.5, 0.6, 0.7, 0.8]); // partial bounce
+    const vfBounce = rng.round(-e * vi, 2);
+    const dpBounce = rng.round(m * (vfBounce - vi), 3);
+    return {
+      type:"numeric", skill:"s4", template:"S4-T1",
+      context:"Bouncing magnifies impulse",
+      stem:`A ball of mass ${m} kg hits a wall at ${vi} m/s. In Case 1 it stops. In Case 2 it bounces back at ${Math.abs(vfBounce)} m/s. What is |Δp| in Case 2?`,
+      answer: Math.abs(dpBounce), unit:"kg·m/s",
+      hint:"In Case 2, vf = −"+Math.abs(vfBounce)+" m/s (reversed). Δp = m(vf − vi).",
+      solution:`Case 2: vf = ${vfBounce} m/s (reversed direction)\nΔp = m(vf − vi) = ${m}(${vfBounce} − ${vi}) = ${dpBounce} kg·m/s\n|Δp| = ${Math.abs(dpBounce)} kg·m/s\nCompare: Case 1 |Δp| = ${Math.abs(dpStop)} kg·m/s. Bouncing produces a LARGER impulse.`,
+      misconception:"Stopping produces a larger impulse than bouncing",
+      signature:`s4t1-${m}-${vi}-${vfBounce}`
+    };
+  },
+  // T2: which gives larger impulse (MCQ)
+  function s4_which() {
+    const variants = [
+      {stem:"A clay ball and an elastic ball of identical mass strike a wall at the same speed. The clay sticks; the elastic ball bounces back at the same speed. Which experiences the larger impulse from the wall?",
+        choices:["The clay ball.","The elastic ball.","Both experience the same impulse.","Cannot be determined without the contact time."],
+        correct:1,
+        why:"Clay: Δp = 0 − mvi = −mvi (|Δp| = mvi). Elastic: Δp = −mvi − mvi = −2mvi (|Δp| = 2mvi). The bouncing ball has DOUBLE the impulse."},
+      {stem:"Two pucks of equal mass move toward a barrier at 4 m/s. Puck P stops on impact; Puck Q bounces back at 4 m/s. Compared to P:",
+        choices:["Q experiences half the impulse.","Q experiences the same impulse.","Q experiences twice the impulse.","Q experiences no impulse, because it returns to its starting speed."],
+        correct:2,
+        why:"Stopping: |Δp| = mvi. Bouncing back at same speed: |Δp| = 2mvi."}
+    ];
+    const v = rng.pick(variants);
+    return {
+      type:"mcq", skill:"s4", template:"S4-T2",
+      context:"Bounce vs stop", stem:v.stem,
+      choices:v.choices, correct:v.correct,
+      hint:"Compute Δp = m(vf − vi) for each case. Reversing direction flips the sign of vf.",
+      solution:v.why,
+      misconception:"Bouncing produces less impulse",
+      signature:`s4t2-${v.stem.slice(0,18)}`
+    };
+  },
+  // T3: TF
+  function s4_tf() {
+    const variant = rng.pick([
+      {stmt:"When an object bounces back with the same speed it arrived with, the magnitude of its change in momentum is twice what it would be if it had simply stopped.",ans:true,
+        why:"Stop: |Δp| = mvi. Bounce: |Δp| = 2mvi."},
+      {stmt:"A ball that bounces off a wall experiences a smaller impulse than one that sticks to the wall.",ans:false,
+        why:"Bouncing reverses velocity → larger |Δp| → larger impulse."}
+    ]);
+    return {
+      type:"tf", skill:"s4", template:"S4-T3",
+      context:"True or false", stem:variant.stmt,
+      correct:variant.ans,
+      hint:"Sign reversal of vf doubles |Δp| when |vf| = |vi|.",
+      solution:variant.why,
+      misconception:"Bouncing = less impulse",
+      signature:`s4t3-${variant.stmt.slice(0,18)}`
+    };
+  }
+];
+
+/* ----- Skill 5: Conservation of Momentum ----- */
+const S5_TEMPLATES = [
+  // T1: one stationary (find v' after collision, but DO NOT stick — separate from S6)
+  function s5_oneStation() {
+    // Use elastic-style "after" given: target finds combined p, then split between two known final
+    // To keep skill 5 distinct from skill 6 (sticking), frame as: cart 1 hits stationary cart 2;
+    // after collision cart 1 has known v1f — find v2f.
+    const m1 = rng.pick([2,3,4,5,6,8]);
+    const m2 = rng.pick([1,2,3,4]);
+    const v1i = rng.pick([3,4,5,6,8,10]);
+    // choose plausible v1f less than v1i
+    const v1f = rng.round(v1i * rng.pick([0.2, 0.3, 0.5]), 2);
+    const v2f = rng.round((m1*v1i - m1*v1f) / m2, 2);
+    return {
+      type:"numeric", skill:"s5", template:"S5-T1",
+      context:"Conservation — one stationary",
+      stem:`A cart of mass ${m1} kg moving at ${v1i} m/s collides with a stationary cart of mass ${m2} kg on a frictionless track. After the collision, the first cart moves at ${v1f} m/s in the same direction. Find the final velocity of the second cart, including sign.`,
+      answer: v2f, unit:"m/s",
+      hint:"Total p before = total p after. (m₁v₁ᵢ) + 0 = m₁v₁f + m₂v₂f.",
+      solution:`p_before = m₁·v₁ᵢ + m₂·v₂ᵢ = (${m1})(${v1i}) + 0 = ${m1*v1i} kg·m/s\np_after  = m₁·v₁f + m₂·v₂f\n${m1*v1i} = (${m1})(${v1f}) + (${m2})·v₂f\nv₂f = (${m1*v1i} − ${m1*v1f}) / ${m2}\nv₂f = ${v2f} m/s`,
+      misconception:"Conservation does not apply when one object is initially at rest",
+      signature:`s5t1-${m1}-${m2}-${v1i}-${v1f}`
+    };
+  },
+  // T2: two moving same direction
+  function s5_sameDir() {
+    const m1 = rng.pick([3,4,5,6]);
+    const m2 = rng.pick([2,3,4]);
+    const v1i = rng.pick([5,6,8,10]);
+    const v2i = rng.pick([1,2,3]);
+    const v1f = rng.round(v1i - rng.pick([2,3,4]), 2);
+    const v2f = rng.round((m1*v1i + m2*v2i - m1*v1f) / m2, 2);
+    return {
+      type:"numeric", skill:"s5", template:"S5-T2",
+      context:"Conservation — two moving same direction",
+      stem:`Two carts on a frictionless track move in the same direction: cart 1 (m = ${m1} kg) at ${v1i} m/s catches up to cart 2 (m = ${m2} kg) at ${v2i} m/s. After collision, cart 1 moves at ${v1f} m/s in the same direction. Find the final velocity of cart 2.`,
+      answer: v2f, unit:"m/s",
+      hint:"m₁v₁ᵢ + m₂v₂ᵢ = m₁v₁f + m₂v₂f.",
+      solution:`p_before = (${m1})(${v1i}) + (${m2})(${v2i}) = ${m1*v1i+m2*v2i} kg·m/s\nm₁v₁f + m₂v₂f = ${m1*v1i+m2*v2i}\n(${m1})(${v1f}) + (${m2})·v₂f = ${m1*v1i+m2*v2i}\nv₂f = ${v2f} m/s`,
+      misconception:"Forgetting to add both momenta on each side",
+      signature:`s5t2-${m1}-${m2}-${v1i}-${v2i}-${v1f}`
+    };
+  },
+  // T3: conservation condition MCQ
+  function s5_condition() {
+    return {
+      type:"mcq", skill:"s5", template:"S5-T3",
+      context:"When is momentum conserved?",
+      stem:"For the total momentum of a system to be conserved during a collision, which condition must hold?",
+      choices:[
+        "Kinetic energy must also be conserved.",
+        "The net external force on the system must be zero.",
+        "The objects must have the same mass.",
+        "There must be no internal forces between the objects."
+      ],
+      correct:1,
+      hint:"Internal forces always cancel by Newton's third law. The condition is about EXTERNAL forces.",
+      solution:"Momentum is conserved when the NET EXTERNAL FORCE on the system is zero. Internal forces between the objects always come in equal-and-opposite pairs.",
+      misconception:"Momentum is always conserved",
+      signature:`s5t3-static`
+    };
+  },
+  // T4: TF — internal vs external
+  function s5_tf() {
+    const variant = rng.pick([
+      {stmt:"Two ice skaters push off each other from rest. Ignoring friction, the total momentum of the two-skater system remains zero after the push.",ans:true,
+        why:"The push is internal. Net external force ≈ 0 (smooth ice) → momentum conserved, and it started at zero."},
+      {stmt:"Momentum is conserved in every collision regardless of external forces.",ans:false,
+        why:"Conservation requires the net external force on the system to be zero."}
+    ]);
+    return {
+      type:"tf", skill:"s5", template:"S5-T4",
+      context:"True or false", stem:variant.stmt,
+      correct:variant.ans,
+      hint:"Internal forces don't matter. External net force must be zero.",
+      solution:variant.why,
+      misconception:"All collisions conserve momentum",
+      signature:`s5t4-${variant.stmt.slice(0,18)}`
+    };
+  }
+];
+
+/* ----- Skill 6: Perfectly Inelastic Collisions ----- */
+const S6_TEMPLATES = [
+  // T1: shared vf (one stationary)
+  function s6_stick_oneStation() {
+    const m1 = rng.pick([2,3,4,5,8]);
+    const m2 = rng.pick([1,2,3,4,5]);
+    const v1 = rng.pick([4,6,8,10,12]);
+    const vf = rng.round(m1 * v1 / (m1 + m2), 3);
+    return {
+      type:"numeric", skill:"s6", template:"S6-T1",
+      context:"Sticking collision — one stationary",
+      stem:`A railcar of mass ${m1} kg moving at ${v1} m/s couples to a stationary railcar of mass ${m2} kg on a horizontal track. After coupling, the two move together. Find their shared final velocity, including sign.`,
+      answer: vf, unit:"m/s",
+      hint:"They stick together → use m₁v₁ + m₂v₂ = (m₁+m₂)v'.",
+      solution:`m₁v₁ + m₂v₂ = (m₁ + m₂)v'\n(${m1})(${v1}) + (${m2})(0) = (${m1+m2})v'\nv' = ${m1*v1} / ${m1+m2}\nv' = ${vf} m/s`,
+      misconception:"Forgetting to add masses on the right side",
+      signature:`s6t1-${m1}-${m2}-${v1}`
+    };
+  },
+  // T2: opposite directions, find vf
+  function s6_stick_opposite() {
+    const m1 = rng.pick([3,4,5,6,8]);
+    const m2 = rng.pick([2,3,4,5]);
+    const v1 = rng.pick([4,5,6,7,8]);
+    const v2 = rng.pick([3,4,5,6]) * -1;
+    const vf = rng.round((m1*v1 + m2*v2) / (m1 + m2), 3);
+    return {
+      type:"numeric", skill:"s6", template:"S6-T2",
+      context:"Sticking — opposite directions",
+      stem:`Two carts on a frictionless track move toward each other and stick on collision. Cart 1: m = ${m1} kg, v = +${v1} m/s. Cart 2: m = ${m2} kg, v = ${v2} m/s. Find their shared final velocity, including sign.`,
+      answer: vf, unit:"m/s",
+      hint:"Keep the signs. m₁v₁ + m₂v₂ = (m₁+m₂)v'.",
+      solution:`p_before = (${m1})(+${v1}) + (${m2})(${v2}) = ${m1*v1 + m2*v2} kg·m/s\nv' = p_before / (m₁ + m₂) = ${m1*v1+m2*v2} / ${m1+m2}\nv' = ${vf} m/s`,
+      misconception:"Treating opposite-direction velocities as both positive",
+      signature:`s6t2-${m1}-${m2}-${v1}-${v2}`
+    };
+  },
+  // T3: TF — KE not conserved
+  function s6_tf_ke() {
+    const variant = rng.pick([
+      {stmt:"Kinetic energy is conserved when two objects collide and stick together.",ans:false,
+        why:"Sticking together = perfectly inelastic collision. KE is NOT conserved (some is converted to heat, sound, deformation). Momentum IS conserved."},
+      {stmt:"In a perfectly inelastic collision, momentum is conserved but kinetic energy is not.",ans:true,
+        why:"Yes — this is the definition of a perfectly inelastic collision."},
+      {stmt:"After two objects stick together, the combined object can have more kinetic energy than the two had before, if external forces are absent.",ans:false,
+        why:"With no external work added, KE can decrease or stay the same. It cannot increase."}
+    ]);
+    return {
+      type:"tf", skill:"s6", template:"S6-T3",
+      context:"True or false", stem:variant.stmt,
+      correct:variant.ans,
+      hint:"Sticking → perfectly inelastic. KE is not conserved.",
+      solution:variant.why,
+      misconception:"Sticking conserves KE",
+      signature:`s6t3-${variant.stmt.slice(0,18)}`
+    };
+  },
+  // T4: direction of combined vf MCQ
+  function s6_dir() {
+    const variants = [
+      {stem:"Two gliders collide and stick. Glider M (8 kg) moves east at 5 m/s. Glider N (2 kg) moves west at 4 m/s. After collision, the combined object moves:",
+        choices:["East — because glider M is heavier.","East — because glider M's momentum is larger in magnitude.","West — because glider N is faster.","At rest — equal and opposite momenta cancel."],
+        correct:1,
+        why:"p_M = +40 kg·m/s; p_N = −8 kg·m/s. Net = +32 → east. Direction is decided by net momentum, not by mass or speed alone."},
+      {stem:"Two gliders collide head-on and stick. Glider 1 has momentum +20 kg·m/s; glider 2 has momentum −20 kg·m/s. The combined object after collision:",
+        choices:["Moves in the +x direction.","Is at rest.","Moves in the −x direction.","Splits apart."],
+        correct:1,
+        why:"Total momentum = +20 + (−20) = 0. They stick → at rest."}
+    ];
+    const v = rng.pick(variants);
+    return {
+      type:"mcq", skill:"s6", template:"S6-T4",
+      context:"Direction after sticking", stem:v.stem,
+      choices:v.choices, correct:v.correct,
+      hint:"Compute the NET momentum (with signs). That determines the combined direction.",
+      solution:v.why,
+      misconception:"Heavier always wins / faster always wins",
+      signature:`s6t4-${v.stem.slice(0,18)}`
+    };
+  }
+];
+
+/* ----- Skill 7: Direction & Sign Reasoning ----- */
+const S7_TEMPLATES = [
+  // T1: interpret negative v
+  function s7_neg() {
+    const variants = [
+      {stem:"A cart's final velocity is reported as v' = −2.4 m/s, with east chosen as positive. Which interpretation is correct?",
+        choices:["The cart is at rest and decelerating.","The cart moves west at 2.4 m/s.","The cart moves east at 2.4 m/s, but slowly.","The negative sign is a calculation error; velocity cannot be negative."],
+        correct:1,
+        why:"A negative velocity means the object moves OPPOSITE to the chosen positive direction. Magnitude is 2.4 m/s; direction is west."},
+      {stem:"Two pucks collide and stick. Final velocity = −3 m/s with +x to the right. The combined pucks move:",
+        choices:["To the right at 3 m/s.","To the left at 3 m/s.","Down at 3 m/s.","Cannot tell from the sign alone."],
+        correct:1,
+        why:"Negative sign relative to +x means direction is to the left."}
+    ];
+    const v = rng.pick(variants);
+    return {
+      type:"mcq", skill:"s7", template:"S7-T1",
+      context:"Interpret a negative sign", stem:v.stem,
+      choices:v.choices, correct:v.correct,
+      hint:"Sign tells you direction, not size. Negative ≠ smaller.",
+      solution:v.why,
+      misconception:"Negative velocity = smaller speed",
+      signature:`s7t1-${v.stem.slice(0,18)}`
+    };
+  },
+  // T2: equal-opposite momenta TF
+  function s7_eqOpp() {
+    const variant = rng.pick([
+      {stmt:"Two objects with momenta +6 kg·m/s and −6 kg·m/s have a total momentum of zero.",ans:true,
+        why:"Equal-magnitude, opposite-direction momenta cancel."},
+      {stmt:"Two objects with momenta +6 kg·m/s and −6 kg·m/s have a total momentum of 12 kg·m/s.",ans:false,
+        why:"You add vectors using signs: +6 + (−6) = 0. (12 is the SUM of magnitudes, not the total momentum.)"},
+      {stmt:"If two objects have equal masses and equal speeds in opposite directions, their total momentum is non-zero.",ans:false,
+        why:"Equal masses × equal speeds × opposite signs = ±mv each, summing to 0."}
+    ]);
+    return {
+      type:"tf", skill:"s7", template:"S7-T2",
+      context:"True or false", stem:variant.stmt,
+      correct:variant.ans,
+      hint:"Add momenta with signs, not magnitudes.",
+      solution:variant.why,
+      misconception:"Sum of magnitudes = total momentum",
+      signature:`s7t2-${variant.stmt.slice(0,18)}`
+    };
+  },
+  // T3: interpret sign of Δp
+  function s7_dp() {
+    const m = rng.pick([2,3,4]);
+    const v = rng.pick([3, 4, 5]);
+    return {
+      type:"mcq", skill:"s7", template:"S7-T3",
+      context:"Interpret sign of Δp",
+      stem:`A ball moving in the +x direction is struck and reverses direction with the same speed. Its change in momentum Δp is:`,
+      choices:[
+        "Zero, because the speed didn't change.",
+        "Positive, equal to +2mv.",
+        "Negative, equal to −2mv.",
+        "Indeterminate without knowing the contact time."
+      ],
+      correct:2,
+      hint:"Δp = m(vf − vi). vf = −v, vi = +v. The sign indicates direction.",
+      solution:`Δp = m(vf − vi) = m(−v − (+v)) = −2mv\nThe negative sign means the change in momentum points in the −x direction.`,
+      misconception:"Same speed = no change in momentum",
+      signature:`s7t3-static`
+    };
+  },
+  // T4: error correction
+  function s7_error() {
+    return {
+      type:"tf", skill:"s7", template:"S7-T4",
+      context:"Error check",
+      stem:"A student writes: 'The puck has a velocity of −4 m/s, so it has less momentum than a puck with +1 m/s of the same mass.' Is this reasoning correct?",
+      correct:false,
+      hint:"Compare MAGNITUDES, not signs. |−4| > |+1|.",
+      solution:"Incorrect. The magnitude of momentum is m|v|. The first puck has |p| = 4m, larger than 1m. The negative sign indicates direction only, not size.",
+      misconception:"Negative number = smaller",
+      signature:`s7t4-static`
+    };
+  }
+];
+
+/* ----- Skill 8: Mixed Review (samples from S1–S7) ----- */
+const ALL_TEMPLATES = {
+  s1: S1_TEMPLATES,
+  s2: S2_TEMPLATES,
+  s3: S3_TEMPLATES,
+  s4: S4_TEMPLATES,
+  s5: S5_TEMPLATES,
+  s6: S6_TEMPLATES,
+  s7: S7_TEMPLATES
+};
+
+/* Generate next question for a skill */
+function generateQuestion(skill) {
+  if (skill === "s8") {
+    // pick random skill from s1..s7
+    const pool = ["s1","s2","s3","s4","s5","s6","s7"];
+    const k = rng.pick(pool);
+    return generateOne(k);
+  }
+  return generateOne(skill);
+}
+function generateOne(skill) {
+  const templates = ALL_TEMPLATES[skill];
+  // Try up to 12 times to avoid recent repeats
+  for (let i = 0; i < 12; i++) {
+    const t = rng.pick(templates);
+    const q = t();
+    if (notRecent(skill, q.signature)) {
+      pushRecent(skill, q.signature);
+      return q;
+    }
+  }
+  // fall back
+  const t = rng.pick(templates);
+  return t();
+}
+
+/* ==========================================================================
+   ANSWER CHECKING
+   ========================================================================== */
+function checkNumeric(userStr, correct) {
+  if (userStr === null || userStr === undefined) return { valid:false, ok:false, reason:"empty" };
+  const s = String(userStr).trim().replace(",", ".");
+  if (s === "" || s === "-" || s === "+" || s === ".") return { valid:false, ok:false, reason:"empty" };
+  if (!/^[-+]?(\d+(\.\d*)?|\.\d+)$/.test(s)) return { valid:false, ok:false, reason:"bad format" };
+  const n = parseFloat(s);
+  if (Number.isNaN(n)) return { valid:false, ok:false, reason:"NaN" };
+  const tol = Math.max(CONFIG.ANSWER_TOLERANCE_ABS, Math.abs(correct) * CONFIG.ANSWER_TOLERANCE_REL) + 1e-9;
+  const ok = Math.abs(n - correct) <= tol;
+  return { valid:true, ok, value:n };
+}
+function checkTF(user, correct) {
+  return user === correct;
+}
+function checkMCQ(userIdx, correctIdx) {
+  return userIdx === correctIdx;
+}
+
+/* ==========================================================================
+   UI RENDERING
+   ========================================================================== */
+const main = document.getElementById("main");
+let session = null; // { skill, qIndex, total, correct, streak, currentQ, attempts }
+
+function escapeHTML(str) {
+  return String(str).replace(/[&<>"']/g, ch => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"
+  }[ch]));
+}
+
+function renderDashboard() {
+  session = null;
+  const recommend = weakestSkill();
+  let html = `
+    <section class="card">
+      <h2>Your dashboard</h2>
+      <p>Click a skill to practice. Aim for <strong>Mastered (≥${Math.round(CONFIG.MASTERY_THRESHOLD*100)}%)</strong> on each.</p>`;
+
+  if (recommend) {
+    html += `<p style="margin-top:10px;"><strong>Recommended next:</strong> ${CONFIG.SKILL_NAMES[recommend.key]} 
+      <span class="mastery-tag ${tagClass(recommend.m.level)}">${recommend.m.level}</span></p>`;
+  } else {
+    html += `<p style="margin-top:10px;color:var(--ok-fg);"><strong>All 7 core skills mastered.</strong> Try the Mixed Review.</p>`;
+  }
+  html += `</section>`;
+
+  html += `<div class="skill-grid">`;
+  SKILLS.forEach(k => {
+    const m = masteryOf(k);
+    const p = progress[k];
+    const pct = Math.round(m.acc * 100);
+    html += `
+      <div class="card">
+        <h2 style="font-size:0.98rem;">${CONFIG.SKILL_NAMES[k]}</h2>
+        <p>${p.correct} / ${p.attempts} correct · <strong>${pct}%</strong>
+          <span class="mastery-tag ${tagClass(m.level)}">${m.level}</span></p>
+        <div class="bar"><span style="width:${pct}%"></span></div>
+        <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;">
+          <button class="ghost" data-action="start" data-skill="${k}">Practice</button>
+        </div>
+      </div>`;
+  });
+  html += `</div>`;
+
+  html += `
+    <section class="card" style="margin-top:14px;">
+      <div class="row">
+        <button class="danger" data-action="reset">Reset progress</button>
+        ${CONFIG.TEACHER_PREVIEW ? `<button class="indigo" data-action="preview">Teacher preview</button>` : ""}
+      </div>
+    </section>`;
+
+  main.innerHTML = html;
+  bindDashboard();
+}
+
+function tagClass(level) {
+  return ({
+    "Beginner":"m-beginner",
+    "Developing":"m-developing",
+    "Almost":"m-almost",
+    "Mastered":"m-mastered"
+  })[level] || "m-beginner";
+}
+
+function bindDashboard() {
+  main.querySelectorAll('[data-action="start"]').forEach(btn => {
+    btn.addEventListener("click", () => startSession(btn.dataset.skill));
+  });
+  const reset = main.querySelector('[data-action="reset"]');
+  if (reset) reset.addEventListener("click", () => {
+    if (confirm("Reset all progress on this device?")) {
+      progress = defaultProgress();
+      saveProgress();
+      SKILLS.forEach(s => { sessionRecent[s] = []; });
+      renderDashboard();
+    }
+  });
+  const prev = main.querySelector('[data-action="preview"]');
+  if (prev) prev.addEventListener("click", renderTeacherPreview);
+}
+
+function startSession(skill) {
+  const count = skill === "s8" ? CONFIG.MIXED_REVIEW_COUNT : CONFIG.QUESTIONS_PER_SKILL;
+  session = {
+    skill,
+    qIndex: 0,
+    total: count,
+    correct: 0,
+    streak: 0,
+    currentQ: null,
+    attempts: 0,
+    startedMastery: masteryOf(skill).level
+  };
+  nextQuestion();
+}
+
+function nextQuestion() {
+  if (session.qIndex >= session.total) return renderCompletion();
+  session.currentQ = generateQuestion(session.skill);
+  session.attempts = 0;
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = session.currentQ;
+  const skillName = CONFIG.SKILL_NAMES[session.skill];
+  let html = `
+    <section class="card">
+      <div class="qmeta">
+        <div>${skillName}</div>
+        <div>Q ${session.qIndex+1} of ${session.total} ${session.streak >= 2 ? `<span class="streak">🔥 ${session.streak}</span>` : ""}</div>
+      </div>
+      <div class="qstem">
+        <span class="ctx">${escapeHTML(q.context)}</span>
+        ${escapeHTML(q.stem)}
+      </div>
+      <div id="answer-area"></div>
+      <div id="feedback" class="feedback"></div>
+      <div id="action-row" class="row" style="margin-top:12px;">
+        <button class="ghost" data-action="back">Back to dashboard</button>
+      </div>
+    </section>
+  `;
+  main.innerHTML = html;
+
+  const area = document.getElementById("answer-area");
+  if (q.type === "numeric") {
+    area.innerHTML = `
+      <div class="num-wrap">
+        <input class="num-input" id="num-in" type="text" inputmode="text"
+               autocomplete="off" autocorrect="off" autocapitalize="off"
+               placeholder="e.g. -3.6"  aria-label="numerical answer" />
+        <div class="unit-hint">${escapeHTML(q.unit)}</div>
+      </div>
+      <div class="row" style="margin-top:10px;">
+        <button data-action="submit-num">Submit</button>
+      </div>`;
+    document.getElementById("num-in").addEventListener("keydown", e => {
+      if (e.key === "Enter") submitNumeric();
+    });
+    document.querySelector('[data-action="submit-num"]').addEventListener("click", submitNumeric);
+    setTimeout(() => document.getElementById("num-in").focus(), 50);
+  }
+  else if (q.type === "tf") {
+    area.innerHTML = `
+      <div class="tf-row">
+        <button data-action="tf" data-val="true">TRUE</button>
+        <button class="secondary" data-action="tf" data-val="false">FALSE</button>
+      </div>`;
+    area.querySelectorAll('[data-action="tf"]').forEach(b => {
+      b.addEventListener("click", () => submitTF(b.dataset.val === "true"));
+    });
+  }
+  else if (q.type === "mcq") {
+    let ch = `<div class="choices">`;
+    q.choices.forEach((c, i) => {
+      ch += `<button class="choice" data-action="mcq" data-idx="${i}">${String.fromCharCode(65+i)}. ${escapeHTML(c)}</button>`;
+    });
+    ch += `</div>`;
+    area.innerHTML = ch;
+    area.querySelectorAll('[data-action="mcq"]').forEach(b => {
+      b.addEventListener("click", () => submitMCQ(parseInt(b.dataset.idx, 10), b));
+    });
+  }
+
+  document.querySelector('[data-action="back"]').addEventListener("click", () => {
+    if (confirm("Leave this skill? Your progress so far is saved.")) {
+      // record session counts
+      saveProgress();
+      renderDashboard();
+    }
+  });
+}
+
+function submitNumeric() {
+  const q = session.currentQ;
+  const input = document.getElementById("num-in");
+  const raw = input.value;
+  const r = checkNumeric(raw, q.answer);
+  if (!r.valid) {
+    showFeedback("warn", "Please enter a valid number, e.g. -3.6, 0, or 4.25.", null);
+    return;
+  }
+  handleAttempt(r.ok);
+}
+function submitTF(val) {
+  const q = session.currentQ;
+  const ok = checkTF(val, q.correct);
+  handleAttempt(ok);
+}
+function submitMCQ(idx, btn) {
+  const q = session.currentQ;
+  // visual: mark selected
+  main.querySelectorAll(".choice").forEach(c => c.classList.remove("selected"));
+  btn.classList.add("selected");
+  const ok = checkMCQ(idx, q.correct);
+  // highlight correct/wrong
+  main.querySelectorAll(".choice").forEach((c, i) => {
+    if (i === q.correct) c.classList.add("correct");
+    if (i === idx && !ok) c.classList.add("wrong");
+    c.disabled = true;
+  });
+  handleAttempt(ok);
+}
+
+function handleAttempt(ok) {
+  session.attempts += 1;
+  const q = session.currentQ;
+  if (ok) {
+    // record only the first time per question
+    progress[session.skill].attempts += 1;
+    progress[session.skill].correct  += 1;
+    progress[session.skill].lastPracticed = Date.now();
+    saveProgress();
+    session.correct += 1;
+    session.streak  += 1;
+    showFeedback("ok", rng.pick([
+      "Correct.", "Well done.", "Yes — that matches the calculation.",
+      "Correct. The sign shows direction.", "Nice work."
+    ]), null);
+    session.qIndex += 1;
+    setTimeout(() => {
+      // auto-advance after delay
+      if (session) nextQuestion();
+    }, CONFIG.FEEDBACK_DELAY_OK_MS);
+  }
+  else {
+    if (session.attempts === 1) {
+      // first wrong → hint, allow retry
+      showFeedback("bad", "Not quite. Try again.", `<strong>Hint:</strong> ${escapeHTML(q.hint)}`);
+      session.streak = 0;
+      // re-enable inputs (for numeric & TF; MCQ already disabled)
+      if (q.type === "numeric") {
+        const inp = document.getElementById("num-in");
+        if (inp) { inp.value = ""; inp.focus(); }
+      }
+      if (q.type === "mcq") {
+        // After 1 wrong on MCQ, lock and show solution since they've already seen highlight
+        recordOneAttemptWrong();
+        showFullSolution();
+      }
+    }
+    else if (session.attempts >= CONFIG.ATTEMPTS_BEFORE_FULL) {
+      recordOneAttemptWrong();
+      showFullSolution();
+    }
+  }
+}
+
+function recordOneAttemptWrong() {
+  progress[session.skill].attempts += 1;
+  progress[session.skill].lastPracticed = Date.now();
+  saveProgress();
+}
+
+function showFeedback(kind, msg, extraHTML) {
+  const fb = document.getElementById("feedback");
+  fb.className = `feedback show ${kind}`;
+  fb.innerHTML = `<div>${escapeHTML(msg)}</div>${extraHTML ? `<div style="margin-top:6px;">${extraHTML}</div>` : ""}`;
+}
+
+function showFullSolution() {
+  const q = session.currentQ;
+  let solHTML = `
+    <details open>
+      <summary>Show solution</summary>
+      <div class="solution">${escapeHTML(q.solution)}</div>
+    </details>`;
+  showFeedback("bad", "Let's look at the full solution.", solHTML);
+  // continue button
+  const row = document.getElementById("action-row");
+  row.innerHTML = `
+    <button data-action="continue">Continue</button>
+    <button class="ghost" data-action="back">Back to dashboard</button>`;
+  row.querySelector('[data-action="continue"]').addEventListener("click", () => {
+    session.qIndex += 1;
+    nextQuestion();
+  });
+  row.querySelector('[data-action="back"]').addEventListener("click", () => {
+    saveProgress();
+    renderDashboard();
+  });
+}
+
+function renderCompletion() {
+  const skill = session.skill;
+  const m = masteryOf(skill);
+  const acc = session.total > 0 ? session.correct / session.total : 0;
+  const pct = Math.round(acc * 100);
+  const masteryNow = m.level;
+  const improved = (session.startedMastery !== masteryNow);
+  const rec = weakestSkill();
+
+  let html = `
+    <section class="card">
+      <div class="completion">
+        <p class="stat">Skill complete</p>
+        <h2 style="margin:6px 0;">${CONFIG.SKILL_NAMES[skill]}</h2>
+        <div class="big">${pct}%</div>
+        <p class="stat">${session.correct} of ${session.total} correct this session</p>
+        <p class="stat">Overall mastery: <span class="mastery-tag ${tagClass(masteryNow)}">${masteryNow}</span></p>
+        ${improved ? `<p class="stat" style="color:var(--ok-fg);font-weight:600;">Mastery level improved!</p>` : ""}
+      </div>
+      <div class="row" style="margin-top:14px;">
+        <button data-action="again">Practice this skill again</button>
+        <button class="secondary" data-action="dash">Go to dashboard</button>
+        ${rec ? `<button class="indigo" data-action="next" data-skill="${rec.key}">Next: ${escapeHTML(stripAmp(CONFIG.SKILL_NAMES[rec.key]))}</button>` : ""}
+      </div>
+    </section>
+  `;
+  main.innerHTML = html;
+  main.querySelector('[data-action="again"]').addEventListener("click", () => startSession(skill));
+  main.querySelector('[data-action="dash"]').addEventListener("click", renderDashboard);
+  const nb = main.querySelector('[data-action="next"]');
+  if (nb) nb.addEventListener("click", () => startSession(nb.dataset.skill));
+}
+
+function stripAmp(s) { return s.replace(/&amp;/g, "&"); }
+
+/* ==========================================================================
+   TEACHER PREVIEW MODE
+   ========================================================================== */
+function renderTeacherPreview() {
+  let html = `
+    <section class="card">
+      <h2>Teacher preview</h2>
+      <p>Sample generated questions per skill. Refresh to see new randomized values.</p>
+      <div class="row" style="margin-top:8px;">
+        <button class="ghost" data-action="dash">Back to dashboard</button>
+      </div>
+    </section>`;
+  SKILLS.forEach(k => {
+    html += `<section class="card"><h2>${CONFIG.SKILL_NAMES[k]}</h2>`;
+    const templates = k === "s8" ? null : ALL_TEMPLATES[k];
+    if (k === "s8") {
+      html += `<p>Samples randomly from skills 1–7 (Mixed Review).</p>`;
+    } else {
+      templates.forEach(t => {
+        const q = t();
+        html += `<div class="preview-block">
+          <strong>${q.template}</strong> · type: <code>${q.type}</code> · misconception: <em>${escapeHTML(q.misconception)}</em><br/>
+          <strong>Stem:</strong> ${escapeHTML(q.stem)}<br/>
+          ${q.type === "mcq" ? `<strong>Choices:</strong><br/>${q.choices.map((c,i)=>`${String.fromCharCode(65+i)}. ${escapeHTML(c)}${i===q.correct ? " ✅" : ""}`).join("<br/>")}<br/>` : ""}
+          ${q.type === "numeric" ? `<strong>Answer:</strong> ${q.answer} ${q.unit}<br/>` : ""}
+          ${q.type === "tf" ? `<strong>Answer:</strong> ${q.correct ? "TRUE" : "FALSE"}<br/>` : ""}
+          <strong>Solution:</strong> <span class="solution">${escapeHTML(q.solution)}</span>
+        </div>`;
+      });
+    }
+    html += `</section>`;
+  });
+  main.innerHTML = html;
+  main.querySelector('[data-action="dash"]').addEventListener("click", renderDashboard);
+}
+
+/* ==========================================================================
+   BOOT
+   ========================================================================== */
+renderDashboard();
+</script>
+</body>
+</html>

@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Distance and Displacement Simulation</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #152238;
+      --muted: #526274;
+      --panel: #ffffff;
+      --line: #d7dee8;
+      --grid: #dce8f5;
+      --grid-strong: #a8bed5;
+      --axis: #33465f;
+      --trace: #f08a24;
+      --vector: #1e8a5a;
+      --point: #c93636;
+      --start: #2367c9;
+      --focus: #2f6fed;
+      --shadow: 0 18px 50px rgba(30, 44, 63, 0.14);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #f3f6fa;
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    main {
+      width: min(1180px, calc(100vw - 32px));
+      margin: 0 auto;
+      padding: 26px 0 32px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      margin: 0 0 4px;
+      font-size: clamp(1.55rem, 2.7vw, 2.35rem);
+      line-height: 1.08;
+      letter-spacing: 0;
+    }
+
+    .subtitle {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.98rem;
+      line-height: 1.45;
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 318px;
+      gap: 16px;
+      align-items: stretch;
+    }
+
+    .stage,
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+    }
+
+    .stage {
+      position: relative;
+      min-height: 580px;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      min-height: 580px;
+      touch-action: none;
+      cursor: grab;
+    }
+
+    canvas:active {
+      cursor: grabbing;
+    }
+
+    .panel {
+      border-radius: 8px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .control-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .segmented {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1.45fr;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+      width: 100%;
+      background: #eef3f8;
+    }
+
+    .segmented button,
+    .button {
+      border: 0;
+      font: inherit;
+      font-weight: 700;
+      min-height: 42px;
+      cursor: pointer;
+    }
+
+    .segmented button {
+      background: transparent;
+      color: var(--muted);
+      padding: 0 10px;
+    }
+
+    .segmented button.active {
+      background: var(--focus);
+      color: #ffffff;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border-radius: 8px;
+      padding: 0 14px;
+      color: #ffffff;
+      background: #26384d;
+      flex: 1 1 120px;
+    }
+
+    .button.secondary {
+      background: #e8edf3;
+      color: var(--ink);
+      border: 1px solid var(--line);
+    }
+
+    button:focus-visible {
+      outline: 3px solid rgba(47, 111, 237, 0.28);
+      outline-offset: 2px;
+    }
+
+    .readouts {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .metric {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 11px 12px;
+      min-height: 82px;
+      background: #fbfcfe;
+    }
+
+    .metric.wide {
+      grid-column: 1 / -1;
+    }
+
+    .metric span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0;
+      margin-bottom: 6px;
+    }
+
+    .metric strong {
+      display: block;
+      font-size: clamp(1.15rem, 2.4vw, 1.62rem);
+      line-height: 1.12;
+      white-space: normal;
+      overflow-wrap: anywhere;
+    }
+
+    .legend {
+      display: grid;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.4;
+      padding-top: 2px;
+    }
+
+    .legend-item {
+      display: grid;
+      grid-template-columns: 22px 1fr;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .sample {
+      height: 4px;
+      border-radius: 99px;
+      background: var(--trace);
+    }
+
+    .sample.vector {
+      background: var(--vector);
+    }
+
+    .sample.point {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      justify-self: center;
+      background: var(--point);
+    }
+
+    .note {
+      margin-top: auto;
+      color: var(--muted);
+      font-size: 0.86rem;
+      line-height: 1.45;
+      border-top: 1px solid var(--line);
+      padding-top: 14px;
+    }
+
+    @media (max-width: 880px) {
+      main {
+        width: min(100vw - 22px, 720px);
+        padding-top: 18px;
+      }
+
+      .topbar {
+        display: block;
+      }
+
+      .workspace {
+        grid-template-columns: 1fr;
+      }
+
+      .stage,
+      canvas {
+        min-height: min(72vh, 560px);
+      }
+
+      .panel {
+        order: -1;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .readouts {
+        grid-template-columns: 1fr;
+      }
+
+      .metric.wide {
+        grid-column: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="topbar">
+      <div>
+        <h1>Distance and Displacement</h1>
+        <p class="subtitle">Move the point to compare the path length traveled with the vector from start to finish.</p>
+      </div>
+    </div>
+
+    <section class="workspace" aria-label="Physics simulation">
+      <div class="stage">
+        <canvas id="simulation" aria-label="Graph paper simulation canvas"></canvas>
+      </div>
+
+      <aside class="panel" aria-label="Simulation controls and readouts">
+        <div class="segmented" aria-label="Motion dimension">
+          <button id="mode1d" class="active" type="button">1D</button>
+          <button id="mode2d" type="button">2D</button>
+          <button id="modeCircle" type="button">Around a circle</button>
+        </div>
+
+        <div class="control-row">
+          <button id="playPause" class="button" type="button">Play</button>
+          <button id="reset" class="button secondary" type="button">Reset</button>
+        </div>
+
+        <div class="readouts">
+          <div class="metric">
+            <span>Position</span>
+            <strong id="positionReadout">x = 0.00 m</strong>
+          </div>
+          <div class="metric">
+            <span>Distance</span>
+            <strong id="distanceReadout">0.00 m</strong>
+          </div>
+          <div class="metric wide">
+            <span>Displacement</span>
+            <strong id="displacementReadout">|D| = 0.00 m, θ = 0.0°</strong>
+          </div>
+        </div>
+
+        <div class="legend" aria-label="Legend">
+          <div class="legend-item"><i class="sample point"></i><span>Moving point</span></div>
+          <div class="legend-item"><i class="sample"></i><span>Distance: total traced path</span></div>
+          <div class="legend-item"><i class="sample vector"></i><span>Displacement: start-to-current vector</span></div>
+        </div>
+
+        <p class="note">Each grid square is 1 meter. Drag the point or press Play to generate motion.</p>
+      </aside>
+    </section>
+  </main>
+
+  <script>
+    const canvas = document.getElementById("simulation");
+    const ctx = canvas.getContext("2d");
+    const mode1dButton = document.getElementById("mode1d");
+    const mode2dButton = document.getElementById("mode2d");
+    const modeCircleButton = document.getElementById("modeCircle");
+    const playPauseButton = document.getElementById("playPause");
+    const resetButton = document.getElementById("reset");
+    const positionReadout = document.getElementById("positionReadout");
+    const distanceReadout = document.getElementById("distanceReadout");
+    const displacementReadout = document.getElementById("displacementReadout");
+
+    const state = {
+      mode: "1D",
+      meterPx: 42,
+      origin: { x: 0, y: 0 },
+      start: { x: 0, y: 0 },
+      point: { x: 0, y: 0 },
+      circleCenter: { x: 3, y: 0 },
+      circleRadius: 3,
+      path: [{ x: 0, y: 0 }],
+      distance: 0,
+      playing: false,
+      dragging: false,
+      animationStart: 0,
+      lastAnimationPoint: null
+    };
+
+    function resizeCanvas() {
+      const rect = canvas.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = Math.round(rect.width * dpr);
+      canvas.height = Math.round(rect.height * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      updateOrigin(rect.width, rect.height);
+      draw();
+    }
+
+    function updateOrigin(width, height) {
+      if (state.mode === "CIRCLE") {
+        const circleWidth = state.circleRadius * 2 * state.meterPx;
+        const leftMargin = Math.max(36, (width - circleWidth) / 2);
+        state.origin = {
+          x: leftMargin,
+          y: height / 2
+        };
+        return;
+      }
+
+      state.origin = {
+        x: width / 2,
+        y: height / 2
+      };
+    }
+
+    function worldToCanvas(point) {
+      return {
+        x: state.origin.x + point.x * state.meterPx,
+        y: state.origin.y - point.y * state.meterPx
+      };
+    }
+
+    function canvasToWorld(x, y) {
+      const world = {
+        x: (x - state.origin.x) / state.meterPx,
+        y: (state.origin.y - y) / state.meterPx
+      };
+
+      if (state.mode === "1D") {
+        world.y = 0;
+      }
+
+      return clampWorld(world);
+    }
+
+    function clampWorld(point) {
+      const rect = canvas.getBoundingClientRect();
+      const maxX = rect.width / (2 * state.meterPx) - 0.65;
+      const maxY = rect.height / (2 * state.meterPx) - 0.65;
+
+      if (state.mode === "CIRCLE") {
+        return projectToCircle(point);
+      }
+
+      return {
+        x: Math.max(-maxX, Math.min(maxX, point.x)),
+        y: state.mode === "1D" ? 0 : Math.max(-maxY, Math.min(maxY, point.y))
+      };
+    }
+
+    function setPoint(nextPoint, shouldAccumulate = true) {
+      const point = clampWorld(nextPoint);
+      const previous = state.point;
+      const step = state.mode === "CIRCLE" ? circleArcStep(previous, point) : Math.hypot(point.x - previous.x, point.y - previous.y);
+
+      if (shouldAccumulate && step > 0.002) {
+        state.distance += step;
+        state.path.push(point);
+      }
+
+      state.point = point;
+      updateReadouts();
+      draw();
+    }
+
+    function resetSimulation() {
+      state.playing = false;
+      state.dragging = false;
+      state.point = { ...state.start };
+      state.path = [{ ...state.start }];
+      state.distance = 0;
+      state.lastAnimationPoint = null;
+      playPauseButton.textContent = "Play";
+      const rect = canvas.getBoundingClientRect();
+      updateOrigin(rect.width, rect.height);
+      updateModeButtons();
+      updateReadouts();
+      draw();
+    }
+
+    function switchMode(mode) {
+      if (state.mode === mode) return;
+      state.mode = mode;
+      resetSimulation();
+    }
+
+    function updateModeButtons() {
+      mode1dButton.classList.toggle("active", state.mode === "1D");
+      mode2dButton.classList.toggle("active", state.mode === "2D");
+      modeCircleButton.classList.toggle("active", state.mode === "CIRCLE");
+    }
+
+    function updateReadouts() {
+      const dx = state.point.x - state.start.x;
+      const dy = state.point.y - state.start.y;
+      const displacement = Math.hypot(dx, dy);
+      const theta = displacement < 0.0001 ? 0 : positiveAngleDegrees(Math.atan2(dy, dx));
+
+      if (state.mode === "1D") {
+        positionReadout.textContent = `x = ${state.point.x.toFixed(2)} m`;
+        displacementReadout.textContent = `|D| = ${Math.abs(dx).toFixed(2)} m, θ = ${theta.toFixed(1)}°`;
+      } else {
+        positionReadout.textContent = `x = ${state.point.x.toFixed(2)} m, y = ${state.point.y.toFixed(2)} m`;
+        displacementReadout.textContent = `|D| = ${displacement.toFixed(2)} m, θ = ${theta.toFixed(1)}°`;
+      }
+
+      distanceReadout.textContent = `${state.distance.toFixed(2)} m`;
+    }
+
+    function draw() {
+      const rect = canvas.getBoundingClientRect();
+      ctx.clearRect(0, 0, rect.width, rect.height);
+      drawGrid(rect.width, rect.height);
+      drawCircleGuide();
+      drawTrace();
+      drawDisplacement();
+      drawThetaAngle();
+      drawStartPoint();
+      drawMovingPoint();
+    }
+
+    function drawGrid(width, height) {
+      const leftMeters = Math.floor(-state.origin.x / state.meterPx) - 1;
+      const rightMeters = Math.ceil((width - state.origin.x) / state.meterPx) + 1;
+      const bottomMeters = Math.floor(-(height - state.origin.y) / state.meterPx) - 1;
+      const topMeters = Math.ceil(state.origin.y / state.meterPx) + 1;
+
+      ctx.save();
+      ctx.lineWidth = 1;
+      ctx.font = "12px Inter, system-ui, sans-serif";
+      ctx.textBaseline = "top";
+
+      for (let x = leftMeters; x <= rightMeters; x++) {
+        const px = state.origin.x + x * state.meterPx;
+        ctx.strokeStyle = x === 0 ? getVar("--axis") : x % 5 === 0 ? getVar("--grid-strong") : getVar("--grid");
+        ctx.lineWidth = x === 0 ? 2 : 1;
+        ctx.beginPath();
+        ctx.moveTo(px, 0);
+        ctx.lineTo(px, height);
+        ctx.stroke();
+
+        if (x !== 0) {
+          ctx.fillStyle = getVar("--muted");
+          ctx.fillText(`${x} m`, px + 4, state.origin.y + 6);
+        }
+      }
+
+      for (let y = bottomMeters; y <= topMeters; y++) {
+        const py = state.origin.y - y * state.meterPx;
+        ctx.strokeStyle = y === 0 ? getVar("--axis") : y % 5 === 0 ? getVar("--grid-strong") : getVar("--grid");
+        ctx.lineWidth = y === 0 ? 2 : 1;
+        ctx.beginPath();
+        ctx.moveTo(0, py);
+        ctx.lineTo(width, py);
+        ctx.stroke();
+
+        if (y !== 0 && state.mode !== "1D") {
+          ctx.fillStyle = getVar("--muted");
+          ctx.fillText(`${y} m`, state.origin.x + 6, py + 4);
+        }
+      }
+
+      ctx.fillStyle = getVar("--axis");
+      ctx.font = "700 13px Inter, system-ui, sans-serif";
+      ctx.fillText("x", width - 22, state.origin.y + 8);
+      if (state.mode !== "1D") {
+        ctx.fillText("y", state.origin.x + 8, 12);
+      }
+      ctx.restore();
+    }
+
+    function drawTrace() {
+      if (state.path.length < 2) return;
+
+      ctx.save();
+      ctx.strokeStyle = getVar("--trace");
+      ctx.lineWidth = 4;
+      ctx.lineJoin = "round";
+      ctx.lineCap = "round";
+      ctx.beginPath();
+      state.path.forEach((point, index) => {
+        const canvasPoint = worldToCanvas(point);
+        if (index === 0) {
+          ctx.moveTo(canvasPoint.x, canvasPoint.y);
+        } else {
+          ctx.lineTo(canvasPoint.x, canvasPoint.y);
+        }
+      });
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function drawCircleGuide() {
+      if (state.mode !== "CIRCLE") return;
+
+      const center = worldToCanvas(state.circleCenter);
+      const radius = state.circleRadius * state.meterPx;
+
+      ctx.save();
+      ctx.strokeStyle = "rgba(47, 111, 237, 0.55)";
+      ctx.fillStyle = "rgba(47, 111, 237, 0.08)";
+      ctx.lineWidth = 3;
+      ctx.setLineDash([8, 8]);
+      ctx.beginPath();
+      ctx.arc(center.x, center.y, radius, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      ctx.fillStyle = getVar("--focus");
+      ctx.beginPath();
+      ctx.arc(center.x, center.y, 5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.font = "700 12px Inter, system-ui, sans-serif";
+      ctx.fillText("center (3, 0)", center.x + 10, center.y - 18);
+      ctx.restore();
+    }
+
+    function drawDisplacement() {
+      const start = worldToCanvas(state.start);
+      const end = worldToCanvas(state.point);
+      const length = Math.hypot(end.x - start.x, end.y - start.y);
+      if (length < 2) return;
+
+      ctx.save();
+      ctx.strokeStyle = getVar("--vector");
+      ctx.fillStyle = getVar("--vector");
+      ctx.lineWidth = 3;
+      ctx.lineCap = "round";
+      ctx.beginPath();
+      ctx.moveTo(start.x, start.y);
+      ctx.lineTo(end.x, end.y);
+      ctx.stroke();
+
+      const angle = Math.atan2(end.y - start.y, end.x - start.x);
+      const headLength = 14;
+      ctx.beginPath();
+      ctx.moveTo(end.x, end.y);
+      ctx.lineTo(end.x - headLength * Math.cos(angle - Math.PI / 6), end.y - headLength * Math.sin(angle - Math.PI / 6));
+      ctx.lineTo(end.x - headLength * Math.cos(angle + Math.PI / 6), end.y - headLength * Math.sin(angle + Math.PI / 6));
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+    }
+
+    function drawThetaAngle() {
+      const dx = state.point.x - state.start.x;
+      const dy = state.point.y - state.start.y;
+      const displacement = Math.hypot(dx, dy);
+      if (displacement < 0.15) return;
+
+      const start = worldToCanvas(state.start);
+      const thetaRadians = Math.atan2(dy, dx);
+      const thetaDegrees = positiveAngleDegrees(thetaRadians);
+      if (thetaDegrees < 1 || thetaDegrees > 359) return;
+
+      const canvasEndAngle = -thetaDegrees * Math.PI / 180;
+      const radius = Math.min(2 * state.meterPx, Math.max(0.8 * state.meterPx, displacement * state.meterPx * 0.42));
+      const arcEnd = {
+        x: start.x + radius * Math.cos(canvasEndAngle),
+        y: start.y + radius * Math.sin(canvasEndAngle)
+      };
+
+      ctx.save();
+      ctx.strokeStyle = "#111827";
+      ctx.fillStyle = "#111827";
+      ctx.lineWidth = 3;
+      ctx.lineCap = "round";
+      ctx.beginPath();
+      ctx.arc(start.x, start.y, radius, 0, canvasEndAngle, true);
+      ctx.stroke();
+
+      const tangentAngle = canvasEndAngle - Math.PI / 2;
+      const headLength = 12;
+      ctx.beginPath();
+      ctx.moveTo(arcEnd.x, arcEnd.y);
+      ctx.lineTo(
+        arcEnd.x - headLength * Math.cos(tangentAngle - Math.PI / 6),
+        arcEnd.y - headLength * Math.sin(tangentAngle - Math.PI / 6)
+      );
+      ctx.lineTo(
+        arcEnd.x - headLength * Math.cos(tangentAngle + Math.PI / 6),
+        arcEnd.y - headLength * Math.sin(tangentAngle + Math.PI / 6)
+      );
+      ctx.closePath();
+      ctx.fill();
+
+      const labelAngle = canvasEndAngle / 2;
+      const labelRadius = radius + 22;
+      ctx.font = "700 24px Inter, system-ui, sans-serif";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText("θ", start.x + labelRadius * Math.cos(labelAngle), start.y + labelRadius * Math.sin(labelAngle));
+      ctx.restore();
+    }
+
+    function drawStartPoint() {
+      const start = worldToCanvas(state.start);
+      ctx.save();
+      ctx.fillStyle = getVar("--start");
+      ctx.beginPath();
+      ctx.arc(start.x, start.y, 6, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = getVar("--start");
+      ctx.font = "700 12px Inter, system-ui, sans-serif";
+      ctx.fillText("start", start.x + 9, start.y - 20);
+      ctx.restore();
+    }
+
+    function drawMovingPoint() {
+      const point = worldToCanvas(state.point);
+      ctx.save();
+      ctx.shadowColor = "rgba(201, 54, 54, 0.28)";
+      ctx.shadowBlur = 12;
+      ctx.fillStyle = getVar("--point");
+      ctx.beginPath();
+      ctx.arc(point.x, point.y, 10, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.shadowBlur = 0;
+      ctx.strokeStyle = "#ffffff";
+      ctx.lineWidth = 3;
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function animate(timestamp) {
+      if (!state.playing) return;
+      if (!state.animationStart) {
+        state.animationStart = timestamp;
+      }
+
+      const elapsed = (timestamp - state.animationStart) / 1000;
+      const nextPoint = state.mode === "1D" ? animated1dPoint(elapsed) : state.mode === "CIRCLE" ? animatedCirclePoint(elapsed) : animated2dPoint(elapsed);
+      setPoint(nextPoint, true);
+      requestAnimationFrame(animate);
+    }
+
+    function animated1dPoint(t) {
+      return {
+        x: 4.5 * Math.sin(t * 1.35),
+        y: 0
+      };
+    }
+
+    function animated2dPoint(t) {
+      return {
+        x: 3.8 * Math.sin(t * 0.9),
+        y: 2.3 * Math.sin(t * 1.6 + 0.45)
+      };
+    }
+
+    function animatedCirclePoint(t) {
+      const angle = Math.PI - t * 0.85;
+      return {
+        x: state.circleCenter.x + state.circleRadius * Math.cos(angle),
+        y: state.circleCenter.y + state.circleRadius * Math.sin(angle)
+      };
+    }
+
+    function projectToCircle(point) {
+      const dx = point.x - state.circleCenter.x;
+      const dy = point.y - state.circleCenter.y;
+      const angle = Math.hypot(dx, dy) < 0.0001 ? Math.PI : Math.atan2(dy, dx);
+      return {
+        x: state.circleCenter.x + state.circleRadius * Math.cos(angle),
+        y: state.circleCenter.y + state.circleRadius * Math.sin(angle)
+      };
+    }
+
+    function circleArcStep(previous, next) {
+      const previousAngle = Math.atan2(previous.y - state.circleCenter.y, previous.x - state.circleCenter.x);
+      const nextAngle = Math.atan2(next.y - state.circleCenter.y, next.x - state.circleCenter.x);
+      let delta = Math.abs(nextAngle - previousAngle);
+      if (delta > Math.PI) {
+        delta = Math.PI * 2 - delta;
+      }
+      return delta * state.circleRadius;
+    }
+
+    function positiveAngleDegrees(radians) {
+      return (radians * 180 / Math.PI + 360) % 360;
+    }
+
+    function getPointerWorld(event) {
+      const rect = canvas.getBoundingClientRect();
+      return canvasToWorld(event.clientX - rect.left, event.clientY - rect.top);
+    }
+
+    function isNearPoint(event) {
+      const rect = canvas.getBoundingClientRect();
+      const pointer = {
+        x: event.clientX - rect.left,
+        y: event.clientY - rect.top
+      };
+      const point = worldToCanvas(state.point);
+      return Math.hypot(pointer.x - point.x, pointer.y - point.y) <= 24;
+    }
+
+    function getVar(name) {
+      return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+    }
+
+    canvas.addEventListener("pointerdown", (event) => {
+      if (!isNearPoint(event)) return;
+      canvas.setPointerCapture(event.pointerId);
+      state.dragging = true;
+      state.playing = false;
+      state.animationStart = 0;
+      playPauseButton.textContent = "Play";
+      setPoint(getPointerWorld(event), true);
+    });
+
+    canvas.addEventListener("pointermove", (event) => {
+      if (!state.dragging) return;
+      setPoint(getPointerWorld(event), true);
+    });
+
+    canvas.addEventListener("pointerup", (event) => {
+      state.dragging = false;
+      if (canvas.hasPointerCapture(event.pointerId)) {
+        canvas.releasePointerCapture(event.pointerId);
+      }
+    });
+
+    canvas.addEventListener("pointercancel", () => {
+      state.dragging = false;
+    });
+
+    mode1dButton.addEventListener("click", () => switchMode("1D"));
+    mode2dButton.addEventListener("click", () => switchMode("2D"));
+    modeCircleButton.addEventListener("click", () => switchMode("CIRCLE"));
+
+    playPauseButton.addEventListener("click", () => {
+      state.playing = !state.playing;
+      playPauseButton.textContent = state.playing ? "Pause" : "Play";
+      state.animationStart = 0;
+      if (state.playing) {
+        requestAnimationFrame(animate);
+      }
+    });
+
+    resetButton.addEventListener("click", resetSimulation);
+    window.addEventListener("resize", resizeCanvas);
+
+    resizeCanvas();
+    updateReadouts();
+  </script>
+</body>
+</html>
