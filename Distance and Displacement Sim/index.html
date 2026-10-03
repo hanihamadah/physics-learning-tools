@@ -113,7 +113,7 @@
 
     .segmented {
       display: grid;
-      grid-template-columns: 1fr 1fr 1.45fr;
+      grid-template-columns: 1fr 1fr;
       border: 1px solid var(--line);
       border-radius: 8px;
       overflow: hidden;
@@ -294,7 +294,8 @@
 
       <aside class="panel" aria-label="Simulation controls and readouts">
         <div class="segmented" aria-label="Motion dimension">
-          <button id="mode1d" class="active" type="button">1D</button>
+          <button id="mode1d" class="active" type="button">1D horizontal</button>
+          <button id="mode1dv" type="button">1D vertical</button>
           <button id="mode2d" type="button">2D</button>
           <button id="modeCircle" type="button">Around a circle</button>
         </div>
@@ -335,6 +336,7 @@
     const canvas = document.getElementById("simulation");
     const ctx = canvas.getContext("2d");
     const mode1dButton = document.getElementById("mode1d");
+    const mode1dvButton = document.getElementById("mode1dv");
     const mode2dButton = document.getElementById("mode2d");
     const modeCircleButton = document.getElementById("modeCircle");
     const playPauseButton = document.getElementById("playPause");
@@ -404,6 +406,10 @@
         world.y = 0;
       }
 
+      if (state.mode === "1DV") {
+        world.x = 0;
+      }
+
       return clampWorld(world);
     }
 
@@ -417,7 +423,7 @@
       }
 
       return {
-        x: Math.max(-maxX, Math.min(maxX, point.x)),
+        x: state.mode === "1DV" ? 0 : Math.max(-maxX, Math.min(maxX, point.x)),
         y: state.mode === "1D" ? 0 : Math.max(-maxY, Math.min(maxY, point.y))
       };
     }
@@ -460,6 +466,7 @@
 
     function updateModeButtons() {
       mode1dButton.classList.toggle("active", state.mode === "1D");
+      mode1dvButton.classList.toggle("active", state.mode === "1DV");
       mode2dButton.classList.toggle("active", state.mode === "2D");
       modeCircleButton.classList.toggle("active", state.mode === "CIRCLE");
     }
@@ -474,6 +481,10 @@
         positionReadout.textContent = `x = ${state.point.x.toFixed(2)} m`;
         displacementReadout.textContent = `|D| = ${Math.abs(dx).toFixed(2)} m, θ = ${theta.toFixed(1)}°`;
         componentReadout.textContent = `Δx = ${dx.toFixed(2)} m`;
+      } else if (state.mode === "1DV") {
+        positionReadout.textContent = `y = ${state.point.y.toFixed(2)} m`;
+        displacementReadout.textContent = `|D| = ${Math.abs(dy).toFixed(2)} m, θ = ${theta.toFixed(1)}°`;
+        componentReadout.textContent = `Δy = ${dy.toFixed(2)} m`;
       } else {
         positionReadout.textContent = `x = ${state.point.x.toFixed(2)} m, y = ${state.point.y.toFixed(2)} m`;
         displacementReadout.textContent = `|D| = ${displacement.toFixed(2)} m, θ = ${theta.toFixed(1)}°`;
@@ -515,7 +526,7 @@
         ctx.lineTo(px, height);
         ctx.stroke();
 
-        if (x !== 0) {
+        if (x !== 0 && state.mode !== "1DV") {
           ctx.fillStyle = getVar("--muted");
           ctx.fillText(`${x} m`, px + 4, state.origin.y + 6);
         }
@@ -538,7 +549,9 @@
 
       ctx.fillStyle = getVar("--axis");
       ctx.font = "700 13px Inter, system-ui, sans-serif";
-      ctx.fillText("x", width - 22, state.origin.y + 8);
+      if (state.mode !== "1DV") {
+        ctx.fillText("x", width - 22, state.origin.y + 8);
+      }
       if (state.mode !== "1D") {
         ctx.fillText("y", state.origin.x + 8, 12);
       }
@@ -706,7 +719,7 @@
       }
 
       const elapsed = (timestamp - state.animationStart) / 1000;
-      const nextPoint = state.mode === "1D" ? animated1dPoint(elapsed) : state.mode === "CIRCLE" ? animatedCirclePoint(elapsed) : animated2dPoint(elapsed);
+      const nextPoint = state.mode === "1D" ? animated1dPoint(elapsed) : state.mode === "1DV" ? animated1dvPoint(elapsed) : state.mode === "CIRCLE" ? animatedCirclePoint(elapsed) : animated2dPoint(elapsed);
       setPoint(nextPoint, true);
       requestAnimationFrame(animate);
     }
@@ -715,6 +728,13 @@
       return {
         x: 4.5 * Math.sin(t * 1.35),
         y: 0
+      };
+    }
+
+    function animated1dvPoint(t) {
+      return {
+        x: 0,
+        y: 4.5 * Math.sin(t * 1.35)
       };
     }
 
@@ -803,6 +823,7 @@
     });
 
     mode1dButton.addEventListener("click", () => switchMode("1D"));
+    mode1dvButton.addEventListener("click", () => switchMode("1DV"));
     mode2dButton.addEventListener("click", () => switchMode("2D"));
     modeCircleButton.addEventListener("click", () => switchMode("CIRCLE"));
 
