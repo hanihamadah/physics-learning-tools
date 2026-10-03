@@ -316,6 +316,7 @@
           <div class="metric wide">
             <span>Displacement</span>
             <strong id="displacementReadout">|D| = 0.00 m, θ = 0.0°</strong>
+            <strong id="componentReadout">Δx = 0.00 m</strong>
           </div>
         </div>
 
@@ -341,6 +342,7 @@
     const positionReadout = document.getElementById("positionReadout");
     const distanceReadout = document.getElementById("distanceReadout");
     const displacementReadout = document.getElementById("displacementReadout");
+    const componentReadout = document.getElementById("componentReadout");
 
     const state = {
       mode: "1D",
@@ -471,9 +473,11 @@
       if (state.mode === "1D") {
         positionReadout.textContent = `x = ${state.point.x.toFixed(2)} m`;
         displacementReadout.textContent = `|D| = ${Math.abs(dx).toFixed(2)} m, θ = ${theta.toFixed(1)}°`;
+        componentReadout.textContent = `Δx = ${dx.toFixed(2)} m`;
       } else {
         positionReadout.textContent = `x = ${state.point.x.toFixed(2)} m, y = ${state.point.y.toFixed(2)} m`;
         displacementReadout.textContent = `|D| = ${displacement.toFixed(2)} m, θ = ${theta.toFixed(1)}°`;
+        componentReadout.textContent = `Δx = ${dx.toFixed(2)} m, Δy = ${dy.toFixed(2)} m`;
       }
 
       distanceReadout.textContent = `${state.distance.toFixed(2)} m`;
