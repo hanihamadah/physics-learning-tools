@@ -314,15 +314,23 @@
             <strong id="distanceReadout">0.00 m</strong>
           </div>
           <div class="metric wide">
-            <span>Displacement</span>
-            <strong id="displacementReadout">|D| = 0.00 m, θ = 0.0°</strong>
+            <span id="displacementLabel">Displacement Δx</span>
+            <strong id="displacementReadout">Δx = 0.00 m</strong>
+          </div>
+          <div class="metric" id="dxMetric" hidden>
+            <span>Horizontal Δx</span>
+            <strong id="dxReadout">Δx = 0.00 m</strong>
+          </div>
+          <div class="metric" id="dyMetric" hidden>
+            <span>Vertical Δy</span>
+            <strong id="dyReadout">Δy = 0.00 m</strong>
           </div>
         </div>
 
         <div class="legend" aria-label="Legend">
           <div class="legend-item"><i class="sample point"></i><span>Moving point</span></div>
           <div class="legend-item"><i class="sample"></i><span>Distance: total traced path</span></div>
-          <div class="legend-item"><i class="sample vector"></i><span>Displacement: start-to-current vector</span></div>
+          <div class="legend-item"><i class="sample vector"></i><span>Displacement: Δx along x, Δy along y, D for a 2D vector</span></div>
         </div>
 
         <p class="note">Each grid square is 1 meter. Drag the point or press Play to generate motion.</p>
@@ -341,6 +349,11 @@
     const positionReadout = document.getElementById("positionReadout");
     const distanceReadout = document.getElementById("distanceReadout");
     const displacementReadout = document.getElementById("displacementReadout");
+    const displacementLabel = document.getElementById("displacementLabel");
+    const dxMetric = document.getElementById("dxMetric");
+    const dyMetric = document.getElementById("dyMetric");
+    const dxReadout = document.getElementById("dxReadout");
+    const dyReadout = document.getElementById("dyReadout");
 
     const state = {
       mode: "1D",
@@ -468,15 +481,29 @@
       const displacement = Math.hypot(dx, dy);
       const theta = displacement < 0.0001 ? 0 : positiveAngleDegrees(Math.atan2(dy, dx));
 
-      if (state.mode === "1D") {
+      const is1d = state.mode === "1D";
+      dxMetric.hidden = is1d;
+      dyMetric.hidden = is1d;
+
+      if (is1d) {
         positionReadout.textContent = `x = ${state.point.x.toFixed(2)} m`;
-        displacementReadout.textContent = `|D| = ${Math.abs(dx).toFixed(2)} m, θ = ${theta.toFixed(1)}°`;
+        displacementLabel.textContent = "Displacement Δx";
+        const direction = Math.abs(dx) < 0.005 ? "" : dx > 0 ? " (right)" : " (left)";
+        displacementReadout.textContent = `Δx = ${signed(dx)} m${direction}`;
       } else {
         positionReadout.textContent = `x = ${state.point.x.toFixed(2)} m, y = ${state.point.y.toFixed(2)} m`;
-        displacementReadout.textContent = `|D| = ${displacement.toFixed(2)} m, θ = ${theta.toFixed(1)}°`;
+        displacementLabel.textContent = "Displacement D";
+        displacementReadout.textContent = `D = ${displacement.toFixed(2)} m, θ = ${theta.toFixed(1)}°`;
+        dxReadout.textContent = `Δx = ${signed(dx)} m`;
+        dyReadout.textContent = `Δy = ${signed(dy)} m`;
       }
 
       distanceReadout.textContent = `${state.distance.toFixed(2)} m`;
+    }
+
+    function signed(value) {
+      if (Math.abs(value) < 0.005) return "0.00";
+      return `${value > 0 ? "+" : "−"}${Math.abs(value).toFixed(2)}`;
     }
 
     function draw() {
@@ -612,10 +639,24 @@
       ctx.lineTo(end.x - headLength * Math.cos(angle + Math.PI / 6), end.y - headLength * Math.sin(angle + Math.PI / 6));
       ctx.closePath();
       ctx.fill();
+
+      if (length > 30) {
+        ctx.font = "700 18px Inter, system-ui, sans-serif";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        const offset = 16;
+        const mid = { x: (start.x + end.x) / 2, y: (start.y + end.y) / 2 };
+        if (state.mode === "1D") {
+          ctx.fillText("Δx", mid.x, mid.y - offset);
+        } else {
+          ctx.fillText("D", mid.x + offset * Math.sin(angle), mid.y - offset * Math.cos(angle));
+        }
+      }
       ctx.restore();
     }
 
     function drawThetaAngle() {
+      if (state.mode === "1D") return;
       const dx = state.point.x - state.start.x;
       const dy = state.point.y - state.start.y;
       const displacement = Math.hypot(dx, dy);

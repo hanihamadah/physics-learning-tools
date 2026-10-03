@@ -9,8 +9,9 @@ Live site: https://hanihamadah.github.io/distance-displacement-simulation/
 - A moving point on graph paper divided into meters.
 - Total distance as the accumulated path length.
 - Displacement as a vector from the starting point to the current point.
-- The displacement magnitude `|D|`.
-- The angle `θ`, measured in degrees from the positive x-axis.
+- Notation: horizontal displacement `Δx`, vertical displacement `Δy`, 2D displacement vector `D`.
+- **1D**: signed `Δx` (+ right, − left).
+- **2D / circle**: `D` with angle `θ` from the positive x-axis, plus its components `Δx` and `Δy`.
 
 ## Modes
 
